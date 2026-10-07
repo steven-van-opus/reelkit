@@ -11,7 +11,7 @@
 //      sources[].url). A changelog that lists many releases is narrowed to
 //      this entry — its #anchor, the <article>/<li> its title sits in — so
 //      the next release's screenshots stay out.
-//   2. data.ts news for the same launch (same URL, or the subject's name
+//   2. catalog news for the same launch (same URL, or the subject's name
 //      within a few days): news.media, news.image, linkPreview.image, a
 //      tweet, and the clip resolveNewsMedia() finds on the item's own page.
 //   3. pages the entry links to on the vendor's own site: the "read more"
@@ -41,17 +41,16 @@ import crypto from 'crypto';
 import { spawn, execFile } from 'child_process';
 import { promisify } from 'util';
 import { createCanvas, loadImage } from '@napi-rs/canvas';
-import { ROOT, C, font, registerFonts } from './brand.mjs';
+import { C, font, registerFonts } from './brand.mjs';
 import { readManifest } from './mediastore.mjs';
 import {
   pageMedia, readArticle, hydrateLinkedArticle, rankLinks, extractLinks, embedUrl, unwrapImageUrl, tokens, overlap,
-} from '../../scripts/lib/changelog-links.mjs';
-import { fetchMediaSource, resolveNewsMedia } from '../../scripts/lib/news-media.mjs';
-import { htmlToText } from '../../scripts/lib/changelog-parse.mjs';
-import { extractAllToolsObjects, extractTopLevelObjects, readFields, parseNewsItemObjects } from '../../scripts/lib/data-ts.mjs';
+} from './lib/changelog-links.mjs';
+import { fetchMediaSource, resolveNewsMedia } from './lib/news-media.mjs';
+import { htmlToText } from './lib/changelog-parse.mjs';
+import { products, product } from './catalog.mjs';
 
 const exec = promisify(execFile);
-const SITE = path.resolve(ROOT, '..');
 
 const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36';
 const CHROME = process.env.CHROME_PATH || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
@@ -279,28 +278,15 @@ async function loadPage(url) {
   return { url, html: r.html, article: { ...live, image: article.image || live.image }, rendered: true, resources: r.resources };
 }
 
-// ---------------------------------------------------------------- data.ts news
+// ---------------------------------------------------------------- catalog news
 
 let newsIndex = null;
-// Every news item in data.ts with the fields the site's parser drops (media[]).
+// Every news item in the catalog, media[] included, tagged with its tool.
 function allNews() {
   if (newsIndex) return newsIndex;
   newsIndex = [];
-  for (const obj of extractAllToolsObjects(fs.readFileSync(path.join(SITE, 'data.ts'), 'utf8'))) {
-    const f = readFields(obj);
-    const toolId = f.str('id');
-    const news = f.array('news');
-    if (!toolId || !news) continue;
-    for (const text of extractTopLevelObjects(news.text)) {
-      const [item] = parseNewsItemObjects(text);
-      if (!item) continue;
-      const media = readFields(text).array('media');
-      item.media = media ? extractTopLevelObjects(media.text).map(m => {
-        const g = readFields(m);
-        return { type: g.str('type'), url: g.str('url'), poster: g.str('poster'), alt: g.str('alt'), caption: g.str('caption') };
-      }).filter(m => m.type && m.url) : [];
-      newsIndex.push({ ...item, toolId });
-    }
+  for (const p of products()) {
+    for (const item of p.news) newsIndex.push({ ...item, toolId: p.id });
   }
   return newsIndex;
 }
@@ -733,7 +719,7 @@ async function gather(episode, { max = 24 } = {}) {
   const words = episodeWords(episode, [...aliases, ...String(episode.subject?.name || '').split(/\s+/)]);
   const names = s => { const t = tokens(htmlToText(s), aliases); return subject.size > 0 && [...subject].every(w => t.has(w)); };
 
-  log(`  ${pageUrls.length} source page${pageUrls.length === 1 ? '' : 's'}, ${news.length} data.ts news item${news.length === 1 ? '' : 's'} for this launch`);
+  log(`  ${pageUrls.length} source page${pageUrls.length === 1 ? '' : 's'}, ${news.length} catalog news item${news.length === 1 ? '' : 's'} for this launch`);
   const cands = [];
   const add = (c, base) => {
     if (!c?.url) return;
@@ -918,16 +904,12 @@ async function gather(episode, { max = 24 } = {}) {
   return [...ranked.filter(c => !c.extra), ...ranked.filter(c => c.extra)];
 }
 
-// A tool's title and the domains its own site lives on (from data.ts).
+// A tool's title and the domains its own site lives on (from the catalog).
 function toolDomains(toolId) {
-  const src = fs.readFileSync(path.join(SITE, 'data.ts'), 'utf8');
-  for (const obj of extractAllToolsObjects(src)) {
-    const f = readFields(obj);
-    if (f.str('id') !== toolId) continue;
-    const domains = [f.str('url'), f.str('displayDomain') && `https://${f.str('displayDomain')}`].filter(Boolean).map(u => registrable(hostOf(u)));
-    return { title: f.str('title'), domains };
-  }
-  return { title: '', domains: [] };
+  const p = product(toolId);
+  if (!p) return { title: '', domains: [] };
+  const domains = [p.url, p.displayDomain && `https://${p.displayDomain}`].filter(Boolean).map(u => registrable(hostOf(u)));
+  return { title: p.title, domains };
 }
 
 // A poster image whose clip sits next to it (…/card-poster.webp → …/card.mp4)

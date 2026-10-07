@@ -60,7 +60,7 @@ function drawTitled(s, style) {
   const coverLike = style === 'strips' && img;
   const print = img
     ? coverLike
-      ? printSize(img.width / img.height, 820, 560, { crop: 1.25 })
+      ? printSize(img.width / img.height, 820, 560, { crop: props.fit === 'contain' ? 1 : 1.25 })
       : printSize(img.width / img.height, asPrint ? 900 : PRINT.maxW, asPrint ? 640 : 420, { crop: props.fit === 'cover' ? 1.25 : 1 })
     : null;
 

@@ -1,6 +1,8 @@
-// Kit — the Creators Toolbox mascot. A pink card-stock toolbox whose carry
-// handle is the brand's thick "C", with a face on the front panel, paper-strip
-// arms, mitten hands and two little sneakers.
+// Kit — the house mascot. A pink card-stock toolbox whose carry handle is the
+// brand's thick "C", with a face on the front panel, paper-strip arms, mitten
+// hands and two little sneakers. The drawing is code and the same for every
+// brand pack; the pack sets the name prompts use (brand.json mascot.name) and
+// the mark on its sticker (assets.mark).
 //
 // drawMascot(ctx, { x, y, s, t, pose, face, look, flip })
 //   x, y   the point between the feet on the floor
@@ -424,7 +426,7 @@ export function drawMascot(ctx, { x, y, s = 1, t = 0, pose: poseName = 'idle', f
   mouth(ctx, face, look, t, talk);
   ctx.restore();
 
-  // The Creators Toolbox mark as a little sticker on the lower corner. It
+  // The brand pack's mark as a little sticker on the lower corner. It
   // sits on the mirrored corner when Kit is flipped, but always reads the
   // right way round (a mirrored C reads as a backwards "D").
   {

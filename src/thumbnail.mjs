@@ -5,7 +5,7 @@
 //
 //   kicker tape · the real product image as a tilted photo print with its
 //   logo sticker · a big torn-strip headline · Kit pointing at it · the
-//   Creators Toolbox lockup
+//   brand pack's lockup
 //
 //   node src/thumbnail.mjs episodes/<id>   → cover.png (1080×1920) + cover-grid.png (the 3:4 crop)
 //

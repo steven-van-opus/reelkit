@@ -1,0 +1,35 @@
+{
+  "name": "Creators Toolbox",
+  "handle": "creatorstoolbox",
+  "site": "creatorstoolbox.com",
+  "about": "a free directory of 1,000+ tools for designers, developers and creators",
+  "hashtag": "#creatorstoolbox",
+  "mascot": {
+    "name": "Kit",
+    "description": "our pink toolbox mascot"
+  },
+  "palette": {
+    "ink": "#101014",
+    "chalk": "#FAFAFC",
+    "pink": "#FF2B88",
+    "pinkStart": "#FF338A",
+    "pinkEnd": "#FF2387",
+    "pinkDeep": "#D81570",
+    "rose": "#FFF0FA",
+    "blush": "#FFD4F2"
+  },
+  "assets": {
+    "lockup": "assets/creators-toolbox-horizontal.svg",
+    "lockupWhite": "assets/creators-toolbox-logo-white.svg",
+    "icon": "assets/creators-toolbox-icon-card.svg",
+    "mark": "assets/mark.svg"
+  },
+  "cta": {
+    "keyword": "TOOLBOX",
+    "label": "Comment “TOOLBOX”, we’ll send it",
+    "vo": "Comment “TOOLBOX” and we’ll send you the latest tools, news, and resources every day!",
+    "speak": "Comment, Tool box, and we'll send you the latest tools, news, and resources every day!",
+    "line": "and we’ll send you daily drops",
+    "caption": "Comment “TOOLBOX” and we’ll send you the latest tools, news, and resources every day!"
+  }
+}

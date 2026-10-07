@@ -1,23 +1,30 @@
-// The Creators Toolbox mark and the site's decorative backdrops, on canvas.
-// Paths are the outlined masters from components/ToolboxLogo.tsx; backdrops
-// mirror components/BrandBackdrop.tsx ('mark' | 'orbits' | 'tiles').
+// The brand mark, lockups and app icon from the brand pack, plus the site's
+// decorative backdrops, on canvas. Backdrops mirror the Creators Toolbox
+// BrandBackdrop component ('mark' | 'orbits' | 'tiles').
 import fs from 'fs';
 import path from 'path';
 import { Path2D } from '@napi-rs/canvas';
 import { C } from './brand.mjs';
-import { ROOT } from './brand.mjs';
+import { asset } from './brandpack.mjs';
 
-// Read the paths from the site so the reels never drift from the logo.
-const logoSrc = fs.readFileSync(path.resolve(ROOT, '../components/ToolboxLogo.tsx'), 'utf8');
-const pick = name => (logoSrc.match(new RegExp(`${name}\\s*=\\s*"([^"]+)"`)) || [])[1];
-export const BRAND_C_PATH = pick('BRAND_C_PATH');
-export const BRAND_SPARKLE_PATH = pick('BRAND_SPARKLE_PATH');
-if (!BRAND_C_PATH || !BRAND_SPARKLE_PATH) throw new Error('Could not read brand paths from components/ToolboxLogo.tsx');
+// The mark's outlined paths come from the pack's mark.svg so the reels never
+// drift from the logo: <path id="mark"> (the C) and an optional
+// <path id="sparkle">, in the coordinates of the svg's viewBox.
+const markFile = asset('mark');
+const markSvg = fs.readFileSync(markFile, 'utf8');
+const pathById = id => (markSvg.match(new RegExp(`<path\\b[^>]*\\bid="${id}"[^>]*>`)) || [])[0]?.match(/\sd="([^"]+)"/)?.[1] || null;
+export const BRAND_C_PATH = pathById('mark');
+export const BRAND_SPARKLE_PATH = pathById('sparkle');
+if (!BRAND_C_PATH) throw new Error(`${path.relative(process.cwd(), markFile)} needs a <path id="mark" d="…">`);
 
 const C_PATH = new Path2D(BRAND_C_PATH);
-const SPARKLE_PATH = new Path2D(BRAND_SPARKLE_PATH);
-// Bounding box of the mark in its source coordinates (viewBox "100 373 437 333").
-const MARK = { x: 100, y: 373, w: 437, h: 333 };
+const SPARKLE_PATH = BRAND_SPARKLE_PATH ? new Path2D(BRAND_SPARKLE_PATH) : null;
+// Bounding box of the mark in its source coordinates: mark.svg's viewBox.
+const MARK = (() => {
+  const v = (markSvg.match(/<svg\b[^>]*\bviewBox="([^"]+)"/) || [])[1]?.trim().split(/[\s,]+/).map(Number);
+  if (!v || v.length !== 4 || v.some(n => !Number.isFinite(n))) throw new Error(`${path.relative(process.cwd(), markFile)} needs a viewBox="x y w h" on its <svg>`);
+  return { x: v[0], y: v[1], w: v[2], h: v[3] };
+})();
 
 export function brandGradient(ctx, x0, y0, x1, y1) {
   const g = ctx.createLinearGradient(x0, y0, x1, y1);
@@ -38,13 +45,13 @@ export function drawMark(ctx, x, y, height, { fill = 'pink', stroke = null, stro
   if (fill) {
     ctx.fillStyle = fill === 'pink' ? brandGradient(ctx, 110, 380, 390, 680) : fill;
     ctx.fill(C_PATH);
-    if (sparkle) ctx.fill(SPARKLE_PATH);
+    if (sparkle && SPARKLE_PATH) ctx.fill(SPARKLE_PATH);
   }
   if (stroke) {
     ctx.lineWidth = strokeWidth / s;
     ctx.strokeStyle = stroke;
     ctx.stroke(C_PATH);
-    if (sparkle) ctx.stroke(SPARKLE_PATH);
+    if (sparkle && SPARKLE_PATH) ctx.stroke(SPARKLE_PATH);
   }
   ctx.restore();
 }
@@ -140,30 +147,36 @@ export function backdropTiles(ctx, { x, y, scale = 1, tone = 'neutral', strength
 
 // ---------------------------------------------------------------- lockups
 
-// The supplied logo SVGs from public/brand, loaded once before rendering.
-//   'color' — pink mark + ink wordmark (light surfaces)
-//   'white' — all-white lockup (dark or pink surfaces)
-const LOCKUP_FILES = {
-  color: 'creators-toolbox-horizontal.svg',
-  white: 'creators-toolbox-logo-white.svg',
-};
+// The pack's horizontal lockups (brand.json assets), loaded once before rendering.
+//   'color' — assets.lockup: full-colour mark + wordmark (light surfaces)
+//   'white' — assets.lockupWhite: all-white lockup (dark or brand-colour surfaces)
+const LOCKUP_SVGS = Object.fromEntries(Object.entries({ color: asset('lockup'), white: asset('lockupWhite') }).map(([kind, file]) => {
+  const svg = fs.readFileSync(file, 'utf8');
+  const box = (svg.match(/<svg\b[^>]*\bviewBox="([^"]+)"/) || [])[1]?.trim().split(/[\s,]+/).map(Number);
+  if (!box || box.length !== 4 || !(box[2] > 0 && box[3] > 0)) throw new Error(`${path.relative(process.cwd(), file)} needs a viewBox="x y w h" on its <svg>`);
+  return [kind, { svg, w: box[2], h: box[3] }];
+}));
 const lockups = {};
+
+// Width / height of a lockup, so a layout can size it before prepareBrand().
+export const lockupAspect = (kind = 'color') => LOCKUP_SVGS[kind].w / LOCKUP_SVGS[kind].h;
 
 let appIcon = null;
 
 export async function prepareBrand() {
   if (Object.keys(lockups).length) return;
   const { loadImage } = await import('@napi-rs/canvas');
-  // The official app icon — the site's favicon: pink C + sparkle on a soft
-  // pink card. Rendered with resvg so its gradient survives.
+  // The official app icon (assets.icon), e.g. the site's favicon: the mark on
+  // a soft brand-colour card. Rendered with resvg so its gradient survives.
   const { Resvg } = await import('@resvg/resvg-js');
-  const iconSvg = fs.readFileSync(path.resolve(ROOT, '../public/brand/creators-toolbox-icon-card.svg'));
+  const iconSvg = fs.readFileSync(asset('icon'));
   appIcon = await loadImage(new Resvg(iconSvg, { fitTo: { mode: 'width', value: 512 } }).render().asPng());
-  for (const [kind, file] of Object.entries(LOCKUP_FILES)) {
-    const svg = fs.readFileSync(path.resolve(ROOT, '../public/brand', file), 'utf8');
-    // Rasterise at 4× so the lockup stays crisp when drawn large.
-    const [, vw, vh] = svg.match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/) || [];
-    const sized = svg.replace(/<svg([^>]*?)\swidth="[^"]*"\s+height="[^"]*"/, `<svg$1 width="${vw * 4}" height="${vh * 4}"`);
+  for (const [kind, { svg, w, h }] of Object.entries(LOCKUP_SVGS)) {
+    // Rasterise at 4× so the lockup stays crisp when drawn large; an svg
+    // without width/height gets them.
+    const size = `width="${w * 4}" height="${h * 4}"`;
+    let sized = svg.replace(/<svg([^>]*?)\swidth="[^"]*"\s+height="[^"]*"/, `<svg$1 ${size}`);
+    if (sized === svg) sized = svg.replace(/<svg\b[^>]*>/, tag => tag.replace(/\s(width|height)="[^"]*"/g, '').replace(/^<svg\b/, `<svg ${size}`));
     lockups[kind] = await loadImage(Buffer.from(sized));
   }
 }

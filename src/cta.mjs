@@ -3,19 +3,21 @@
 // read (voice, mix, render, pipeline), so a script can't drift from it — set
 // "cta": { "house": false } on an episode to opt out for a one-off ask.
 
+import { BRAND } from './brandpack.mjs';
+
+// The copy is the brand pack's (brand.json "cta"):
+//   keyword  the word viewers comment, in capitals
+//   label    the CTA beat's header
+//   vo       what the reel says and captions show; written copy quotes the
+//            keyword (Comment “TOOLBOX”), the narrator just says it
+//   speak    the spoken form, when the TTS would misread vo: the default puts
+//            a beat either side of the keyword and says both syllables, so it
+//            never comes out as "toolbar"
+//   line     the CTA scene's line under the keyword
+//   caption  the line that closes every post caption
 // "We'll send you" is a promise: the account needs an auto-DM (e.g. ManyChat)
 // that replies to the keyword.
-export const HOUSE_CTA = {
-  keyword: 'TOOLBOX',
-  label: "Comment “TOOLBOX”, we’ll send it",
-  // Written copy quotes the keyword (Comment “TOOLBOX”); the narrator just says it.
-  vo: "Comment “TOOLBOX” and we’ll send you the latest tools, news, and resources every day!",
-  // Spoken form: a beat either side of the keyword and both syllables said,
-  // so it never comes out as "toolbar". Captions keep the written line.
-  speak: "Comment, Tool box, and we'll send you the latest tools, news, and resources every day!",
-  line: "and we’ll send you daily drops",
-  caption: "Comment “TOOLBOX” and we’ll send you the latest tools, news, and resources every day!",
-};
+export const HOUSE_CTA = BRAND.cta;
 
 const CAPTION_CTA = /^.*\bcomment\s+["“']?[A-Z][A-Z0-9]+["”']?.*$/im;
 

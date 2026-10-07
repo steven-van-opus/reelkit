@@ -66,7 +66,7 @@ export function drawHeader(ctx, label, t, { slap = true, seed = label, dark = fa
     ...(darkWall ? { stroke: 'rgba(250,250,252,0.78)', strokeWidth: 3, shadowColor: 'rgba(255,255,255,0.10)' } : {}),
   });
 
-  // Brand chip: the real Creators Toolbox app icon.
+  // Brand chip: the brand pack's real app icon.
   brandPixel(ctx, x + padX - 6 + iconW / 2, BAND.headerY, iconW);
 
   const tx = x + padX + iconW + 14;

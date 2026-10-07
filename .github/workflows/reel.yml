@@ -1,0 +1,184 @@
+name: Make a reel
+
+# Makes one 9:16 reel from a link: src/new.mjs reads the page, src/media.mjs
+# collects its images and video, Claude writes and fact-checks the script, the
+# voice is synthesised (ElevenLabs when its secret is set, Kokoro on CPU
+# otherwise) and canvas + ffmpeg render it. The finished files are uploaded as
+# a workflow artifact to review and post. Nothing is committed or pushed.
+#
+# Repository secrets:
+#   CLAUDE_CODE_OAUTH_TOKEN  from `claude setup-token` (bills a Claude subscription), or
+#   ANTHROPIC_API_KEY        pay per token. One of the two is required.
+#   ELEVENLABS_API_KEY       optional, for ElevenLabs narration.
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: 'Link to the announcement, changelog or product page'
+        required: true
+        type: string
+      brief:
+        description: 'Producer notes: the angle and what to stress (optional)'
+        required: false
+        type: string
+        default: ''
+      voice:
+        description: 'Narrator. Auto uses ElevenLabs when its secret is set, Kokoro otherwise.'
+        required: true
+        type: choice
+        options: [auto, elevenlabs, kokoro]
+        default: auto
+
+permissions:
+  contents: read
+
+jobs:
+  reel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      # Empty on auto, so src/tts.mjs picks the voice itself.
+      REELS_VOICE: ${{ inputs.voice != 'auto' && inputs.voice || '' }}
+    steps:
+      # Inputs reach the shell only through env vars, never ${{ }} in a script.
+      - name: Check inputs and secrets
+        env:
+          URL: ${{ inputs.url }}
+          BRIEF: ${{ inputs.brief }}
+          VOICE: ${{ inputs.voice }}
+          HAS_CLAUDE: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN != '' || secrets.ANTHROPIC_API_KEY != '' }}
+          HAS_ELEVENLABS: ${{ secrets.ELEVENLABS_API_KEY != '' }}
+        run: |
+          case "$URL" in
+            http://*|https://*) ;;
+            *) echo "::error::url must start with http:// or https://"; exit 1 ;;
+          esac
+          # src/run.mjs reads flags positionally, so a brief like "--auto" would act as one.
+          case "$BRIEF" in
+            -*) echo "::error::brief can't start with a dash"; exit 1 ;;
+          esac
+          if [ "$HAS_CLAUDE" != true ]; then
+            echo "::error::Add a CLAUDE_CODE_OAUTH_TOKEN or ANTHROPIC_API_KEY repository secret. Claude writes the script."
+            exit 1
+          fi
+          if [ "$VOICE" = elevenlabs ] && [ "$HAS_ELEVENLABS" != true ]; then
+            echo "::error::voice is elevenlabs, but the ELEVENLABS_API_KEY secret isn't set."
+            exit 1
+          fi
+
+      - uses: actions/checkout@v4
+
+      # Node 22+ for its built-in WebSocket, which page captures in headless
+      # Chrome use; the engine itself runs on Node 20.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+
+      # Fonts ship in assets/fonts and the canvas binary is prebuilt, so ffmpeg
+      # (render, video frames) and yt-dlp (below) are the only system
+      # dependencies.
+      - name: Install ffmpeg
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends ffmpeg
+          ffmpeg -version | head -1
+
+      # yt-dlp pulls video embedded in source pages (YouTube, Vimeo, X). The
+      # runner's system Python refuses pip installs, so use setup-python's.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install yt-dlp
+        run: |
+          python -m pip install --quiet --upgrade yt-dlp
+          yt-dlp --version
+
+      # Kokoro runs on CPU; without this onnxruntime-node's postinstall may pull
+      # the CUDA build on linux-x64.
+      - name: Install dependencies
+        env:
+          ONNXRUNTIME_NODE_INSTALL_CUDA: skip
+        run: npm ci
+
+      # Kokoro-82M (~90 MB) downloads into transformers' cache inside
+      # node_modules on first use. npm ci wipes node_modules, so restore the
+      # model after it, not before.
+      - name: Cache Kokoro voice model
+        uses: actions/cache@v4
+        with:
+          path: node_modules/@huggingface/transformers/.cache
+          key: kokoro-82m-v1.0-q8-${{ hashFiles('package-lock.json') }}
+          restore-keys: kokoro-82m-v1.0-q8-
+
+      # Auth comes from CLAUDE_CODE_OAUTH_TOKEN or ANTHROPIC_API_KEY, passed to
+      # the step that runs it.
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      # Off macOS, src/media.mjs finds Chrome only through CHROME_PATH. The
+      # runner image ships Google Chrome.
+      - name: Point reelkit at Chrome
+        run: |
+          chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          if [ -n "$chrome" ]; then
+            echo "CHROME_PATH=$chrome" >> "$GITHUB_ENV"
+          else
+            echo "::notice::No Chrome on this runner, so pages that render client-side won't be captured."
+          fi
+
+      - name: Check setup
+        env:
+          ELEVENLABS_API_KEY: ${{ inputs.voice != 'kokoro' && secrets.ELEVENLABS_API_KEY || '' }}
+        run: npm run doctor
+
+      - name: Make the reel
+        id: reel
+        env:
+          URL: ${{ inputs.url }}
+          BRIEF: ${{ inputs.brief }}
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ELEVENLABS_API_KEY: ${{ inputs.voice != 'kokoro' && secrets.ELEVENLABS_API_KEY || '' }}
+        run: |
+          touch "$RUNNER_TEMP/reel-started"
+          args=(--url "$URL")
+          if [ -n "$BRIEF" ]; then args+=(--brief "$BRIEF"); fi
+          npm run reel -- "${args[@]}"
+
+      # src/run.mjs reports finished episode folders as `dirs`; after a failure,
+      # fall back to whatever episode this run wrote, for debugging.
+      - name: Collect reel files
+        id: collect
+        if: always() && steps.reel.outcome != 'skipped'
+        env:
+          DIRS: ${{ steps.reel.outputs.dirs }}
+        run: |
+          if [ -z "$DIRS" ] && [ -f "$RUNNER_TEMP/reel-started" ]; then
+            DIRS="$(find episodes -mindepth 2 -maxdepth 2 -name episode.json -newer "$RUNNER_TEMP/reel-started" -exec dirname {} \; | sort -u | tr '\n' ' ')"
+          fi
+          out="$RUNNER_TEMP/reel"
+          name=""
+          for d in $DIRS; do
+            id="$(basename "$d")"
+            name="${name:-reel-$id}"
+            mkdir -p "$out/$id"
+            for f in reel.mp4 cover.png stills.png caption.txt episode.json media.json; do
+              if [ -f "$d/$f" ]; then cp "$d/$f" "$out/$id/"; fi
+            done
+          done
+          if [ -z "$name" ]; then
+            echo "::warning::This run didn't write an episode, so there's nothing to upload."
+          else
+            echo "name=$name" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Upload the reel
+        if: always() && steps.collect.outputs.name != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.collect.outputs.name }}
+          path: ${{ runner.temp }}/reel/
+          retention-days: 30
+          if-no-files-found: error

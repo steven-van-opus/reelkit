@@ -1,21 +1,22 @@
 // Closing beat: Kit's speech bubble is a white site card asking for the
 // comment, with the keyword in the brand gradient and a site-style comment
 // field underneath that focuses, types the keyword and posts it. A card with
-// the Creators Toolbox lockup sits on the floor. The comment is the only ask
-// on screen (no follow pill).
+// the brand pack's lockup sits on the floor. The comment is the only ask on
+// screen (no follow pill).
 import { W, C, BAND } from '../../brand.mjs';
 import { paper, roundRectPath, text, measure, fitSize } from '../../paper.mjs';
 import { lucideIcon } from '../../icons.mjs';
-import { brandGradient, drawLockup } from '../../brandmark.mjs';
+import { brandGradient, drawLockup, lockupAspect } from '../../brandmark.mjs';
 import { clamp, ease, luminance } from '../../util.mjs';
 import { HOUSE_CTA } from '../../cta.mjs';
+import { BRAND } from '../../brandpack.mjs';
 
 const BUBBLE = { x: 96, y: 452, w: 888, r: 32, pad: 44 };
 const FIELD = { h: 108, r: 8 };
 const KIT = { x: 820, s: 0.88 };
 const TYPE_START = 0.85, PER_CHAR = 0.09;
-// public/brand/creators-toolbox-horizontal.svg viewBox, width / height.
-const LOCKUP_ASPECT = 1848.5601 / 211.0625;
+// The colour lockup's viewBox, width / height.
+const LOCKUP_ASPECT = lockupAspect('color');
 
 // Shorten to fit maxW at weight/size, ending in an ellipsis.
 function clip(ctx, str, weight, size, maxW) {
@@ -108,9 +109,9 @@ function commentField(ctx, x, y, w, keyword, t, { typed, focus, posted, postT })
 
 export default {
   type: 'cta',
-  describe: 'Closing beat. Kit\'s speech bubble asks for the comment keyword, a comment field types and posts it, and a card shows the Creators Toolbox logo. Always the last beat.',
+  describe: `Closing beat. ${BRAND.mascot.name}'s speech bubble asks for the comment keyword, a comment field types and posts it, and a card shows the ${BRAND.name} logo. Always the last beat.`,
   props: {
-    keyword: 'set automatically from the house CTA (src/cta.mjs): TOOLBOX',
+    keyword: `set automatically from the house CTA (src/cta.mjs): ${HOUSE_CTA.keyword}`,
     line: 'set automatically from the house CTA (src/cta.mjs)',
   },
   draw(s) {
@@ -160,7 +161,7 @@ export default {
       ctx.restore();
     }
 
-    // ---- Creators Toolbox card on the floor, left.
+    // ---- brand card on the floor, left: the lockup over the site.
     const sg = ease.outBack(clamp((t - 0.6) / 0.45), 1.4);
     if (sg > 0) {
       const cw = 560, chh = 176, cx = 80, cy = BAND.floorY - 30 - chh;
@@ -170,7 +171,7 @@ export default {
       ctx.translate(0, (1 - sg) * 50 + Math.sin(t * 1.3 + 2) * 2);
       paper(ctx, c => roundRectPath(c, cx, cy, cw, chh, 20), { fill: '#FFFFFF', lift: 2 });
       drawLockup(ctx, cx + cw / 2, cy + 38, lh, { align: 'center' });
-      text(ctx, 'creatorstoolbox.com', cx + cw / 2, cy + chh - 44, { weight: 500, size: 34, color: C.mute });
+      text(ctx, BRAND.site, cx + cw / 2, cy + chh - 44, { weight: 500, size: 34, color: C.mute });
       ctx.restore();
     }
 

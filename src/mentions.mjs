@@ -1,8 +1,8 @@
 // Finds real products named in the voiceover so their logo can ride along in
 // the caption chip ("Slack", "Nano Banana", "ChatGPT"). Names come from the
-// tool titles in data.ts plus a few aliases for things that aren't tools in
-// their own right (models, product lines).
-import { allTools } from './logos.mjs';
+// product titles in the catalog plus a few aliases for things that aren't
+// tools in their own right (models, product lines).
+import { productIndex as allTools } from './catalog.mjs';
 
 // name → toolId for products that live under another tool's entry.
 export const ALIASES = {

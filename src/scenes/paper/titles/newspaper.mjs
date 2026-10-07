@@ -1,5 +1,5 @@
 // Newspaper clipping: a torn piece of newsprint taped to the wall. Our own
-// masthead ("Creators Toolbox Daily", small caps) and dateline sit between
+// masthead ("<brand name> Daily", small caps) and dateline sit between
 // rules, the kicker is a pink all-caps overline, the title a huge, tight,
 // condensed-feel headline with a pink highlighter swipe behind one word, and
 // the by-line is the deck. Any room left becomes greeked body copy in ruled
@@ -9,7 +9,10 @@ import { C } from '../../../brand.mjs';
 import { paper, tornRectPath, text, measure, tape, grainCanvas } from '../../../paper.mjs';
 import { rng, clamp, boil, mix, ease } from '../../../util.mjs';
 import { drawMark, markWidth } from '../../../brandmark.mjs';
+import { BRAND } from '../../../brandpack.mjs';
 import { slapIn, logoSticker } from '../product.mjs';
+
+const MASTHEAD = `${BRAND.name} Daily`;
 
 const NEWS = mix(C.chalk, C.kraft, 0.34);      // newsprint
 const FIBRE = mix(C.chalk, C.kraft, 0.08);     // the torn edge's lighter fibres
@@ -45,7 +48,7 @@ const wear = ctx => pattern(ctx, 'wear', () => grainCanvas('dark'));
 
 // ---------------------------------------------------------------- type
 
-// "Creators Toolbox Daily" as small caps: capitals full size, the rest as
+// The masthead as small caps: capitals full size, the rest as
 // capitals at 78%, all on one baseline. Returns the width; draws when `draw`.
 function smallCaps(ctx, str, x, y, size, { weight = 800, color = C.ink, tracking = 2, draw = true } = {}) {
   const runs = [];
@@ -202,13 +205,13 @@ function draw(ctx, s, { cx, top, bottom: limit = 1010, title, kicker, by, toolId
   let y = y0 + padTop;
   const xl = x0 + pad, xr = x0 + w - pad;
 
-  // Masthead: our mark + "Creators Toolbox Daily" in small caps.
+  // Masthead: our mark + "<brand name> Daily" in small caps.
   const markH = mast * 0.82, gap = mast * 0.32;
-  const mw = smallCaps(ctx, 'Creators Toolbox Daily', 0, 0, mast, { weight: 900, tracking: 3, draw: false });
+  const mw = smallCaps(ctx, MASTHEAD, 0, 0, mast, { weight: 900, tracking: 3, draw: false });
   const mastTotal = markWidth(markH) + gap + mw;
   const mastBase = y + mast * 0.95;
   drawMark(ctx, -mastTotal / 2, mastBase - markH * 0.92, markH, { fill: C.pink });
-  smallCaps(ctx, 'Creators Toolbox Daily', -mastTotal / 2 + markWidth(markH) + gap + mw / 2, mastBase, mast, { weight: 900, tracking: 3, color: C.ink });
+  smallCaps(ctx, MASTHEAD, -mastTotal / 2 + markWidth(markH) + gap + mw / 2, mastBase, mast, { weight: 900, tracking: 3, color: C.ink });
   y += mastH;
 
   // Rules and dateline.

@@ -1,6 +1,6 @@
 // Closing beat: a paper comment bar types the keyword, the Post button lights
-// up, a speech bubble from Kit repeats the ask, and a site sign points to
-// creatorstoolbox.com. The house ask (comment the keyword) is the only ask on
+// up, a speech bubble from Kit repeats the ask, and a site sign points to the
+// brand pack's site. The house ask (comment the keyword) is the only ask on
 // screen: the late accent is the Post button pulsing, never a second CTA.
 import { W, C, BAND } from '../../brand.mjs';
 import { paper, roundRectPath, cutCirclePath, text, measure, fitSize, pinkGradient, tornRectPath } from '../../paper.mjs';
@@ -8,12 +8,13 @@ import { pill, icon, sparkles, confetti } from '../../fx.mjs';
 import { clamp, onTwos, ease } from '../../util.mjs';
 import { drawLockup, brandPixel } from '../../brandmark.mjs';
 import { HOUSE_CTA } from '../../cta.mjs';
+import { BRAND } from '../../brandpack.mjs';
 
 export default {
   type: 'cta',
-  describe: 'Closing beat. A comment box types the keyword, Kit waves with a speech bubble, and a sign shows creatorstoolbox.com. Always the last beat.',
+  describe: `Closing beat. A comment box types the keyword, ${BRAND.mascot.name} waves with a speech bubble, and a sign shows ${BRAND.site}. Always the last beat.`,
   props: {
-    keyword: 'set automatically from the house CTA (src/cta.mjs): TOOLBOX',
+    keyword: `set automatically from the house CTA (src/cta.mjs): ${HOUSE_CTA.keyword}`,
     line: 'set automatically from the house CTA (src/cta.mjs)',
   },
   draw(s) {
@@ -45,7 +46,7 @@ export default {
     }
 
     // A comment thread: the viewer's comment types the keyword, gets a like,
-    // and Creators Toolbox replies that it's been sent — the ask, shown working.
+    // and the brand's account replies that it's been sent — the ask, shown working.
     const cardX = 90, cardY = 905, cardW = 900, cardH = 236;
     const ba = s.enter(0.35, 0.35);
     if (ba > 0) {
@@ -97,7 +98,7 @@ export default {
       ctx.restore();
       if (like > 0) text(ctx, '1', hx, hy + 40, { weight: 700, size: 24, color: C.mute });
 
-      // The reply from Creators Toolbox, indented, with the real app icon.
+      // The reply from the brand's handle, indented, with the real app icon.
       const rp = s.enter(postT + 0.75, 0.35);
       if (rp > 0) {
         const rx = cardX + 150, ry = cardY + 186;
@@ -107,7 +108,7 @@ export default {
         ctx.scale(0.85 + 0.15 * rp, 0.85 + 0.15 * rp);
         ctx.translate(-rx, -ry);
         brandPixel(ctx, rx, ry, 52);
-        text(ctx, 'creatorstoolbox', rx + 42, ry - 13, { weight: 800, size: 26, color: C.ink, align: 'left' });
+        text(ctx, BRAND.handle, rx + 42, ry - 13, { weight: 800, size: 26, color: C.ink, align: 'left' });
         text(ctx, 'Sent! Check your DMs', rx + 42, ry + 17, { weight: 700, size: 30, color: C.ink, align: 'left' });
         ctx.restore();
       }
@@ -130,7 +131,7 @@ export default {
       // The official lockup on a chalk card, URL underneath.
       paper(ctx, c => tornRectPath(c, -240, -250, 480, 136, { seed: 'cta-sign', rough: 3 }), { fill: C.chalk, lift: 2, rim: 0.6 });
       drawLockup(ctx, 0, -222, 52, { align: 'center' });
-      text(ctx, 'creatorstoolbox.com', 0, -148, { weight: 600, size: 30, color: C.mute });
+      text(ctx, BRAND.site, 0, -148, { weight: 600, size: 30, color: C.mute });
       ctx.restore();
     }
 
