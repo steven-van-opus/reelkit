@@ -1,0 +1,23 @@
+{
+  "name": "creators-toolbox-reels",
+  "private": true,
+  "type": "module",
+  "description": "Code-rendered 9:16 news reels for Creators Toolbox: real source media and site-style scenes on canvas, piped to ffmpeg.",
+  "scripts": {
+    "reel": "node src/run.mjs",
+    "pick": "node src/pick-news.mjs",
+    "write": "node src/write-script.mjs",
+    "validate": "node src/validate.mjs",
+    "voice": "node src/tts.mjs",
+    "mix": "node src/audio.mjs",
+    "render": "node src/render.mjs",
+    "serve": "node src/serve.mjs"
+  },
+  "dependencies": {
+    "@napi-rs/canvas": "^1.0.10",
+    "@resvg/resvg-js": "^2.6.2",
+    "cmu-pronouncing-dictionary": "^3.0.0",
+    "kokoro-js": "^1.2.1",
+    "lucide": "^1.52.0"
+  }
+}

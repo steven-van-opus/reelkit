@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lip-sync Tuner</title>
+<style>
+  :root {
+    --ink: #101014; --chalk: #FAFAFC; --pink: #FF2B88; --rose: #FFF0FA;
+    --bg: #FAFAFC; --panel: #FFFFFF; --text: #101014; --muted: #646474; --line: #DEDEE6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #101014; --panel: #1B1C22; --text: #FAFAFC; --muted: #B9BAC6; --line: #33343D; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.5 Inter, -apple-system, system-ui, sans-serif; }
+  header { display: flex; align-items: center; gap: 12px; padding: 14px 24px; border-bottom: 1px solid var(--line); }
+  .logo { width: 30px; height: 30px; border-radius: 8px; background: linear-gradient(135deg, #FF338A, #FF2387); }
+  h1 { font-size: 16px; margin: 0; font-weight: 800; }
+  header a { margin-left: auto; color: var(--muted); font-size: 13px; text-decoration: none; }
+  main { max-width: 1100px; margin: 0 auto; padding: 24px 16px; display: grid; grid-template-columns: 360px 1fr; gap: 28px; }
+  @media (max-width: 820px) { main { grid-template-columns: 1fr; } }
+  .stage { position: relative; aspect-ratio: 9 / 16; width: 100%; max-width: 360px; border-radius: 16px; overflow: hidden; background: #000; cursor: zoom-in; }
+  .stage.zoomed { cursor: zoom-out; }
+  .stage video { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .2s ease; }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 20px; display: grid; gap: 18px; align-content: start; }
+  label { font-weight: 700; font-size: 13px; color: var(--muted); display: block; margin-bottom: 6px; }
+  select, button { font: inherit; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--text); padding: 9px 12px; }
+  button { cursor: pointer; font-weight: 700; }
+  button.primary { background: var(--ink); color: #fff; border-color: var(--ink); }
+  @media (prefers-color-scheme: dark) { button.primary { background: var(--chalk); color: var(--ink); border-color: var(--chalk); } }
+  button:disabled { opacity: .5; cursor: default; }
+  .readout { font-size: 34px; font-weight: 800; letter-spacing: -0.02em; }
+  .readout small { font-size: 14px; font-weight: 600; color: var(--muted); letter-spacing: 0; }
+  input[type=range] { width: 100%; accent-color: var(--pink); }
+  input[type=number] { font: inherit; width: 96px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--text); padding: 7px 10px; }
+  .scale { display: flex; justify-content: space-between; color: var(--muted); font-size: 12px; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .hint { color: var(--muted); font-size: 13px; margin: 0; }
+  .status { font-size: 13px; color: var(--muted); min-height: 1.5em; }
+  kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; font: 12px ui-monospace, Menlo, monospace; }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo" aria-hidden="true"></div>
+  <h1>Lip-sync Tuner</h1>
+  <a href="/">← Reels Studio</a>
+</header>
+<main>
+  <div>
+    <div class="stage" id="stage" title="Click to zoom in where you click (watch Kit's mouth)">
+      <video id="video" muted playsinline preload="auto"></video>
+    </div>
+    <p class="hint" style="margin-top:10px">Click the video to zoom in on Kit. <kbd>Space</kbd> play/pause · <kbd>←</kbd> <kbd>→</kbd> nudge 0.5 ms · <kbd>Shift</kbd> + arrows 10 ms</p>
+  </div>
+  <section class="panel">
+    <div>
+      <label for="episode">Reel</label>
+      <select id="episode"></select>
+    </div>
+    <div>
+      <label for="offset">Voice timing</label>
+      <div class="readout" id="readout">0 ms <small></small></div>
+      <input id="offset" type="range" min="-300" max="300" step="0.5" value="0">
+      <div class="row" style="margin-top:8px">
+        <input id="exact" type="number" min="-300" max="300" step="0.5" value="0" aria-label="Voice timing in milliseconds"> <span class="hint">ms</span>
+      </div>
+      <div class="scale"><span>← voice earlier</span><span>as rendered</span><span>voice later →</span></div>
+    </div>
+    <div class="row">
+      <button id="play" class="primary">Play</button>
+      <button id="loop">Loop 3 s from here</button>
+      <button id="reset">Reset slider</button>
+    </div>
+    <div>
+      <label>Kit's mouth leads the voice by</label>
+      <div class="readout" id="lead">— <small>saved</small></div>
+      <p class="hint">Animators usually lead the sound by 1–3 frames (33–100 ms). Moving the slider right makes the mouth lead more. Renders use the exact value, to the millisecond.</p>
+    </div>
+    <div class="row">
+      <button id="save" class="primary">Save as default</button>
+      <button id="render">Re-render this reel</button>
+    </div>
+    <div class="status" id="status"></div>
+  </section>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+const video = $('video'), stage = $('stage'), slider = $('offset');
+// The voice plays through Web Audio from a decoded buffer, scheduled against
+// the video's clock — sample-accurate, unlike an <audio> element, which lags
+// and re-seeks.
+const ac = new (window.AudioContext || window.webkitAudioContext)();
+let buffer = null, source = null, startedAt = 0, startOffset = 0;
+let episodes = [], savedLead = 67, loopFrom = null;
+
+const offset = () => Number(slider.value); // ms; + = voice later than the picture
+function paint() {
+  const o = offset();
+  $('readout').innerHTML = `${o > 0 ? '+' : ''}${o} ms <small>${o === 0 ? 'as rendered' : o > 0 ? 'voice later' : 'voice earlier'}</small>`;
+  const lead = savedLead + o;
+  $('lead').innerHTML = `${lead} ms <small>${o ? 'if saved' : 'saved'}</small>`;
+  if (document.activeElement !== $('exact')) $('exact').value = o;
+}
+
+// The picture's clock: the media time of the frame actually on screen
+// (requestVideoFrameCallback), advanced by wall time between frames.
+let frameMedia = 0, frameWall = 0;
+function onFrame(now, meta) {
+  frameMedia = meta.mediaTime;
+  frameWall = now;
+  check();
+  video.requestVideoFrameCallback(onFrame);
+}
+if ('requestVideoFrameCallback' in HTMLVideoElement.prototype) video.requestVideoFrameCallback(onFrame);
+const pictureTime = () => (frameWall && !video.paused ? frameMedia + (performance.now() - frameWall) / 1000 : video.currentTime);
+// Sound leaves the speakers this long after it's scheduled.
+const latency = () => (ac.outputLatency || 0) + (ac.baseLatency || 0);
+
+function stopVoice() { if (source) { try { source.stop(); } catch {} source.disconnect(); source = null; } }
+// (Re)start the voice so what you HEAR is at picture time minus the offset.
+function sync() {
+  stopVoice();
+  if (!buffer || video.paused) return;
+  const want = pictureTime() - offset() / 1000 + latency();
+  source = ac.createBufferSource();
+  source.buffer = buffer;
+  source.connect(ac.destination);
+  startOffset = Math.max(0, want);
+  startedAt = ac.currentTime + Math.max(0, -want);
+  source.start(startedAt, startOffset);
+}
+// What's audible right now, in voice-track time.
+const heardTime = () => (source ? startOffset + Math.max(0, ac.currentTime - startedAt) - latency() : null);
+window.tunerAudio = { get heard() { return heardTime(); }, get picture() { return pictureTime(); } }; // for checking sync
+
+// Re-lock if what you hear drifts more than 30 ms from where it should be.
+function check() {
+  if (video.paused || !source) return;
+  const want = pictureTime() - offset() / 1000;
+  if (want > 0.05 && Math.abs(heardTime() - want) > 0.03) sync();
+}
+(function tick() {
+  if (!video.paused && loopFrom !== null && video.currentTime > loopFrom + 3) video.currentTime = loopFrom;
+  requestAnimationFrame(tick);
+})();
+
+video.addEventListener('play', () => { ac.resume(); sync(); $('play').textContent = 'Pause'; });
+video.addEventListener('pause', () => { stopVoice(); $('play').textContent = 'Play'; });
+video.addEventListener('seeked', () => sync());
+video.addEventListener('ended', () => stopVoice());
+$('play').onclick = () => { ac.resume(); video.paused ? video.play() : video.pause(); };
+$('loop').onclick = () => { loopFrom = video.currentTime; $('loop').textContent = `Looping ${loopFrom.toFixed(1)}–${(loopFrom + 3).toFixed(1)} s`; video.play(); };
+$('reset').onclick = () => { slider.value = 0; paint(); sync(); };
+slider.oninput = () => { paint(); sync(); };
+$('exact').oninput = () => {
+  const v = Math.max(-300, Math.min(300, Math.round(Number($('exact').value) * 2) / 2));
+  if (Number.isFinite(v)) { slider.value = v; paint(); sync(); }
+};
+
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'SELECT') return;
+  if (e.code === 'Space') { e.preventDefault(); $('play').click(); }
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+    e.preventDefault();
+    if (e.target === $('exact')) return; // the number box handles its own arrows
+    slider.value = offset() + (e.key === 'ArrowRight' ? 1 : -1) * (e.shiftKey ? 10 : 0.5);
+    paint(); sync();
+  }
+});
+
+// Click-to-zoom on the spot you clicked (Kit's mouth is small at phone size).
+stage.addEventListener('click', e => {
+  const zoomed = stage.classList.toggle('zoomed');
+  const r = stage.getBoundingClientRect();
+  video.style.transformOrigin = `${((e.clientX - r.left) / r.width) * 100}% ${((e.clientY - r.top) / r.height) * 100}%`;
+  video.style.transform = zoomed ? 'scale(2.6)' : '';
+});
+
+function load(id, bust = '') {
+  const e = episodes.find(x => x.id === id);
+  if (!e) return;
+  const t = video.currentTime;
+  video.src = `/episodes/${id}/reel.mp4${bust}`;
+  stopVoice();
+  buffer = null;
+  (async () => {
+    for (const f of ['mix.wav', 'vo.wav']) {
+      const r = await fetch(`/episodes/${id}/${f}${bust}`, { cache: 'no-store' });
+      if (r.ok) { buffer = await ac.decodeAudioData(await r.arrayBuffer()); break; }
+    }
+    sync();
+  })();
+  video.currentTime = bust ? t : 0;
+  loopFrom = null;
+  $('loop').textContent = 'Loop 3 s from here';
+  try { localStorage.setItem('sync.episode', id); } catch {}
+}
+$('episode').onchange = e => load(e.target.value);
+
+$('save').onclick = async () => {
+  const leadMs = savedLead + offset();
+  const r = await fetch('/api/lipsync', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ leadMs }) });
+  if (!r.ok) { $('status').textContent = 'Could not save.'; return; }
+  savedLead = (await r.json()).leadMs;
+  $('status').textContent = `Saved: the mouth now leads the voice by ${savedLead} ms in every render. Re-render to see it in the video.`;
+  slider.value = 0; paint(); sync();
+};
+
+$('render').onclick = async () => {
+  const id = $('episode').value;
+  if (offset() !== 0) $('status').textContent = 'Tip: Save first, or the re-render uses the old timing.';
+  $('render').disabled = true;
+  await fetch('/api/render', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id }) });
+  const started = Date.now();
+  const poll = async () => {
+    const job = await (await fetch(`/api/render?id=${encodeURIComponent(id)}`, { cache: 'no-store' })).json();
+    if (job.state === 'running') {
+      $('status').textContent = `Re-rendering… ${Math.round((Date.now() - started) / 1000)} s`;
+      return setTimeout(poll, 2000);
+    }
+    $('render').disabled = false;
+    $('status').textContent = job.state === 'done' ? 'Re-rendered. The video below now has the saved timing baked in (slider at 0 = as rendered).' : 'Re-render failed — see the server log.';
+    if (job.state === 'done') { slider.value = 0; paint(); load(id, `?v=${Date.now()}`); }
+  };
+  poll();
+};
+
+(async () => {
+  savedLead = (await (await fetch('/api/lipsync', { cache: 'no-store' })).json()).leadMs;
+  episodes = (await (await fetch('/api/episodes', { cache: 'no-store' })).json()).filter(e => !e.test && e.files.reel);
+  $('episode').innerHTML = episodes.map(e => `<option value="${e.id}">${(e.episode && e.episode.subject && e.episode.subject.name) || e.id}</option>`).join('');
+  let last = null; try { last = localStorage.getItem('sync.episode'); } catch {}
+  if (last && episodes.some(e => e.id === last)) $('episode').value = last;
+  load($('episode').value);
+  paint();
+})();
+</script>
+</body>
+</html>

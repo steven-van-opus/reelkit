@@ -1,0 +1,80 @@
+{
+  "warm": {
+    "description": "A warm, confident American woman in her late twenties with a clear, standard General American accent. A friendly tech-news creator host: upbeat and energetic but relaxed, brisk conversational pace, a smile in her voice, never shouting.",
+    "text": "Want the short version? Here's what just shipped for creators today, why it matters, and the one thing worth trying this week. Let's get into it!",
+    "model": "mlx-community/Qwen3-TTS-12Hz-1.7B-VoiceDesign-6bit",
+    "seed": 11,
+    "seconds": 8.4,
+    "f0": 244.9,
+    "created": "2026-10-07",
+    "synthetic": true
+  },
+  "bright": {
+    "description": "A bright, crisp American woman in her early thirties with a clear, standard General American accent. A polished tech podcast host: confident, quick and lightly playful, crisp diction, natural conversational rhythm.",
+    "text": "Want the short version? Here's what just shipped for creators today, why it matters, and the one thing worth trying this week. Let's get into it!",
+    "model": "mlx-community/Qwen3-TTS-12Hz-1.7B-VoiceDesign-6bit",
+    "seed": 11,
+    "seconds": 8.56,
+    "f0": 243.7,
+    "created": "2026-10-07",
+    "synthetic": true
+  },
+  "calm": {
+    "description": "A calm, warm American woman in her mid twenties with a soft but clear standard General American accent. Natural, relaxed conversational delivery with gentle enthusiasm, like explaining something cool to a friend.",
+    "text": "Want the short version? Here's what just shipped for creators today, why it matters, and the one thing worth trying this week. Let's get into it!",
+    "model": "mlx-community/Qwen3-TTS-12Hz-1.7B-VoiceDesign-6bit",
+    "seed": 11,
+    "seconds": 9.12,
+    "f0": 210.5,
+    "created": "2026-10-07",
+    "synthetic": true
+  },
+  "kokoro-heart": {
+    "description": "Kokoro-82M stock voice af_heart (synthetic)",
+    "text": "Want the short version? Here's what just shipped for creators today, why it matters, and the one thing worth trying this week. Let's get into it!",
+    "model": "Kokoro-82M-v1.0",
+    "voice": "af_heart",
+    "created": "2026-10-07",
+    "synthetic": true
+  },
+  "kokoro-bella": {
+    "description": "Kokoro-82M stock voice af_bella (synthetic)",
+    "text": "Want the short version? Here's what just shipped for creators today, why it matters, and the one thing worth trying this week. Let's get into it!",
+    "model": "Kokoro-82M-v1.0",
+    "voice": "af_bella",
+    "created": "2026-10-07",
+    "synthetic": true
+  },
+  "kokoro-nicole": {
+    "description": "Kokoro-82M stock voice af_nicole (synthetic)",
+    "text": "Want the short version? Here's what just shipped for creators today, why it matters, and the one thing worth trying this week. Let's get into it!",
+    "model": "Kokoro-82M-v1.0",
+    "voice": "af_nicole",
+    "created": "2026-10-07",
+    "synthetic": true
+  },
+  "kokoro-aoede": {
+    "description": "Kokoro-82M stock voice af_aoede (synthetic)",
+    "text": "Want the short version? Here's what just shipped for creators today, why it matters, and the one thing worth trying this week. Let's get into it!",
+    "model": "Kokoro-82M-v1.0",
+    "voice": "af_aoede",
+    "created": "2026-10-07",
+    "synthetic": true
+  },
+  "kokoro-kore": {
+    "description": "Kokoro-82M stock voice af_kore (synthetic)",
+    "text": "Want the short version? Here's what just shipped for creators today, why it matters, and the one thing worth trying this week. Let's get into it!",
+    "model": "Kokoro-82M-v1.0",
+    "voice": "af_kore",
+    "created": "2026-10-07",
+    "synthetic": true
+  },
+  "kokoro-sarah": {
+    "description": "Kokoro-82M stock voice af_sarah (synthetic)",
+    "text": "Want the short version? Here's what just shipped for creators today, why it matters, and the one thing worth trying this week. Let's get into it!",
+    "model": "Kokoro-82M-v1.0",
+    "voice": "af_sarah",
+    "created": "2026-10-07",
+    "synthetic": true
+  }
+}

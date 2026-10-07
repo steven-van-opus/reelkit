@@ -1,0 +1,261 @@
+{
+  "id": "2026-10-06-figma-agent-ga",
+  "date": "2026-10-06",
+  "source": {
+    "toolId": "figma",
+    "newsTitle": "The Figma agent is generally available",
+    "url": "https://www.figma.com/release-notes/?title=the-figma-agent-is-generally-available",
+    "extraUrls": [
+      "https://help.figma.com/hc/en-us/articles/37998629035799",
+      "https://www.figma.com/blog/3-ways-product-designers-use-the-figma-agent/",
+      "https://help.figma.com/hc/en-us/articles/43509372175511-Add-guidelines-files-to-a-design-library",
+      "https://help.figma.com/hc/en-us/articles/42614902212887-AI-credit-updates-FAQ"
+    ]
+  },
+  "subject": {
+    "name": "Figma agent",
+    "maker": "Figma",
+    "accent": "#7C5CFF"
+  },
+  "voice": {
+    "id": "af_heart",
+    "speed": 1.06
+  },
+  "cta": {
+    "keyword": "TOOLBOX"
+  },
+  "post": {
+    "caption": "Figma's AI agent just left beta, and it's on every plan.\n\nHit Cmd/Ctrl + Enter, describe the edit you want, and it makes the change right in your file. In Figma's own example, it swaps a garden scene for a mushroom closeup.\n\nIt can now search your other Figma files for context, or you can attach them from the + menu in the prompt box.\n\nOn Professional, Organization and Enterprise plans, you can add a guidelines file to a design library, and the agent reads it every time you prompt with that library on.\n\nOne heads-up: beta use didn't cost credits, but since Oct 6 the agent uses AI credits, from the same budget as Figma Make.\n\nSource: Figma release notes and Figma Help Center\n\nComment TOOLBOX and we'll send you the latest tools, news, and resources every day!",
+    "hashtags": [
+      "#figma",
+      "#figmaagent",
+      "#figmadesign",
+      "#uidesign",
+      "#productdesign",
+      "#designsystems",
+      "#aidesign",
+      "#uxdesign",
+      "#designtools",
+      "#creatortools"
+    ]
+  },
+  "script": "Figma's AI agent just left beta, and it's on every plan. Hit Command Enter, describe the edit you want, like swapping in this mushroom photo, and it makes the change right in your file. It can search your other Figma files for context too, and on paid plans your library can carry guidelines it actually follows. One heads-up though, it was free during the beta, but since October 6th it uses AI credits.",
+  "sources": [
+    {
+      "claim": "The Figma agent exited beta and became generally available on October 6, 2026",
+      "url": "https://www.figma.com/release-notes/?title=the-figma-agent-is-generally-available"
+    },
+    {
+      "claim": "The agent in Figma Design moved from open beta to general availability on October 6, 2026",
+      "url": "https://help.figma.com/hc/en-us/articles/42614902212887-AI-credit-updates-FAQ"
+    },
+    {
+      "claim": "The agent is available on all plans",
+      "url": "https://help.figma.com/hc/en-us/articles/37998629035799"
+    },
+    {
+      "claim": "Hook image (m14): the Figma blog's launch image, 'Example prompts hover over a mobile screen', from the post on how teams use the Figma agent, 'now generally available'",
+      "url": "https://www.figma.com/blog/3-ways-product-designers-use-the-figma-agent/"
+    },
+    {
+      "claim": "Open the agent with the keyboard shortcut Cmd or Ctrl + Enter",
+      "url": "https://help.figma.com/hc/en-us/articles/37998629035799"
+    },
+    {
+      "claim": "The agent can create and edit images in a design file ('it makes the change right in your file')",
+      "url": "https://help.figma.com/hc/en-us/articles/37998629035799"
+    },
+    {
+      "claim": "Example image (m11) from the help center shows the agent chat 'Mushroom image': the prompt 'Change this to a closeup image of some mushrooms. Grey background. Aesthetic product photoshoot.' (typed on screen, shortened), the reply 'Done! We've replaced the garden scene with a closeup of a photo-realistic mushroom.' and the changed image on the canvas, which the media beat pushes in on",
+      "url": "https://help.figma.com/hc/en-us/articles/37998629035799"
+    },
+    {
+      "claim": "GA adds the ability to search for Figma files in a chat ('Prompt the agent to search for files across the platform'; 'search your other Figma files for context' in the VO)",
+      "url": "https://www.figma.com/release-notes/?title=the-figma-agent-is-generally-available"
+    },
+    {
+      "claim": "Click the + button in the lower left corner of the prompt box and click Attach Figma files to add context from across the Figma platform",
+      "url": "https://www.figma.com/release-notes/?title=the-figma-agent-is-generally-available"
+    },
+    {
+      "claim": "Example image (m01) from the help center section 'Add context to your prompts' shows the prompt box's + menu with 'Attach Figma files' highlighted",
+      "url": "https://help.figma.com/hc/en-us/articles/37998629035799"
+    },
+    {
+      "claim": "You can add guidelines to a design library: markdown files with rules, best practices and antipatterns, read by the agent every time a user prompts with the library enabled ('the agent follows' in the VO)",
+      "url": "https://www.figma.com/release-notes/?title=the-figma-agent-is-generally-available"
+    },
+    {
+      "claim": "Guidelines files can be .md, .txt or .json, up to 200 KB combined per library (the on-screen card names .md)",
+      "url": "https://help.figma.com/hc/en-us/articles/43509372175511-Add-guidelines-files-to-a-design-library"
+    },
+    {
+      "claim": "Guidelines are available on Professional, Organization and Enterprise plans ('paid plans' in the VO; first card on screen) and require edit access to the library",
+      "url": "https://help.figma.com/hc/en-us/articles/43509372175511-Add-guidelines-files-to-a-design-library"
+    },
+    {
+      "claim": "The guidelines help article has no screenshots of a guidelines file, so the guidelines beat uses drawn step cards instead of real media",
+      "url": "https://help.figma.com/hc/en-us/articles/43509372175511-Add-guidelines-files-to-a-design-library"
+    },
+    {
+      "claim": "Usage during the beta period didn't consume any AI credits ('it was free during the beta' in the VO)",
+      "url": "https://help.figma.com/hc/en-us/articles/42614902212887-AI-credit-updates-FAQ"
+    },
+    {
+      "claim": "The Figma agent uses AI credits as of Oct 6",
+      "url": "https://www.figma.com/release-notes/?title=the-figma-agent-is-generally-available"
+    },
+    {
+      "claim": "The agent draws from the same credit budget as other GA AI tools like Figma Make",
+      "url": "https://help.figma.com/hc/en-us/articles/42614902212887-AI-credit-updates-FAQ"
+    },
+    {
+      "claim": "Example image (m03) from the AI credit FAQ shows the admin AI credits dashboard with the note 'Credits used in betas not included' and a tooltip to download a CSV of beta credit use; the zoom's lens sits on that note and tooltip",
+      "url": "https://help.figma.com/hc/en-us/articles/42614902212887-AI-credit-updates-FAQ"
+    }
+  ],
+  "beats": [
+    {
+      "label": "Figma's AI agent just left beta",
+      "vo": "Figma's AI agent just left beta, and it's on every plan.",
+      "set": "pearl",
+      "scene": "hook",
+      "props": {
+        "kicker": "Now GA",
+        "title": "The Figma agent",
+        "by": "On every plan",
+        "media": "m14"
+      },
+      "mascot": {
+        "pose": "cheer",
+        "face": "wow"
+      }
+    },
+    {
+      "label": "Cmd + Enter, then describe it",
+      "vo": "Hit Command Enter, describe the edit you want, like swapping in this mushroom photo,",
+      "set": "light",
+      "scene": "prompt",
+      "props": {
+        "prompt": "Change this to a closeup image of some mushrooms. Grey background.",
+        "result": "image",
+        "media": "m11",
+        "caption": "Figma's own example"
+      },
+      "mascot": {
+        "pose": "type",
+        "face": "focus"
+      }
+    },
+    {
+      "label": "It edits right in your file",
+      "vo": "and it makes the change right in your file.",
+      "set": "lavender",
+      "scene": "media",
+      "props": {
+        "media": "m11",
+        "frame": "card",
+        "caption": "Swapped right on the canvas",
+        "focus": [
+          0.15,
+          0.27,
+          0.37,
+          0.38
+        ]
+      },
+      "mascot": {
+        "pose": "point",
+        "face": "happy"
+      }
+    },
+    {
+      "label": "Your other files, as context",
+      "vo": "It can search your other Figma files for context too,",
+      "set": "ink",
+      "scene": "zoom",
+      "props": {
+        "media": "m01",
+        "focus": [
+          0.545,
+          0.235,
+          0.25,
+          0.395
+        ],
+        "caption": "Attach Figma files as context",
+        "cue": "files"
+      },
+      "mascot": {
+        "pose": "think",
+        "face": "grin"
+      }
+    },
+    {
+      "label": "Give your library house rules",
+      "vo": "and on paid plans your library can carry guidelines it actually follows.",
+      "set": "muted",
+      "scene": "steps",
+      "props": {
+        "items": [
+          "Pro, Org and Enterprise plans",
+          "Add a .md rules file to a library",
+          "The agent reads it every prompt"
+        ]
+      },
+      "mascot": {
+        "pose": "point",
+        "face": "wink"
+      }
+    },
+    {
+      "label": "Heads-up: beta use was free",
+      "vo": "One heads-up though, it was free during the beta,",
+      "set": "light",
+      "scene": "zoom",
+      "props": {
+        "media": "m03",
+        "focus": [
+          0.66,
+          0.13,
+          0.2,
+          0.14
+        ],
+        "caption": "Beta use wasn't counted",
+        "cue": "free"
+      },
+      "mascot": {
+        "pose": "shrug",
+        "face": "smile"
+      }
+    },
+    {
+      "label": "Now it uses AI credits",
+      "vo": "but since October 6th it uses AI credits.",
+      "speak": "but since October sixth it uses AI credits.",
+      "set": "lavender",
+      "scene": "stat",
+      "props": {
+        "value": "Oct 6",
+        "label": "AI credits start counting",
+        "note": "Same budget as Figma Make"
+      },
+      "mascot": {
+        "pose": "point",
+        "face": "focus"
+      }
+    },
+    {
+      "label": "Comment TOOLBOX, we'll send it",
+      "vo": "Comment TOOLBOX and we'll send you the latest tools, news, and resources every day!",
+      "set": "pink",
+      "scene": "cta",
+      "props": {
+        "keyword": "TOOLBOX",
+        "line": "and we'll send you daily drops"
+      },
+      "mascot": {
+        "pose": "wave",
+        "face": "happy"
+      }
+    }
+  ]
+}

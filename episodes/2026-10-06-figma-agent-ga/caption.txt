@@ -1,0 +1,21 @@
+Figma's AI agent just left beta, and it's on every plan.
+
+Hit Cmd/Ctrl + Enter, describe the edit you want, and it makes the change right in your file. In Figma's own example, it swaps a garden scene for a mushroom closeup.
+
+It can now search your other Figma files for context, or you can attach them from the + menu in the prompt box.
+
+On Professional, Organization and Enterprise plans, you can add a guidelines file to a design library, and the agent reads it every time you prompt with that library on.
+
+One heads-up: beta use didn't cost credits, but since Oct 6 the agent uses AI credits, from the same budget as Figma Make.
+
+Source: Figma release notes and Figma Help Center
+
+Comment “TOOLBOX” and we’ll send you the latest tools, news, and resources every day!
+
+#figma #figmaagent #figmadesign #uidesign #productdesign #designsystems #aidesign #uxdesign #designtools #creatortools
+
+Sources:
+https://www.figma.com/release-notes/?title=the-figma-agent-is-generally-available
+https://help.figma.com/hc/en-us/articles/37998629035799
+https://www.figma.com/blog/3-ways-product-designers-use-the-figma-agent/
+https://help.figma.com/hc/en-us/articles/43509372175511-Add-guidelines-files-to-a-design-library

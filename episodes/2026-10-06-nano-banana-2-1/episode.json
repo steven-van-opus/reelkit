@@ -1,0 +1,264 @@
+{
+  "id": "2026-10-06-nano-banana-2-1",
+  "date": "2026-10-06",
+  "source": {
+    "toolId": "gemini",
+    "newsTitle": "Gemini Nano Banana 2.1 generally available (GA)",
+    "url": "https://ai.google.dev/gemini-api/docs/changelog",
+    "extraUrls": [
+      "https://ai.google.dev/gemini-api/docs/models/gemini-nano-banana-2.1",
+      "https://vercel.com/changelog/nano-banana-2-1-now-available-on-ai-gateway",
+      "https://ai.google.dev/gemini-api/docs/image-generation",
+      "https://www.netlify.com/changelog/gemini-nano-banana-2-1-ai-gateway/",
+      "https://higgsfield.ai/creator-hub/changelog#nano-banana-2-1",
+      "https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-image"
+    ]
+  },
+  "subject": {
+    "name": "Nano Banana 2.1",
+    "maker": "Google",
+    "accent": "#FFC94D"
+  },
+  "voice": {
+    "id": "af_heart",
+    "speed": 1.06
+  },
+  "cta": {
+    "keyword": "TOOLBOX"
+  },
+  "post": {
+    "caption": "Nano Banana 2.1 just shipped, and the big upgrade is text you can actually read.\n\nIn Google's own comic example, the captions are clean and it's the same guy in every panel, and Google says that consistency holds as you keep editing.\n\nYou can still mix up to 14 reference images, and wide panoramas like 8:1 finally stop tiling at 2K and 4K.\n\nIt's live now in the Gemini API, Vercel AI Gateway, Netlify AI Gateway and Higgsfield. (Heads up: Google's guide doesn't say which Nano Banana model made its example images.)\n\nComment TOOLBOX and we'll send you the latest tools, news, and resources every day!",
+    "hashtags": [
+      "#nanobanana",
+      "#gemini",
+      "#googleai",
+      "#aiimage",
+      "#aiimagegeneration",
+      "#aiart",
+      "#higgsfield",
+      "#vercel",
+      "#netlify",
+      "#creatortools"
+    ]
+  },
+  "sources": [
+    {
+      "claim": "Google released Nano Banana 2.1 (gemini-nano-banana-2.1) as generally available on October 6, 2026 ('Google just shipped')",
+      "url": "https://ai.google.dev/gemini-api/docs/changelog"
+    },
+    {
+      "claim": "It's an update to Nano Banana 2 ('Google's update to Nano Banana 2'; the guide calls it 'an update to Nano Banana 2'), the baseline behind 'still' and 'finally' in the VO",
+      "url": "https://higgsfield.ai/creator-hub/changelog#nano-banana-2-1"
+    },
+    {
+      "claim": "Nano Banana 2.1 brings significant improvements in visual quality, prompt adherence, multi-turn character consistency and text rendering; the reel leads with text rendering as 'the big upgrade' (editorial pick from Google's list)",
+      "url": "https://ai.google.dev/gemini-api/docs/changelog"
+    },
+    {
+      "claim": "The model page repeats it: 'significant improvements in visual quality, prompt adherence, multi-turn character consistency, and text rendering'",
+      "url": "https://ai.google.dev/gemini-api/docs/models/gemini-nano-banana-2.1"
+    },
+    {
+      "claim": "Google's guide lists 'Advanced text rendering: capable of generating legible, stylized text for infographics, menus, diagrams, and marketing assets' ('text you can actually read')",
+      "url": "https://ai.google.dev/gemini-api/docs/image-generation"
+    },
+    {
+      "claim": "Zoom image (m31), shown only in beat 2 with the tag \"From Google's image guide\" (not in the hook), is the 'Sequential art (comic panel / storyboard)' example in Google's image generation guide ('Google's own example'): a 3-panel noir comic made from a photo of a man in white glasses (m25), prompt 'Make a 3 panel comic in a gritty, noir art style with high-contrast black and white inks. Put the character in a humurous scene.'",
+      "url": "https://ai.google.dev/gemini-api/docs/image-generation"
+    },
+    {
+      "claim": "In that example the panel captions ('The city. It stinks of desperation.', 'Sometimes you find it.', 'Other times, it finds you.') and 'Meow!' are legible and the same man appears in all three panels (visible in m31): 'the captions are clean and it's the same guy in every panel'",
+      "url": "https://ai.google.dev/gemini-api/docs/image-generation"
+    },
+    {
+      "claim": "'That consistency holds as you keep editing' = Google's 'multi-turn character consistency' improvement in 2.1",
+      "url": "https://ai.google.dev/gemini-api/docs/models/gemini-nano-banana-2.1"
+    },
+    {
+      "claim": "Gallery (m25 -> m01, m02) is the guide's '7. Character consistency: 360 view' example: 'You can generate 360-degree views of a character by iteratively prompting for different angles' (Original image, Output 1, Output 2; first prompt 'A studio portrait of this man against white, in profile looking right'); labelled 'Google's example' on screen",
+      "url": "https://ai.google.dev/gemini-api/docs/image-generation"
+    },
+    {
+      "claim": "Nano Banana 2.1 takes up to 14 reference images (up to 4 characters, up to 10 objects)",
+      "url": "https://ai.google.dev/gemini-api/docs/models/gemini-nano-banana-2.1"
+    },
+    {
+      "claim": "The 14-image limit isn't new: the guide's reference-image table groups 'Gemini Nano Banana 2.1 & Gemini 3.1 Flash Image' (Nano Banana 2), hence 'still' in the VO and label",
+      "url": "https://ai.google.dev/gemini-api/docs/image-generation"
+    },
+    {
+      "claim": "On Higgsfield it takes up to 14 reference images, with consistency for up to 4 characters and 10 objects",
+      "url": "https://higgsfield.ai/creator-hub/changelog#nano-banana-2-1"
+    },
+    {
+      "claim": "Gallery (m27 dress + m13 model -> m28) is the guide's 'combining multiple images' example: 'Take the blue floral dress from the first image and let the woman from the second image wear it'; labels 'Google example', 'Ref: dress', 'Ref: model'",
+      "url": "https://ai.google.dev/gemini-api/docs/image-generation"
+    },
+    {
+      "claim": "The guide's code samples for these examples call model gemini-nano-banana-2.1; the page doesn't say which Nano Banana model rendered each example image, so the reel calls them Google's examples, not 2.1 outputs",
+      "url": "https://ai.google.dev/gemini-api/docs/image-generation"
+    },
+    {
+      "claim": "New in 2.1: 'Fixed tiling artifacts on wide and panoramic aspect ratios (1:4, 4:1, 1:8, 8:1) at 2K and 4K resolutions' ('wide panoramas finally stop tiling at 2K and 4K'; 8:1 on the stat card)",
+      "url": "https://ai.google.dev/gemini-api/docs/models/gemini-nano-banana-2.1"
+    },
+    {
+      "claim": "The changelog lists 'wide and panoramic aspect ratio generation (1:4, 4:1, 1:8, 8:1) across 1K, 2K, and 4K resolutions' among the improvements, not as new ratios",
+      "url": "https://ai.google.dev/gemini-api/docs/changelog"
+    },
+    {
+      "claim": "The 1:4, 4:1, 1:8 and 8:1 ratios and 4K output already shipped with Nano Banana 2 ('New 1:4, 4:1, 1:8 and 8:1 aspect ratios', 'New support for 0.5K, 2K and 4K'), so the reel presents the tiling fix as the 2.1 change",
+      "url": "https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-image"
+    },
+    {
+      "claim": "Live in the Gemini API as gemini-nano-banana-2.1",
+      "url": "https://ai.google.dev/gemini-api/docs/changelog"
+    },
+    {
+      "claim": "Live on Vercel AI Gateway as google/gemini-nano-banana-2.1",
+      "url": "https://vercel.com/changelog/nano-banana-2-1-now-available-on-ai-gateway"
+    },
+    {
+      "claim": "Live on Netlify AI Gateway, callable from Netlify Functions without configuring API keys",
+      "url": "https://www.netlify.com/changelog/gemini-nano-banana-2-1-ai-gateway/"
+    },
+    {
+      "claim": "Live on Higgsfield (Image -> model selector -> Nano Banana 2.1)",
+      "url": "https://higgsfield.ai/creator-hub/changelog#nano-banana-2-1"
+    }
+  ],
+  "script": "Google just shipped Nano Banana 2.1, and the big upgrade is text you can actually read. In Google's own example, the captions are clean and it's the same guy in every panel, and that consistency holds as you keep editing. You can still mix up to fourteen reference images, and wide panoramas finally stop tiling at 2K and 4K. It's live now in the Gemini API, Vercel, Netlify and Higgsfield.",
+  "beats": [
+    {
+      "label": "The big upgrade: readable text",
+      "vo": "Google just shipped Nano Banana 2.1, and the big upgrade is text you can actually read.",
+      "speak": "Google just shipped Nano Banana two point one, and the big upgrade is text you can actually read.",
+      "set": "pearl",
+      "scene": "hook",
+      "props": {
+        "kicker": "Just shipped",
+        "title": "Nano Banana 2.1",
+        "by": "from Google",
+        "media": "m31"
+      },
+      "mascot": {
+        "pose": "cheer",
+        "face": "wow"
+      }
+    },
+    {
+      "label": "Clean captions, same guy",
+      "vo": "In Google's own example, the captions are clean and it's the same guy in every panel,",
+      "set": "ink",
+      "scene": "zoom",
+      "props": {
+        "media": "m31",
+        "focus": [
+          0.345,
+          0.03,
+          0.31,
+          0.4
+        ],
+        "caption": "From Google's image guide",
+        "cue": "captions"
+      },
+      "mascot": {
+        "pose": "point",
+        "face": "focus"
+      }
+    },
+    {
+      "label": "Same face, edit after edit",
+      "vo": "and that consistency holds as you keep editing.",
+      "set": "light",
+      "scene": "gallery",
+      "props": {
+        "media": [
+          "m25",
+          "m01",
+          "m02"
+        ],
+        "labels": [
+          "Google's example",
+          "Output 1: profile",
+          "Output 2: front"
+        ]
+      },
+      "mascot": {
+        "pose": "think",
+        "face": "smile"
+      }
+    },
+    {
+      "label": "Still up to 14 reference images",
+      "vo": "You can still mix up to fourteen reference images,",
+      "set": "lavender",
+      "scene": "gallery",
+      "props": {
+        "media": [
+          "m28",
+          "m27",
+          "m13"
+        ],
+        "labels": [
+          "Google example",
+          "Ref: dress",
+          "Ref: model"
+        ]
+      },
+      "mascot": {
+        "pose": "cheer",
+        "face": "grin"
+      }
+    },
+    {
+      "label": "Panoramas finally stop tiling",
+      "vo": "and wide panoramas finally stop tiling at 2K and 4K.",
+      "speak": "and wide panoramas finally stop tiling at two K and four K.",
+      "set": "ink",
+      "scene": "stat",
+      "props": {
+        "value": "8:1",
+        "label": "seamless panoramas",
+        "note": "tiling fixed at 2K and 4K"
+      },
+      "mascot": {
+        "pose": "hold",
+        "face": "wow"
+      }
+    },
+    {
+      "label": "Live now in four places",
+      "vo": "It's live now in the Gemini API, Vercel, Netlify and Higgsfield.",
+      "set": "muted",
+      "scene": "where",
+      "props": {
+        "title": "Live now in",
+        "items": [
+          "Gemini API",
+          "Vercel AI Gateway",
+          "Netlify AI Gateway",
+          "Higgsfield"
+        ]
+      },
+      "mascot": {
+        "pose": "point",
+        "face": "wink"
+      }
+    },
+    {
+      "label": "Comment TOOLBOX, we'll send it",
+      "vo": "Comment TOOLBOX and we'll send you the latest tools, news, and resources every day!",
+      "set": "pink",
+      "scene": "cta",
+      "props": {
+        "keyword": "TOOLBOX",
+        "line": "and we'll send you daily drops"
+      },
+      "mascot": {
+        "pose": "wave",
+        "face": "happy"
+      }
+    }
+  ]
+}

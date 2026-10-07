@@ -1,0 +1,19 @@
+Got an ad that already works? Higgsfield just gave Ad Multiplier a visual interface, and it's built for remaking that ad as your own.
+
+Upload the original, add your product and your cast, and it keeps the shots, the timing and the audio while it swaps in your stuff.
+
+From there, move it somewhere new, try as many hooks as you want without re-uploading, or just type the change. In Higgsfield's demo, that's "have her open the juice while she talks."
+
+To start, open Ad Multiplier in Ads Studio and upload one reference video, 4 to 30 seconds long. You're rebuilding an existing ad, so use one you have the rights to.
+
+Every clip in this reel is one of Higgsfield's own demos.
+
+Source: Higgsfield's creator hub changelog (Oct 6) and the Ad Multiplier page
+
+Comment “TOOLBOX” and we’ll send you the latest tools, news, and resources every day!
+
+#higgsfield #aivideo #adcreative #videoediting #creatortools #creatorstoolbox
+
+Sources:
+https://higgsfield.ai/creator-hub/changelog#ad-multiplier
+https://higgsfield.ai/ads-studio/ad-multiplier

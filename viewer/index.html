@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reels Studio</title>
+<style>
+  :root {
+    --ink: #101014; --chalk: #FAFAFC; --pink: #FF2B88; --blush: #FFD4F2; --rose: #FFF0FA;
+    --bg: #FAFAFC; --panel: #FFFFFF; --text: #101014; --muted: #646474; --line: #DEDEE6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #101014; --panel: #1B1C22; --text: #FAFAFC; --muted: #B9BAC6; --line: #33343D; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.5 Inter, -apple-system, system-ui, sans-serif; }
+  header { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; gap: 12px; padding: 14px 24px;
+    background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+  .logo { width: 30px; height: 30px; border-radius: 8px; background: linear-gradient(135deg, #FF338A, #FF2387); display: grid; place-items: center; }
+  .logo::after { content: ''; width: 12px; height: 12px; border: 4px solid #FAFAFC; border-right-color: transparent; border-radius: 50%; }
+  h1 { font-size: 16px; margin: 0; font-weight: 800; letter-spacing: -0.01em; }
+  header .meta { color: var(--muted); font-size: 13px; }
+  header .tuner { margin-left: auto; font-size: 13px; font-weight: 700; color: var(--pink); text-decoration: none; }
+  label.toggle { display: flex; gap: 6px; align-items: center; color: var(--muted); font-size: 13px; cursor: pointer; }
+  main { padding: 24px; display: grid; gap: 28px; max-width: 1400px; margin: 0 auto; }
+  .ep { display: grid; grid-template-columns: 340px 1fr; gap: 24px; background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 20px; }
+  @media (max-width: 860px) { .ep { grid-template-columns: 1fr; } .ep > div:first-child { max-width: 300px; width: 100%; margin: 0 auto; } main { padding: 16px; } }
+  .player { aspect-ratio: 9 / 16; width: 100%; max-width: 340px; border-radius: 14px; background: #000; overflow: hidden; display: grid; place-items: center; }
+  .player video, .player img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .placeholder { color: #B9BAC6; font-size: 13px; text-align: center; padding: 24px; }
+  .title { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin: 0 0 4px; }
+  .title h2 { margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+  .pill { font-size: 12px; font-weight: 700; padding: 2px 10px; border-radius: 999px; background: var(--rose); color: var(--pink); }
+  @media (prefers-color-scheme: dark) { .pill { background: #3A1A2C; } }
+  .pill.muted { background: transparent; border: 1px solid var(--line); color: var(--muted); }
+  .sub { color: var(--muted); margin: 0 0 14px; }
+  .sub a { color: inherit; }
+  .stills { width: 100%; border-radius: 12px; border: 1px solid var(--line); margin-bottom: 14px; display: block; }
+  .art { display: grid; grid-template-columns: 160px 1fr; gap: 12px; margin-bottom: 14px; align-items: start; }
+  .art figure { margin: 0; }
+  .art img { width: 100%; border-radius: 10px; border: 1px solid var(--line); display: block; }
+  .art figcaption { color: var(--muted); font-size: 12px; margin-top: 6px; }
+  @media (max-width: 860px) { .art { grid-template-columns: 1fr; } }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  td, th { text-align: left; padding: 8px 10px; border-top: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; }
+  td.label { font-weight: 800; text-transform: uppercase; font-size: 12px; letter-spacing: 0.02em; width: 30%; }
+  td.scene { color: var(--muted); white-space: nowrap; font-family: ui-monospace, Menlo, monospace; font-size: 12px; }
+  details { margin-top: 14px; }
+  summary { cursor: pointer; font-weight: 700; }
+  pre { white-space: pre-wrap; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 12px; font: 13px/1.5 ui-monospace, Menlo, monospace; }
+  .empty { color: var(--muted); text-align: center; padding: 80px 0; }
+  .actions { display: flex; gap: 8px; margin-top: 10px; }
+  .actions a { font-size: 13px; font-weight: 700; color: var(--pink); text-decoration: none; }
+  .voices { max-width: 1400px; margin: 0 auto; padding: 0 24px 48px; }
+  .voices-head h2 { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; margin: 8px 0 4px; }
+  .script { margin: 0 0 18px; padding-left: 20px; color: var(--text); font-size: 15px; line-height: 1.6; }
+  .voice-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+  .voice { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 16px; display: grid; gap: 10px; }
+  .voice h3 { margin: 0; font-size: 16px; font-weight: 700; }
+  .voice audio { width: 100%; }
+  .voice .stats { display: flex; flex-wrap: wrap; gap: 6px; }
+  .voice .issues { color: var(--muted); font-size: 13px; margin: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .voice.best { border-color: var(--pink); box-shadow: 0 0 0 1px var(--pink); }
+  @media (max-width: 860px) { .voices { padding: 0 16px 40px; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo" aria-hidden="true"></div>
+  <h1>Reels Studio</h1>
+  <label class="toggle"><input type="checkbox" id="showTests"> Show test renders</label>
+  <a class="tuner" href="/viewer/sync.html">Lip-sync tuner</a>
+  <span class="meta" id="meta">Loading…</span>
+</header>
+<main id="list">
+</main>
+<section id="voices" class="voices" hidden>
+  <div class="voices-head">
+    <h2>Voice bake-off</h2>
+    <p class="sub">Every sample reads the same four lines from the Nano Banana reel, loudness-matched so you can compare fairly:</p>
+    <ol class="script">
+      <li>Google's Nano Banana 2.1 is out, and it's much better at putting text in images.</li>
+      <li>It follows prompts better, and it keeps characters consistent across edits, at the same speed.</li>
+      <li>On Higgsfield, it takes up to fourteen reference images and outputs up to 4K.</li>
+      <li>Comment TOOLBOX and we'll send you the latest tools, news, and resources every day! <span class="sub">(older samples read the earlier line: "Want daily updates on the latest tools, news, and resources? Comment TOOLBOX.")</span></li>
+    </ol>
+  </div>
+  <div id="voiceList" class="voice-grid"></div>
+</section>
+<script>
+const list = document.getElementById('list');
+const meta = document.getElementById('meta');
+const showTests = document.getElementById('showTests');
+try { showTests.checked = localStorage.getItem('reels.showTests') === '1'; } catch {}
+showTests.addEventListener('change', () => { try { localStorage.setItem('reels.showTests', showTests.checked ? '1' : '0'); } catch {} render(last); });
+
+let last = [];
+let signature = '';
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+function card(e) {
+  const ep = e.episode || {};
+  const beats = ep.beats || [];
+  const words = beats.reduce((n, b) => n + String(b.vo || '').split(/\s+/).filter(Boolean).length, 0);
+  const media = e.files.reel
+    ? `<video src="${e.files.reel}" controls playsinline loop preload="metadata" ${e.files.cover ? `poster="${e.files.cover}"` : ''}></video>`
+    : e.files.cover ? `<img src="${e.files.cover}" alt="">`
+    : `<div class="placeholder">Not rendered yet</div>`;
+  return `<section class="ep" id="${esc(e.id)}">
+    <div>
+      <div class="player">${media}</div>
+      <div class="actions">
+        ${e.files.reel ? `<a href="${e.files.reel}" download>Download MP4</a>` : ''}
+        ${e.files.cover ? `<a href="${e.files.cover}" download="${esc(e.id)}-cover.png">Download cover</a>` : ''}
+        ${e.files.stills ? `<a href="${e.files.stills}" target="_blank">Open stills</a>` : ''}
+      </div>
+    </div>
+    <div>
+      <div class="title"><h2>${esc(ep.subject?.name || e.id)}</h2>
+        ${e.test ? '<span class="pill muted">test</span>' : ''}
+        ${e.duration ? `<span class="pill">${e.duration.toFixed(1)}s</span>` : ''}
+        <span class="pill muted">${beats.length} beats · ${words} words</span>
+        ${ep.cta?.keyword ? `<span class="pill muted">CTA ${esc(ep.cta.keyword)}</span>` : ''}
+      </div>
+      <p class="sub">${esc(ep.subject?.maker || '')}${ep.source?.url ? ` · <a href="${esc(ep.source.url)}" target="_blank" rel="noopener">source</a>` : ''} · <code>${esc(e.id)}</code></p>
+      <div class="art">
+        ${e.files.cover ? `<figure><img src="${e.files.cover}" alt="Reel cover"><figcaption>Custom cover — set it as the reel's cover when posting</figcaption></figure>` : ''}
+        ${e.files.stills ? `<figure class="wide"><img src="${e.files.stills}" alt="Beat stills"><figcaption>Every beat</figcaption></figure>` : ''}
+      </div>
+      <table><thead><tr><th>Label</th><th>Voiceover</th><th>Scene</th></tr></thead><tbody>
+        ${beats.map(b => `<tr><td class="label">${esc(b.label)}</td><td>${esc(b.vo)}</td><td class="scene">${esc(b.scene)} · ${esc(b.set)}</td></tr>`).join('')}
+      </tbody></table>
+      ${e.files.caption || ep.post?.caption ? `<details><summary>Post caption</summary><pre>${esc(e.files.caption || [ep.post.caption, (ep.post.hashtags || []).join(' ')].join('\n\n'))}</pre></details>` : ''}
+      ${ep.sources?.length ? `<details><summary>Sources (${ep.sources.length})</summary><pre>${ep.sources.map(s => `• ${esc(s.claim)}\n  ${esc(s.url)}`).join('\n')}</pre></details>` : ''}
+    </div>
+  </section>`;
+}
+
+function render(eps) {
+  const visible = eps.filter(e => showTests.checked || !e.test);
+  const playing = [...document.querySelectorAll('video')].some(v => !v.paused);
+  if (playing) return; // don't yank a video mid-play; next poll picks it up
+  list.innerHTML = visible.length ? visible.map(card).join('') : `<p class="empty">No reels yet — they appear here as they render.</p>`;
+  const rendered = eps.filter(e => e.files.reel && !e.test).length;
+  meta.textContent = `${rendered} rendered · ${eps.filter(e => !e.test).length} episodes`;
+}
+
+let voiceSig = '';
+async function pollVoices() {
+  try {
+    const res = await fetch('/voices/index.json', { cache: 'no-store' });
+    if (!res.ok) return;
+    const voices = await res.json();
+    const sig = JSON.stringify(voices.map(v => [v.id, v.wer, v.file]));
+    if (sig === voiceSig) return;
+    voiceSig = sig;
+    const playing = [...document.querySelectorAll('#voiceList audio')].some(a => !a.paused);
+    if (playing) { voiceSig = ''; return; }
+    // Orpheus was ruled out by ear; its weights are gone.
+    const ranked = [...voices].filter(v => !/orpheus/i.test(`${v.id} ${v.model}`)).sort((a, b) => (a.rank ?? 99) - (b.rank ?? 99));
+    document.getElementById('voices').hidden = !voices.length;
+    document.getElementById('voiceList').innerHTML = ranked.map(v => `
+      <article class="voice ${v.recommended ? 'best' : ''}">
+        <h3>${esc(v.label || `${v.model} · ${v.voice}`)} ${v.recommended ? '<span class="pill">Recommended</span>' : ''}${/^kokoro-82m__/.test(v.id || '') ? ' <span class="pill muted">current</span>' : ''}</h3>
+        <audio controls preload="none" src="/voices/${esc(String(v.file || '').replace(/^.*voices\//, ''))}"></audio>
+        <div class="stats">
+          ${v.wer != null ? `<span class="pill muted">WER ${(v.wer * (v.wer <= 1 ? 100 : 1)).toFixed(1)}%</span>` : ''}
+          ${v.keyTermsOk != null ? `<span class="pill muted">${v.keyTermsOk ? 'Names clear' : 'Name issues'}</span>` : ''}
+          ${v.wpm ? `<span class="pill muted">${Math.round(v.wpm)} wpm</span>` : ''}
+          ${v.rtf ? `<span class="pill muted">${(+v.rtf).toFixed(2)}× RTF</span>` : ''}
+          ${v.license ? `<span class="pill muted">${esc(v.license)}</span>` : ''}
+        </div>
+        ${v.notes ? `<p class="issues">${esc(String(v.notes).split(/(?<=\.)\s|Read-back/)[0])}</p>` : ''}
+      </article>`).join('');
+  } catch {}
+}
+
+async function poll() {
+  pollVoices();
+  try {
+    const eps = await (await fetch('/api/episodes', { cache: 'no-store' })).json();
+    const sig = JSON.stringify(eps.map(e => [e.id, e.updated, e.duration]));
+    last = eps;
+    if (sig !== signature) { signature = sig; render(eps); }
+  } catch { meta.textContent = 'Viewer server offline'; }
+  setTimeout(poll, 4000);
+}
+poll();
+</script>
+</body>
+</html>

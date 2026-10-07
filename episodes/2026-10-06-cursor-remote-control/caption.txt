@@ -1,0 +1,16 @@
+Your Cursor agents, now in your pocket.
+
+Cursor just shipped Remote Control. The agents running on your computer show up in Cursor's iPhone app, so you can see what each one's doing or send it a follow-up.
+
+To set it up, get the app, sign in, tap your computer, then approve it in Cursor on your desktop.
+
+It's on by default except for Enterprise teams, where admins turn it on in Org settings. Agents still run on your machine, so turn on Keep this computer awake and leave it plugged in with the lid open.
+
+Source: Cursor changelog, Oct 6
+
+Comment “TOOLBOX” and we’ll send you the latest tools, news, and resources every day!
+
+#cursor #cursorai #aicoding #codingagents #aiagents #vibecoding #developertools #cursorios #creatortools
+
+Sources:
+https://cursor.com/changelog/remote-control-local-agents

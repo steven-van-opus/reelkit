@@ -1,0 +1,163 @@
+{
+  "items": [
+    {
+      "id": "m01",
+      "file": "media/m01.mp4",
+      "kind": "video",
+      "width": 600,
+      "height": 338,
+      "duration": 12.04,
+      "url": "https://static.higgsfield.ai/ads-studio/ad-multiplier/banner.mp4",
+      "page": "https://higgsfield.ai/ads-studio/ad-multiplier",
+      "caption": "Ad multiplier Recreate any ad with your characters, product and settings",
+      "sourceKind": "article"
+    },
+    {
+      "id": "m02",
+      "file": "media/m02.mp4",
+      "kind": "video",
+      "width": 420,
+      "height": 560,
+      "duration": 9.92,
+      "url": "https://static.higgsfield.ai/ads-studio/ad-multiplier/how-it-works/hook-cta-1.mp4",
+      "page": "https://higgsfield.ai/ads-studio/ad-multiplier",
+      "caption": "Find a better hook or CTA",
+      "sourceKind": "article"
+    },
+    {
+      "id": "m03",
+      "file": "media/m03.mp4",
+      "kind": "video",
+      "width": 420,
+      "height": 560,
+      "duration": 9.71,
+      "url": "https://static.higgsfield.ai/ads-studio/ad-multiplier/how-it-works/hook-cta-4.mp4",
+      "page": "https://higgsfield.ai/ads-studio/ad-multiplier",
+      "caption": "Find a better hook or CTA",
+      "sourceKind": "article"
+    },
+    {
+      "id": "m04",
+      "file": "media/m04.mp4",
+      "kind": "video",
+      "width": 700,
+      "height": 394,
+      "duration": 10.5,
+      "url": "https://static.higgsfield.ai/ads-studio/home/ad-multiplier-card.mp4",
+      "page": "https://higgsfield.ai/ads-studio/ad-multiplier",
+      "sourceKind": "article",
+      "caption": "One ad, many versions"
+    },
+    {
+      "sourceKind": "article",
+      "page": "https://higgsfield.ai/ads-studio/ad-multiplier",
+      "id": "m05",
+      "file": "media/m05.mp4",
+      "kind": "video",
+      "width": 420,
+      "height": 560,
+      "duration": 10.04,
+      "url": "https://static.higgsfield.ai/ads-studio/ad-multiplier/how-it-works/hook-cta-2.mp4",
+      "caption": "Find a better hook or CTA"
+    },
+    {
+      "sourceKind": "article",
+      "page": "https://higgsfield.ai/ads-studio/ad-multiplier",
+      "id": "m06",
+      "file": "media/m06.mp4",
+      "kind": "video",
+      "width": 420,
+      "height": 560,
+      "duration": 9.33,
+      "url": "https://static.higgsfield.ai/ads-studio/ad-multiplier/how-it-works/hook-cta-3.mp4",
+      "caption": "Find a better hook or CTA"
+    },
+    {
+      "sourceKind": "article",
+      "page": "https://higgsfield.ai/ads-studio/ad-multiplier",
+      "id": "m07",
+      "file": "media/m07.mp4",
+      "kind": "video",
+      "width": 996,
+      "height": 560,
+      "duration": 10,
+      "url": "https://static.higgsfield.ai/ads-studio/ad-multiplier/how-it-works/say-it-your-way.mp4",
+      "caption": "Say it your way"
+    },
+    {
+      "sourceKind": "article",
+      "page": "https://higgsfield.ai/ads-studio/ad-multiplier",
+      "id": "m08",
+      "file": "media/m08.png",
+      "kind": "image",
+      "width": 688,
+      "height": 394,
+      "url": "https://static.higgsfield.ai/ads-studio/home/ad-multiplier-card.mp4",
+      "caption": "One ad, many versions",
+      "alt": "Frame at 1.17 s of the KLOMP demo: the original white sneaker, before the wipe",
+      "clipFrom": 1.17
+    },
+    {
+      "sourceKind": "article",
+      "page": "https://higgsfield.ai/ads-studio/ad-multiplier",
+      "id": "m09",
+      "file": "media/m09.png",
+      "kind": "image",
+      "width": 688,
+      "height": 394,
+      "url": "https://static.higgsfield.ai/ads-studio/home/ad-multiplier-card.mp4",
+      "caption": "One ad, many versions",
+      "alt": "Frame at 2.03 s of the KLOMP demo: the same shot after the wipe, with a yellow KLOMP sneaker",
+      "clipFrom": 2.03
+    },
+    {
+      "sourceKind": "article",
+      "page": "https://higgsfield.ai/ads-studio/ad-multiplier",
+      "id": "m10",
+      "file": "media/m10.mp4",
+      "kind": "video",
+      "width": 700,
+      "height": 394,
+      "duration": 4.86,
+      "url": "https://static.higgsfield.ai/ads-studio/home/ad-multiplier-card.mp4",
+      "caption": "One ad, many versions",
+      "alt": "Cut from the KLOMP demo: 3.15–4.36 s (a wipe swaps the runner, woman to man; last frame held 0.5 s), then 5.00–7.45 s (the new runner, then a wipe from forest to city street; last frame held 0.7 s)",
+      "clipFrom": [
+        3.15,
+        5
+      ],
+      "clipTo": [
+        4.36,
+        7.45
+      ]
+    },
+    {
+      "sourceKind": "article",
+      "page": "https://higgsfield.ai/ads-studio/ad-multiplier",
+      "id": "m11",
+      "file": "media/m11.mp4",
+      "kind": "video",
+      "width": 996,
+      "height": 560,
+      "duration": 4,
+      "url": "https://static.higgsfield.ai/ads-studio/ad-multiplier/how-it-works/say-it-your-way.mp4",
+      "caption": "Say it your way",
+      "alt": "6.0–10.0 s of the demo: the result of the prompt \"Make it a casual taste review\"",
+      "clipFrom": 6,
+      "clipTo": 10
+    },
+    {
+      "sourceKind": "article",
+      "page": "https://higgsfield.ai/ads-studio/ad-multiplier",
+      "id": "m12",
+      "file": "media/m12.png",
+      "kind": "image",
+      "width": 656,
+      "height": 394,
+      "url": "https://static.higgsfield.ai/ads-studio/home/ad-multiplier-card.mp4",
+      "caption": "One ad, many versions",
+      "alt": "Frame at 7.50 s of the KLOMP demo (frame 180, cropped to x 0-656 to drop the wipe edge): the same runner after the wipe moved the shot from the forest to a city crosswalk",
+      "clipFrom": 7.5
+    }
+  ]
+}

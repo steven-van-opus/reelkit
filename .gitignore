@@ -1,0 +1,39 @@
+# Dependencies, model downloads (Kokoro lands in node_modules/@huggingface/
+# transformers/.cache), the TTS phrase cache and scratch files.
+node_modules/
+.cache/
+.tmp/
+
+# Third-party reels kept locally for pacing reference only. Never commit.
+reference/
+
+# Episode build outputs are reproducible from episode.json, so only the script
+# and the small review files are kept: episode.json, media.json, stills.png,
+# cover.png and caption.txt.
+episodes/*/reel.mp4
+episodes/*/vo.wav
+episodes/*/mix.wav
+episodes/*/voice.json
+episodes/*/frame-*.png
+episodes/*/.segments/
+episodes/*/stems/
+
+# Source media collected by src/media.mjs: third-party images and video, the
+# contact sheet and decoded video frames. media.json stays as the record of
+# what each id was and where it came from; --from media collects it again.
+episodes/*/media/
+
+# Scene test beds made while building scenes.
+episodes/_test-*/
+
+# Local TTS bake-off env: Python venv, uv cache, Hugging Face model weights.
+.tts/
+
+# Voice bake-off outputs (regenerable with voices/bakeoff.py and voices/lock.py).
+# The anchors (synthetic reference clips) stay: the house narrator needs them.
+voices/samples/
+voices/index.json
+voices/__pycache__/
+episodes/*/cover-grid.png
+voices/anchors/*.wav
+!voices/anchors/kokoro-heart.wav

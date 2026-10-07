@@ -1,0 +1,193 @@
+{
+  "items": [
+    {
+      "id": "m01",
+      "file": "media/m01.png",
+      "kind": "image",
+      "width": 1920,
+      "height": 1080,
+      "url": "https://help.figma.com/hc/article_attachments/44029810967447",
+      "page": "https://help.figma.com/hc/en-us/articles/37998629035799",
+      "caption": "Add context to your prompts",
+      "sourceKind": "article"
+    },
+    {
+      "id": "m02",
+      "file": "media/m02.png",
+      "kind": "image",
+      "width": 1920,
+      "height": 1080,
+      "url": "https://help.figma.com/hc/article_attachments/42779434663831",
+      "page": "https://help.figma.com/hc/en-us/articles/42614902212887-AI-credit-updates-FAQ",
+      "alt": "From the AI dashboard, click the Add credits button to add more credits to your plan",
+      "sourceKind": "article"
+    },
+    {
+      "id": "m03",
+      "file": "media/m03.png",
+      "kind": "image",
+      "width": 1920,
+      "height": 1080,
+      "url": "https://help.figma.com/hc/article_attachments/42779393138455",
+      "page": "https://help.figma.com/hc/en-us/articles/42614902212887-AI-credit-updates-FAQ",
+      "alt": "A mouse hovers over the beta messaging on the AI credits dashboard, where a tooltip appears with a link to download a CSV file",
+      "sourceKind": "article"
+    },
+    {
+      "id": "m04",
+      "file": "media/m04.png",
+      "kind": "image",
+      "width": 1920,
+      "height": 1080,
+      "url": "https://help.figma.com/hc/article_attachments/40557634466967",
+      "page": "https://help.figma.com/hc/en-us/articles/37998629035799",
+      "caption": "Reference design system elements",
+      "sourceKind": "article"
+    },
+    {
+      "id": "m05",
+      "file": "media/m05.png",
+      "kind": "image",
+      "width": 1920,
+      "height": 1080,
+      "url": "https://help.figma.com/hc/article_attachments/40607935703447",
+      "page": "https://help.figma.com/hc/en-us/articles/37998629035799",
+      "caption": "Ask the agent questions about using Figma Design",
+      "sourceKind": "article"
+    },
+    {
+      "id": "m06",
+      "file": "media/m06.png",
+      "kind": "image",
+      "width": 960,
+      "height": 960,
+      "url": "https://help.figma.com/hc/article_attachments/43041975137175",
+      "page": "https://help.figma.com/hc/en-us/articles/42614902212887-AI-credit-updates-FAQ",
+      "alt": "an example of an invoice with adjustment line for updated ai credits",
+      "caption": "This is an example invoice. The appearance of your actual invoice may vary based on your plan and invoice status when this update went into effect.",
+      "sourceKind": "article"
+    },
+    {
+      "id": "m07",
+      "file": "media/m07.png",
+      "kind": "image",
+      "width": 1920,
+      "height": 1080,
+      "url": "https://help.figma.com/hc/article_attachments/40557650121111",
+      "page": "https://help.figma.com/hc/en-us/articles/37998629035799",
+      "caption": "Connect a library",
+      "sourceKind": "article"
+    },
+    {
+      "id": "m08",
+      "file": "media/m08.png",
+      "kind": "image",
+      "width": 1920,
+      "height": 1080,
+      "url": "https://help.figma.com/hc/article_attachments/43050145808535",
+      "page": "https://help.figma.com/hc/en-us/articles/37998629035799",
+      "caption": "Open the agent in a separate window in the desktop app",
+      "sourceKind": "article"
+    },
+    {
+      "id": "m09",
+      "file": "media/m09.png",
+      "kind": "image",
+      "width": 1920,
+      "height": 1080,
+      "url": "https://help.figma.com/hc/article_attachments/40607935702679",
+      "page": "https://help.figma.com/hc/en-us/articles/37998629035799",
+      "caption": "Navigate your chats",
+      "sourceKind": "article"
+    },
+    {
+      "id": "m10",
+      "file": "media/m10.png",
+      "kind": "image",
+      "width": 1920,
+      "height": 1080,
+      "url": "https://help.figma.com/hc/article_attachments/44029810968343",
+      "page": "https://help.figma.com/hc/en-us/articles/37998629035799",
+      "caption": "Undo changes",
+      "sourceKind": "article"
+    },
+    {
+      "id": "m11",
+      "file": "media/m11.png",
+      "kind": "image",
+      "width": 1920,
+      "height": 1080,
+      "url": "https://help.figma.com/hc/article_attachments/40557650118935",
+      "page": "https://help.figma.com/hc/en-us/articles/37998629035799",
+      "caption": "Run multiple prompts at once",
+      "sourceKind": "article"
+    },
+    {
+      "id": "m12",
+      "file": "media/m12.png",
+      "kind": "image",
+      "width": 4096,
+      "height": 2425,
+      "url": "https://cdn.sanity.io/images/599r6htc/regionalized/fb292fd309218dd724a2567f504ff2521e92becb-4284x2536.png?rect=1%2C0%2C4283%2C2536&w=4096&fit=max",
+      "page": "https://www.figma.com/blog/3-ways-product-designers-use-the-figma-agent/",
+      "alt": "A screenshot of design crit feedback left as annotations on the canvas",
+      "caption": "Paavan uses the Granola connector with the Figma agent to comb through meetings and add feedback on the canvas as annotations.",
+      "sourceKind": "article"
+    },
+    {
+      "id": "m13",
+      "file": "media/m13.png",
+      "kind": "image",
+      "width": 1920,
+      "height": 1080,
+      "url": "https://help.figma.com/hc/article_attachments/41439220164247",
+      "page": "https://help.figma.com/hc/en-us/articles/41272399602583",
+      "caption": "Change who can access a chat",
+      "sourceKind": "article"
+    },
+    {
+      "id": "m14",
+      "file": "media/m14.png",
+      "kind": "image",
+      "width": 3840,
+      "height": 2160,
+      "url": "https://cdn.sanity.io/images/599r6htc/regionalized/db42b5ac107ab5fa407461b3939c98820bba3d2c-3840x2160.png?w=3840&fit=max",
+      "page": "https://www.figma.com/blog/3-ways-product-designers-use-the-figma-agent/",
+      "alt": "Example prompts hover over a mobile screen",
+      "sourceKind": "article"
+    },
+    {
+      "id": "m15",
+      "file": "media/m15.png",
+      "kind": "image",
+      "width": 2833,
+      "height": 4096,
+      "url": "https://cdn.sanity.io/images/599r6htc/regionalized/d2c26b083d256ae6db13156059e90658f08c2b17-3192x4614.png?rect=1%2C0%2C3191%2C4614&w=3191&fit=max",
+      "page": "https://www.figma.com/blog/3-ways-product-designers-use-the-figma-agent/",
+      "alt": "A screenshot of Paavan’s prompt referencing the Granola connector",
+      "sourceKind": "article"
+    },
+    {
+      "id": "m16",
+      "file": "media/m16.png",
+      "kind": "image",
+      "width": 1920,
+      "height": 1440,
+      "url": "https://help.figma.com/hc/article_attachments/41455189837335",
+      "page": "https://help.figma.com/hc/en-us/articles/41147702210071",
+      "caption": "Try these prompts",
+      "sourceKind": "article"
+    },
+    {
+      "id": "m17",
+      "file": "media/m17.png",
+      "kind": "image",
+      "width": 1920,
+      "height": 1440,
+      "url": "https://help.figma.com/hc/article_attachments/41455227336599",
+      "page": "https://help.figma.com/hc/en-us/articles/41147702210071",
+      "caption": "Try these prompts",
+      "sourceKind": "article"
+    }
+  ]
+}

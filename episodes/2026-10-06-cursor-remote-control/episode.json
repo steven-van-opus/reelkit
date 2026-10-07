@@ -1,0 +1,225 @@
+{
+  "id": "2026-10-06-cursor-remote-control",
+  "date": "2026-10-06",
+  "source": {
+    "toolId": "cursor",
+    "newsTitle": "Remote control for local agents",
+    "url": "https://cursor.com/changelog/remote-control-local-agents",
+    "extraUrls": []
+  },
+  "subject": {
+    "name": "Cursor Remote Control",
+    "maker": "Cursor",
+    "accent": "#3DDC97"
+  },
+  "voice": {
+    "id": "af_heart",
+    "speed": 1.06
+  },
+  "cta": {
+    "keyword": "TOOLBOX"
+  },
+  "post": {
+    "caption": "Your Cursor agents, now in your pocket.\n\nCursor just shipped Remote Control. The agents running on your computer show up in Cursor's iPhone app, so you can see what each one's doing or send it a follow-up.\n\nTo set it up, get the app, sign in, tap your computer, then approve it in Cursor on your desktop.\n\nIt's on by default except for Enterprise teams, where admins turn it on in Org settings. Agents still run on your machine, so turn on Keep this computer awake and leave it plugged in with the lid open.\n\nSource: Cursor changelog, Oct 6\n\nComment TOOLBOX and we'll send you the latest tools, news, and resources every day!",
+    "hashtags": [
+      "#cursor",
+      "#cursorai",
+      "#aicoding",
+      "#codingagents",
+      "#aiagents",
+      "#vibecoding",
+      "#developertools",
+      "#cursorios",
+      "#creatortools"
+    ]
+  },
+  "sources": [
+    {
+      "claim": "Cursor shipped remote control for local agents on October 6, 2026",
+      "url": "https://cursor.com/changelog/remote-control-local-agents"
+    },
+    {
+      "claim": "The feature is called Remote Control and works from the Cursor iOS app on your phone (the paired device in the changelog screenshot is an iPhone)",
+      "url": "https://cursor.com/changelog/remote-control-local-agents"
+    },
+    {
+      "claim": "cursor.com/mobile, Remote Control section: \"Control agents running on your computer from your phone\" (manage your agents from your phone)",
+      "url": "https://cursor.com/mobile"
+    },
+    {
+      "claim": "The local agents running on your computer show up in the Cursor iOS app, in a list",
+      "url": "https://cursor.com/changelog/remote-control-local-agents"
+    },
+    {
+      "claim": "Tap an agent to see what it's doing or send it a message (a follow-up)",
+      "url": "https://cursor.com/changelog/remote-control-local-agents"
+    },
+    {
+      "claim": "Setup: download the Cursor iOS app and sign in; computers on your account appear automatically",
+      "url": "https://cursor.com/changelog/remote-control-local-agents"
+    },
+    {
+      "claim": "Tap your computer in the app, then approve the pairing request in the Cursor desktop app",
+      "url": "https://cursor.com/changelog/remote-control-local-agents"
+    },
+    {
+      "claim": "Remote control is on by default for everyone except Enterprise organizations",
+      "url": "https://cursor.com/changelog/remote-control-local-agents"
+    },
+    {
+      "claim": "Enterprise admins can turn it on in Org settings > Security and identity > Remote control (stat note, post caption)",
+      "url": "https://cursor.com/changelog/remote-control-local-agents"
+    },
+    {
+      "claim": "Remote control doesn't move agents anywhere: they keep running on your computer, which needs to stay on and online",
+      "url": "https://cursor.com/changelog/remote-control-local-agents"
+    },
+    {
+      "claim": "\"Keep this computer awake\" is a setting under Remote Control in Cursor's desktop settings that stops the computer sleeping while you're away",
+      "url": "https://cursor.com/changelog/remote-control-local-agents"
+    },
+    {
+      "claim": "Keep-awake requires the computer to be plugged in with the lid open (post caption)",
+      "url": "https://cursor.com/changelog/remote-control-local-agents"
+    },
+    {
+      "claim": "Visual (m04, hook): the cursor.com/mobile Open Graph image shows the Cursor iPhone app with an agent run (a request, \"Finished 5m\" and a walkthrough video)",
+      "url": "https://cursor.com/mobile"
+    },
+    {
+      "claim": "Visual (m06, beat 2): cursor.com/mobile's Remote Control illustration shows the same agent in a Cursor Desktop window (task \"Add dashboard shortcuts to the command palette\", Finished 6m, Remote Control selected in the composer) and on a phone",
+      "url": "https://cursor.com/mobile"
+    },
+    {
+      "claim": "Visual (m05, beat 3): the phone side of that illustration shows a follow-up sent from the phone, \"Add analytics too.\", then \"Finished now: Added the analytics shortcut and updated the command palette entry.\"",
+      "url": "https://cursor.com/mobile"
+    },
+    {
+      "claim": "Visual (m07 = m01 cropped to the panel, beat 6): the changelog's settings screenshot shows Remote Control \"Connected\" for this computer, a \"Keep This Computer Awake\" toggle switched on (\"Prevent sleep when this computer is plugged in and Remote Control is enabled\") and an iPhone under Paired Devices, \"Paired with this computer\"",
+      "url": "https://cursor.com/changelog/remote-control-local-agents"
+    }
+  ],
+  "script": "Cursor just shipped Remote Control, so you can manage your agents from your phone. The agents running on your computer show up in Cursor's iPhone app, where you can see what each one's doing or send it a follow-up. To set it up, sign in, tap your computer, and approve it on your desktop. It's on by default except for Enterprise teams, and since agents still run on your machine, turn on Keep this computer awake.",
+  "beats": [
+    {
+      "label": "Manage your agents from your phone",
+      "vo": "Cursor just shipped Remote Control, so you can manage your agents from your phone.",
+      "set": "light",
+      "scene": "hook",
+      "props": {
+        "kicker": "Just shipped",
+        "title": "Remote Control",
+        "by": "In Cursor's iPhone app",
+        "media": "m04",
+        "fit": "cover"
+      },
+      "mascot": {
+        "pose": "cheer",
+        "face": "wow"
+      }
+    },
+    {
+      "label": "Your computer's agents, on iPhone",
+      "vo": "The agents running on your computer show up in Cursor's iPhone app,",
+      "set": "lavender",
+      "scene": "media",
+      "props": {
+        "media": "m06",
+        "frame": "card",
+        "caption": "Same agent, desktop and iPhone",
+        "focus": [
+          0.52,
+          0.05,
+          0.46,
+          0.9
+        ]
+      },
+      "mascot": {
+        "pose": "point",
+        "face": "happy"
+      }
+    },
+    {
+      "label": "Check in or send a follow-up",
+      "vo": "where you can see what each one's doing or send it a follow-up.",
+      "set": "pearl",
+      "scene": "media",
+      "props": {
+        "media": "m05",
+        "frame": "phone",
+        "caption": "Follow-up sent from the phone"
+      },
+      "mascot": {
+        "pose": "type",
+        "face": "focus"
+      }
+    },
+    {
+      "label": "Set it up in three steps",
+      "vo": "To set it up, sign in, tap your computer, and approve it on your desktop.",
+      "set": "ink",
+      "scene": "steps",
+      "props": {
+        "items": [
+          "Sign in",
+          "Tap your computer",
+          "Approve it on your desktop"
+        ]
+      },
+      "mascot": {
+        "pose": "point",
+        "face": "happy"
+      }
+    },
+    {
+      "label": "On by default for most teams",
+      "vo": "It's on by default except for Enterprise teams,",
+      "set": "muted",
+      "scene": "stat",
+      "props": {
+        "value": "ON",
+        "label": "by default, except Enterprise",
+        "note": "Admins enable it in Org settings"
+      },
+      "mascot": {
+        "pose": "cheer",
+        "face": "grin"
+      }
+    },
+    {
+      "label": "Keep your computer awake",
+      "vo": "and since agents still run on your machine, turn on Keep this computer awake.",
+      "set": "lavender",
+      "scene": "zoom",
+      "props": {
+        "media": "m07",
+        "focus": [
+          0.02,
+          0.48,
+          0.27,
+          0.1
+        ],
+        "caption": "Toggle it on in desktop settings",
+        "cue": "Keep"
+      },
+      "mascot": {
+        "pose": "hold",
+        "face": "smile"
+      }
+    },
+    {
+      "label": "Comment TOOLBOX, we'll send it",
+      "vo": "Comment TOOLBOX and we'll send you the latest tools, news, and resources every day!",
+      "set": "pink",
+      "scene": "cta",
+      "props": {
+        "keyword": "TOOLBOX",
+        "line": "and we'll send you daily drops"
+      },
+      "mascot": {
+        "pose": "wave",
+        "face": "happy"
+      }
+    }
+  ]
+}

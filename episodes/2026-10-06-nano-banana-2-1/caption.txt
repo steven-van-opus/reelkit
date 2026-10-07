@@ -1,0 +1,17 @@
+Nano Banana 2.1 just shipped, and the big upgrade is text you can actually read.
+
+In Google's own comic example, the captions are clean and it's the same guy in every panel, and Google says that consistency holds as you keep editing.
+
+You can still mix up to 14 reference images, and wide panoramas like 8:1 finally stop tiling at 2K and 4K.
+
+It's live now in the Gemini API, Vercel AI Gateway, Netlify AI Gateway and Higgsfield. (Heads up: Google's guide doesn't say which Nano Banana model made its example images.)
+
+Comment “TOOLBOX” and we’ll send you the latest tools, news, and resources every day!
+
+#nanobanana #gemini #googleai #aiimage #aiimagegeneration #aiart #higgsfield #vercel #netlify #creatortools
+
+Sources:
+https://ai.google.dev/gemini-api/docs/changelog
+https://ai.google.dev/gemini-api/docs/models/gemini-nano-banana-2.1
+https://vercel.com/changelog/nano-banana-2-1-now-available-on-ai-gateway
+https://ai.google.dev/gemini-api/docs/image-generation

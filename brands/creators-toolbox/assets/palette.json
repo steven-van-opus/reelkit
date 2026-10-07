@@ -1,0 +1,49 @@
+{
+  "brand": "Creators Toolbox",
+  "version": "supplied-stacked-20260927",
+  "palette": {
+    "ink": {
+      "hex": "#101014"
+    },
+    "chalk": {
+      "hex": "#FAFAFC"
+    },
+    "pinkStart": {
+      "hex": "#FF338A"
+    },
+    "pinkMiddle": {
+      "hex": "#FF2B88"
+    },
+    "pinkEnd": {
+      "hex": "#FF2387"
+    }
+  },
+  "fullPaletteGradient": {
+    "direction": "top-left to bottom-right",
+    "stops": [
+      {
+        "hex": "#FF338A",
+        "position": 0
+      },
+      {
+        "hex": "#FF2387",
+        "position": 1
+      }
+    ]
+  },
+  "logoPixelGradient": {
+    "svgObjectBoundingBoxCoordinates": {
+      "x1": 0,
+      "y1": 0,
+      "x2": 1,
+      "y2": 1
+    },
+    "css": "linear-gradient(135deg, #FF338A 0%, #FF2387 100%)"
+  },
+  "optionalCTint": [
+    "#FFFFFF",
+    "#FFF0FA",
+    "#FFD4F2"
+  ],
+  "wordmark": "Supplied stacked SVG with its original outlines and pink gradient; horizontal derivative rearranges the two words onto one baseline."
+}

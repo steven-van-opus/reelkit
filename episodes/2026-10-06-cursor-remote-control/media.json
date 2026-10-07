@@ -1,0 +1,106 @@
+{
+  "items": [
+    {
+      "id": "m01",
+      "file": "media/m01.png",
+      "kind": "image",
+      "width": 3840,
+      "height": 2160,
+      "url": "https://ptht05hbb1ssoooe.public.blob.vercel-storage.com/assets/changelog/remote-control-cl-pezewO3SZRrIQxMNaTzdpsP9TD1ChS.png",
+      "page": "https://cursor.com/changelog/remote-control-local-agents",
+      "alt": "Remote Control for local agents in the Cursor iOS app",
+      "sourceKind": "article"
+    },
+    {
+      "id": "m02",
+      "file": "media/m02.png",
+      "kind": "image",
+      "width": 1290,
+      "height": 1078,
+      "url": "https://cursor.com/mobile#remote-control",
+      "page": "https://cursor.com/mobile",
+      "caption": "The “Remote Control” section of cursor.com",
+      "sourceKind": "article"
+    },
+    {
+      "id": "m03",
+      "file": "media/m03.png",
+      "kind": "image",
+      "width": 2400,
+      "height": 1260,
+      "url": "https://ptht05hbb1ssoooe.public.blob.vercel-storage.com/OG%20Images/remote-control-for-local-agents-0ohSVDCa58OLDRkm0Dt3WyACu4AuXi.png",
+      "page": "https://cursor.com/changelog/remote-control-local-agents",
+      "caption": "Remote control for local agents · Cursor",
+      "sourceKind": "og"
+    },
+    {
+      "id": "m04",
+      "file": "media/m04.jpg",
+      "kind": "image",
+      "width": 2400,
+      "height": 1260,
+      "url": "https://ptht05hbb1ssoooe.public.blob.vercel-storage.com/assets/features/mobile-og-image.jpg",
+      "page": "https://cursor.com/mobile",
+      "caption": "Cursor · Mobile",
+      "sourceKind": "og"
+    },
+    {
+      "id": "m05",
+      "file": "media/m05.png",
+      "kind": "image",
+      "width": 532,
+      "height": 786,
+      "url": "https://cursor.com/mobile#remote-control",
+      "page": "https://cursor.com/mobile",
+      "caption": "Phone screen from the “Remote Control” section of cursor.com: follow-up “Add analytics too.”, then “Finished now”",
+      "sourceKind": "article",
+      "derivedFrom": "m02",
+      "crop": [
+        686,
+        320,
+        532,
+        722
+      ],
+      "note": "Crop of m02's phone mock (the section clips the phone at its bottom edge); the mock's device chrome (top corners, dynamic island) is painted out and 64px of the screen colour continue the clipped screen below the composer, so the house phone frame supplies the device"
+    },
+    {
+      "id": "m06",
+      "file": "media/m06.png",
+      "kind": "image",
+      "width": 1216,
+      "height": 752,
+      "url": "https://cursor.com/mobile#remote-control",
+      "page": "https://cursor.com/mobile",
+      "caption": "“Remote Control” section of cursor.com: the same agent in Cursor Desktop and on the phone",
+      "sourceKind": "article",
+      "derivedFrom": "m02",
+      "crop": [
+        38,
+        290,
+        1216,
+        752
+      ],
+      "note": "Crop of m02 without the section's heading copy"
+    },
+    {
+      "id": "m07",
+      "file": "media/m07.png",
+      "kind": "image",
+      "width": 2855,
+      "height": 1923,
+      "url": "https://ptht05hbb1ssoooe.public.blob.vercel-storage.com/assets/changelog/remote-control-cl-pezewO3SZRrIQxMNaTzdpsP9TD1ChS.png",
+      "page": "https://cursor.com/changelog/remote-control-local-agents",
+      "alt": "Remote Control settings in Cursor's desktop app",
+      "caption": "Remote Control settings: this computer Connected, Keep This Computer Awake on, iPhone under Paired Devices",
+      "sourceKind": "article",
+      "derivedFrom": "m01",
+      "crop": [
+        493,
+        118,
+        2855,
+        1923
+      ],
+      "note": "Crop of m01 to the settings panel, without the grey backdrop"
+    }
+  ]
+}
