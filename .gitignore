@@ -1,8 +1,14 @@
+# Secrets (ElevenLabs key and local settings). .env.example is the template.
+.env
+.env.*
+!.env.example
+
 # Dependencies, model downloads (Kokoro lands in node_modules/@huggingface/
 # transformers/.cache), the TTS phrase cache and scratch files.
 node_modules/
 .cache/
 .tmp/
+.DS_Store
 
 # Third-party reels kept locally for pacing reference only. Never commit.
 reference/
@@ -26,8 +32,9 @@ episodes/*/media/
 # Scene test beds made while building scenes.
 episodes/_test-*/
 
-# Local TTS bake-off env: Python venv, uv cache, Hugging Face model weights.
-.tts/
+# The house voice (npm run setup -- --voice): Python, venv and model weights.
+# No trailing slash, so a symlinked .tts is ignored too.
+/.tts
 
 # Voice bake-off outputs (regenerable with voices/bakeoff.py and voices/lock.py).
 # The anchors (synthetic reference clips) stay: the house narrator needs them.

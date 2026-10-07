@@ -1,11 +1,16 @@
 // Orchestrator: news → episode folder → source media → script → voice →
 // music mix → frames → post kit.
 //
-//   node src/run.mjs --auto [--count 1] [--days 3]   pick the top new stories and make a reel for each
-//   node src/run.mjs --news <url-or-title-substring> make a reel about one story (even if it's been done)
+//   node src/run.mjs --url <https://…> [--brief "angle"] [--date YYYY-MM-DD]
+//                                                    make a reel from any launch post or product page
+//   node src/run.mjs --news <url-or-title-substring> make a reel about one catalog story (even if it's been done)
+//   node src/run.mjs --auto [--count 1] [--days 3]   pick the top new catalog stories and make a reel for each
 //   node src/run.mjs --episode episodes/<id>         re-run an existing script from voice (after a validation check)
 //   node src/run.mjs --episode episodes/<id> --from <step>   resume an episode at any step after seed
 //
+//   --brief "…"     producer notes for the writer: the angle, what to stress
+//                   (with --url or --news; with --episode it replaces the stored one)
+//   --date          the story's date for --url when the page doesn't say (default: its published date, else today)
 //   --pick-only     print what --auto would make and stop
 //   --no-render     stop after voice + mix (check timing before spending minutes on frames)
 //   --no-video      everything except reel.mp4: stills, cover and caption for a quick review
@@ -13,6 +18,8 @@
 //
 // Steps, in order (names for --from):
 //   pick → seed → media → write → validate → voice → mix → render → stills → cover → caption
+// With --url, pick reads the page instead (src/new.mjs): its product is the
+// catalog's on that domain or a new catalog/local.json entry.
 // seed creates episodes/<date>-<slug>/ with a seed episode.json (id, date,
 // source, subject); media runs src/media.mjs, which collects the sources'
 // images and video into media/ with media.json and a contact sheet; write has
@@ -29,11 +36,12 @@
 import fs from 'fs';
 import path from 'path';
 import { spawnSync } from 'child_process';
-import { parseCatalogFromDataTs } from '../../scripts/lib/data-ts.mjs';
-import { pickNews, formatCandidate, todayUTC, MIN_SCORE, DATA_TS, REELS } from './pick-news.mjs';
+import { products } from './catalog.mjs';
+import { pickNews, formatCandidate, todayUTC, MIN_SCORE, REELS } from './pick-news.mjs';
 import { validateDir, readMedia } from './validate.mjs';
 import { seedEpisode, candidateFor } from './write-script.mjs';
 import { applyHouseCta } from './cta.mjs';
+import { candidateFromUrl } from './new.mjs';
 
 const TARGET = [20, 32]; // seconds a reel should land in
 const MEDIA_MAX = Number(process.env.REELS_MEDIA_MAX) || 12;
@@ -44,6 +52,13 @@ const FRAMES = ['render', 'stills', 'cover', 'caption'];
 const args = process.argv.slice(2);
 const flag = name => { const i = args.indexOf(name); return i >= 0 ? args[i + 1] ?? true : null; };
 const has = name => args.includes(name);
+// A flag that needs a value: "--brief" with nothing (or another flag) after it is a mistake, not `true`.
+function text(name) {
+  const v = flag(name);
+  if (v === null) return null;
+  if (v === true || /^--[a-z]/.test(v)) throw new Error(`${name} needs a value`);
+  return v;
+}
 
 // ---------------------------------------------------------------- console
 
@@ -58,8 +73,8 @@ const info = msg => console.log(`      ${msg}`);
 const done = msg => console.log(`      done${msg ? `: ${msg}` : ''} (${since(stepStart)})`);
 const rel = p => path.relative(REELS, p) || '.';
 
-let catalogCache = null;
-const catalog = () => (catalogCache ||= parseCatalogFromDataTs(fs.readFileSync(DATA_TS, 'utf8')));
+// Cached in catalog.mjs; a product added mid-run (new --url) shows up here.
+const catalog = () => products();
 const readEpisode = dir => applyHouseCta(JSON.parse(fs.readFileSync(path.join(dir, 'episode.json'), 'utf8')));
 const today = flag('--today') || todayUTC();
 
@@ -115,7 +130,7 @@ const TITLES = {
   media: 'Collecting source media',
   write: `Writing script with claude (${process.env.REELS_MODEL || 'opus'})`,
   validate: 'Validating script',
-  voice: 'Voicing (Kokoro, local)',
+  voice: 'Voicing',
   mix: 'Mixing music + sfx',
   render: 'Rendering frames → reel.mp4',
   stills: 'Stills contact sheet',
@@ -157,8 +172,10 @@ const RUN = {
   async write(job) {
     if (!job.cand) {
       job.cand = candidateFor(readEpisode(job.dir), { catalog: catalog() });
-      if (!job.cand) throw new Error(`no news item in data.ts matches ${rel(job.dir)}'s source, so there's nothing to write from`);
+      if (!job.cand) throw new Error(`${rel(job.dir)}/episode.json has no source.url and source.toolId, so there's nothing to write from`);
+      if (job.brief) job.cand.brief = job.brief;
     }
+    if (job.cand.brief) info(`brief: ${job.cand.brief}`);
     job.cand.today = today;
     const { writeScript } = await import('./write-script.mjs');
     const res = await writeScript(job.cand, { dir: job.dir, rename: !!job.fresh, catalog: catalog(), log: info });
@@ -251,15 +268,20 @@ async function main() {
   const from = flag('--from');
   if (from && !STEPS.includes(from)) throw new Error(`--from must be one of ${STEPS.join(', ')}`);
 
+  const brief = text('--brief');
+  const url = text('--url');
+  const date = text('--date');
+  const news = text('--news');
+
   if (flag('--episode')) {
-    const dir = path.resolve(flag('--episode'));
+    const dir = path.resolve(text('--episode'));
     if (!fs.existsSync(path.join(dir, 'episode.json'))) throw new Error(`no episode.json in ${dir}`);
     // Without --from an episode re-runs from voice, behind the validation gate.
     const start = from || 'validate';
     if (STEPS.indexOf(start) < STEPS.indexOf('media')) throw new Error(`--from ${start} starts a new story; use --news or --auto for that`);
     console.log(`Producing ${rel(dir)} from ${from || 'voice'}`);
     try {
-      results.push(await produce({ dir, cand: null, fresh: false }, plan(start)));
+      results.push(await produce({ dir, cand: null, fresh: false, brief }, plan(start)));
     } catch (e) {
       console.error(`\n      FAILED: ${e.message}`);
       results.push({ name: rel(dir), error: e.message });
@@ -268,15 +290,36 @@ async function main() {
     return results;
   }
 
-  const news = flag('--news');
-  if (!has('--auto') && !news) {
-    console.log(`usage: node src/run.mjs --auto [--count 1] [--days 3] | --news <url-or-title> | --episode episodes/<id> [--from ${STEPS.slice(2).join('|')}]`);
+  if (!has('--auto') && !news && !url) {
+    if (brief) throw new Error('--brief needs a story to apply to: pass --url <link> or --news <story> with it (a reel needs a source page to check its facts against)');
+    console.log(`usage: node src/run.mjs --url <link> [--brief "angle"] [--date YYYY-MM-DD] | --news <url-or-title> [--brief "angle"] | --auto [--count 1] [--days 3] | --episode episodes/<id> [--from ${STEPS.slice(2).join('|')}]`);
     process.exit(2);
   }
+  if ([url, news, has('--auto')].filter(Boolean).length > 1) throw new Error('pick one of --url, --news and --auto');
+  if (brief && has('--auto')) throw new Error('--brief applies to one story: use it with --url or --news, not --auto');
+  if (date && !url) throw new Error('--date only applies to --url');
   if (from && from !== 'pick') throw new Error('--from resumes an existing episode: pass --episode episodes/<id> with it');
+  const steps = plan('pick');
+
+  if (url) {
+    step(1, steps.length, `Reading ${url}`);
+    const cand = await candidateFromUrl(url, { brief, date });
+    info(`${cand.primary.title} · ${cand.date} · product ${cand.primary.toolId}${cand.tools[0].page ? '' : ' (local catalog)'}`);
+    info(`${cand.primary.body.length} characters of page text${brief ? ` · brief: ${brief}` : ''}`);
+    done();
+    if (has('--pick-only')) return results;
+    const job = { dir: null, cand, fresh: false };
+    try {
+      results.push(await produce(job, steps.slice(1), { first: 2, total: steps.length }));
+    } catch (e) {
+      console.error(`\n      FAILED: ${e.message}`);
+      results.push({ name: cand.name, error: e.message });
+    }
+    report(results);
+    return results;
+  }
   const count = news ? 1 : Number(flag('--count') || 1);
   const days = Number(flag('--days') || (news ? 30 : 3));
-  const steps = plan('pick');
 
   step(1, steps.length, `${TITLES.pick} (${news ? `matching "${news}", last ${days} days` : `last ${days} days`})`);
   const picked = pickNews({ days, today, filter: news || null, includeProduced: !!news, catalog: catalog() });
@@ -289,6 +332,7 @@ async function main() {
     return results;
   }
   for (const c of chosen) if (c.alreadyProduced) info(`note: ${c.alreadyProduced}; making it again because --news asked for it`);
+  if (brief) for (const c of chosen) c.brief = brief;
   done();
   if (has('--pick-only')) return results;
 

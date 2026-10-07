@@ -177,16 +177,15 @@ function qwenBatch(texts, voice) {
 
 // ---------------------------------------------------------------- ElevenLabs
 
-// The key comes from the environment or a gitignored .env (reels/.env or the
-// repo's .env) — never from a script or the repo.
+// The key comes from the environment or the repo's gitignored .env (see
+// .env.example) — never from a script or the repo. Matching stays on one line,
+// so an empty `NAME=` doesn't swallow the next line as its value.
 function envValue(name) {
   if (process.env[name]) return process.env[name].trim();
-  for (const file of [path.join(ROOT, '.env'), path.join(ROOT, '..', '.env')]) {
-    if (!fs.existsSync(file)) continue;
-    const m = fs.readFileSync(file, 'utf8').match(new RegExp(`^\\s*${name}\\s*=\\s*["']?([^"'\\n]+)`, 'm'));
-    if (m) return m[1].trim();
-  }
-  return null;
+  const file = path.join(ROOT, '.env');
+  if (!fs.existsSync(file)) return null;
+  const m = fs.readFileSync(file, 'utf8').match(new RegExp(`^[ \\t]*${name}[ \\t]*=[ \\t]*["']?([^"'\\n]+)`, 'm'));
+  return m ? m[1].trim() || null : null;
 }
 
 export const elevenKey = () => envValue('ELEVENLABS_API_KEY');
@@ -442,6 +441,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   const arg = process.argv[2];
   if (arg === '--voices') {
     // node src/tts.mjs --voices   → the ElevenLabs voices this key can use
+    if (!elevenKey()) { console.error('Set ELEVENLABS_API_KEY (environment or .env) to list ElevenLabs voices.'); process.exit(1); }
     for (const v of await elevenVoices()) console.log(`${v.id}  ${v.name.padEnd(28)} ${v.category || ''}  ${Object.values(v.labels || {}).join(', ')}`);
   } else {
     await voiceEpisode(path.resolve(arg || '.'));

@@ -267,12 +267,12 @@ export function readMedia(dir) {
 
 const mediaMap = m => (m instanceof Map ? m : new Map((Array.isArray(m) ? m : m?.items || []).filter(it => it?.id).map(it => [it.id, it])));
 
-// Creators Toolbox tool ids, for logo props. Null when data.ts can't be read;
+// Catalog product ids, for logo props. Null when the catalog can't be read;
 // the logo checks are then skipped.
 let toolIds;
 async function knownTools() {
   if (toolIds !== undefined) return toolIds;
-  try { toolIds = new Set((await import('./logos.mjs')).allTools().keys()); } catch { toolIds = null; }
+  try { toolIds = new Set((await import('./catalog.mjs')).productIndex().keys()); } catch { toolIds = null; }
   return toolIds;
 }
 
@@ -288,8 +288,8 @@ function checkMediaId(where, id, ctx) {
 }
 
 function checkTool(where, id, ctx) {
-  if (typeof id !== 'string') { ctx.errors.push(`${where} must be a Creators Toolbox tool id`); return; }
-  if (ctx.tools && !ctx.tools.has(id)) ctx.warnings.push(`${where} "${id}" isn't a Creators Toolbox tool id; it renders without a logo`);
+  if (typeof id !== 'string') { ctx.errors.push(`${where} must be a catalog product id`); return; }
+  if (ctx.tools && !ctx.tools.has(id)) ctx.warnings.push(`${where} "${id}" isn't a catalog product id; it renders without a logo`);
 }
 
 function checkValue(where, value, spec, ctx) {

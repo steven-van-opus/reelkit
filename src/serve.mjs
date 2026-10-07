@@ -108,6 +108,7 @@ const server = http.createServer(async (req, res) => {
   if (url.pathname === '/api/lipsync' || url.pathname === '/api/render') {
     try { if ((await lipsyncApi(req, res, url)) !== false) return; } catch (err) { return sendJson(res, 500, { error: String(err.message) }); }
   }
+  if (url.pathname === '/api/info') return sendJson(res, 200, { root: ROOT });
   if (url.pathname === '/api/episodes') {
     res.writeHead(200, { 'content-type': 'application/json', 'cache-control': 'no-store' });
     return res.end(JSON.stringify(episodes()));
@@ -136,8 +137,10 @@ const server = http.createServer(async (req, res) => {
 // if something else holds it, move up to the next free port.
 async function isViewer(port) {
   try {
-    const res = await fetch(`http://localhost:${port}/api/episodes`, { signal: AbortSignal.timeout(1500) });
-    return res.ok && Array.isArray(await res.json());
+    // Same root, not just any viewer: another checkout's viewer on this port
+    // would list the wrong episodes.
+    const res = await fetch(`http://localhost:${port}/api/info`, { signal: AbortSignal.timeout(1500) });
+    return res.ok && (await res.json()).root === ROOT;
   } catch {
     return false;
   }

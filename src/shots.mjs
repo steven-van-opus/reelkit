@@ -1,48 +1,39 @@
 // Product screenshots in one house frame. Sources, best first:
 //   1. an explicit image on the beat (props.image: "/images/…" or https://…)
 //   2. the source news item's own preview image (news[].image / linkPreview.image)
-//   3. the site's approved capture of the tool (services/approved-previews.json)
-//   4. the tool's thumbnail / first screenshot in data.ts
+//   3. the site's approved capture of the tool (the catalog's approvedPreview)
+//   4. the tool's thumbnail / first screenshot in the catalog
 // Images are loaded by prepareShots() before rendering (frames draw synchronously).
-import fs from 'fs';
-import path from 'path';
-import { ROOT, C, font } from './brand.mjs';
-import { allTools, loadImageSrc } from './logos.mjs';
+import { C, font } from './brand.mjs';
+import { loadImageSrc } from './logos.mjs';
+import { products, product } from './catalog.mjs';
 import { lucideIcon } from './icons.mjs';
 import { clamp, ease } from './util.mjs';
 
-const SITE = path.resolve(ROOT, '..');
 const images = new Map(); // src → Image | null
 
 let newsImages = null;
 function newsImageFor(url) {
   if (!url) return null;
   if (!newsImages) {
+    // Keyed the way episodes cite news (pick-news: url, else linkPreview url);
+    // the first item with that URL wins.
     newsImages = new Map();
-    const src = fs.readFileSync(path.join(SITE, 'data.ts'), 'utf8');
-    // News items are one object per line: pull url + image/linkPreview.image.
-    for (const line of src.split('\n')) {
-      if (!line.includes(' date: ') || !line.includes(" url: '")) continue;
-      const u = (line.match(/\burl: '([^']+)'/) || [])[1];
-      const img = (line.match(/\bimage: '([^']+)'/) || [])[1] || (line.match(/linkPreview: \{[^}]*?image: '([^']+)'/) || [])[1];
-      if (u && img && !newsImages.has(u)) newsImages.set(u, img);
+    for (const p of products()) {
+      for (const n of p.news) {
+        const u = n.url || n.sourceUrl;
+        const img = n.image || n.sourceImage;
+        if (u && img && !newsImages.has(u)) newsImages.set(u, img);
+      }
     }
   }
   return newsImages.get(url) || null;
 }
 
-let approved = null;
-function approvedPreview(toolId) {
-  if (!approved) {
-    try { approved = JSON.parse(fs.readFileSync(path.join(SITE, 'services/approved-previews.json'), 'utf8')).previews || {}; } catch { approved = {}; }
-  }
-  return approved[toolId]?.url || null;
-}
-
 export function screenshotSrc({ image = null, toolId = null, newsUrl = null } = {}) {
   if (image) return image;
-  const tool = toolId ? allTools().get(toolId) : null;
-  return newsImageFor(newsUrl) || (toolId && approvedPreview(toolId)) || tool?.image || tool?.screenshots?.[0] || null;
+  const tool = product(toolId);
+  return newsImageFor(newsUrl) || tool?.approvedPreview || tool?.image || tool?.screenshots?.[0] || null;
 }
 
 // Which screenshot a beat wants, if any: scenes that show one read props.image

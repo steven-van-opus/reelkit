@@ -1,59 +1,38 @@
 // Tool logo tiles, resolved the way the site's ToolIcon does it: the stored,
-// approved logo first (public/images/logos), then the tool's own `logo`, then
-// Google's favicon service for its domain. Images are fetched once, cached in
-// .cache/logos, and must be loaded with prepareLogos() before rendering because
-// frames are drawn synchronously.
+// approved logo first (the catalog's approvedLogo), then the tool's own `logo`,
+// then Google's favicon service for its domain. Images are fetched once, cached
+// in .cache/logos, and must be loaded with prepareLogos() before rendering
+// because frames are drawn synchronously.
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 import { loadImage } from '@napi-rs/canvas';
 import { ROOT, C, font } from './brand.mjs';
 import { luminance } from './util.mjs';
+import { productIndex, resolveImageSrc } from './catalog.mjs';
 
-const SITE = path.resolve(ROOT, '..');
 const CACHE = path.join(ROOT, '.cache', 'logos');
 const images = new Map();   // toolId → Image | null
-let toolIndex = null;
 
-// Read tools with the repo's own data.ts parser (scripts/lib/data-ts.mjs).
-async function loadTools() {
-  if (toolIndex) return toolIndex;
-  const { extractAllToolsObjects, readFields } = await import(path.join(SITE, 'scripts/lib/data-ts.mjs'));
-  toolIndex = new Map();
-  for (const obj of extractAllToolsObjects(fs.readFileSync(path.join(SITE, 'data.ts'), 'utf8'))) {
-    const f = readFields(obj);
-    const id = f.str('id');
-    if (!id || toolIndex.has(id)) continue;
-    toolIndex.set(id, {
-      id, title: f.str('title'), logo: f.str('logo'), logoBg: f.str('logoBg'),
-      displayDomain: f.str('displayDomain'), themeColor: f.str('themeColor'), url: f.str('url'),
-      popularity: f.num('popularity'), image: f.str('image'), screenshots: f.strArray('screenshots') || [],
-    });
-  }
-  return toolIndex;
-}
-await loadTools();
-const tools = () => toolIndex;
-export const allTools = () => toolIndex;
+// id → product, in catalog order (src/catalog.mjs).
+export const allTools = () => productIndex();
 
 export function toolInfo(toolId) {
-  return tools().get(toolId) || null;
+  return productIndex().get(toolId) || null;
 }
 
 export function logoUrl(toolId) {
   const tool = toolInfo(toolId);
   if (!tool) return null;
-  let approved = {};
-  try { approved = JSON.parse(fs.readFileSync(path.join(SITE, 'services/approved-logos.json'), 'utf8')); } catch {}
-  const stored = approved[toolId];
-  if (stored?.fallback) return null;
-  if (stored?.src?.startsWith('/images/logos/')) return stored.src;
+  if (tool.logoFallback) return null;
+  if (tool.approvedLogo) return tool.approvedLogo;
   if (tool.logo) return tool.logo;
   const domain = tool.displayDomain || (tool.url ? new URL(tool.url).hostname : '');
   return domain ? `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=128` : null;
 }
 
-// Load an image from a site path (/images/…), a local file, or a URL (cached).
+// Load an image from a site path (/images/…) or URL: the REELKIT_SITE
+// checkout's file when there is one, else fetched once and cached.
 // SVGs go through resvg first: the canvas library's own SVG loader drops
 // gradient fills (Gemini's sparkle came out flat black).
 async function decode(buf) {
@@ -67,14 +46,13 @@ async function decode(buf) {
 }
 
 export async function loadImageSrc(src) {
-  if (src.startsWith('/')) {
-    const file = path.join(SITE, 'public', src.split('?')[0]);
-    return fs.existsSync(file) ? decode(fs.readFileSync(file)) : null;
-  }
+  src = resolveImageSrc(src);
+  if (!src) return null;
+  if (path.isAbsolute(src)) return fs.existsSync(src) ? decode(fs.readFileSync(src)) : null;
   fs.mkdirSync(CACHE, { recursive: true });
   const file = path.join(CACHE, crypto.createHash('sha1').update(src).digest('hex'));
   if (!fs.existsSync(file)) {
-    const res = await fetch(src, { signal: AbortSignal.timeout(10000), headers: { 'user-agent': 'Mozilla/5.0 CreatorsToolboxReels' } });
+    const res = await fetch(src, { signal: AbortSignal.timeout(10000), headers: { 'user-agent': 'Mozilla/5.0 reelkit' } });
     if (!res.ok) throw new Error(`${res.status} ${src}`);
     fs.writeFileSync(file, Buffer.from(await res.arrayBuffer()));
   }

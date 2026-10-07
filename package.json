@@ -1,9 +1,15 @@
 {
-  "name": "creators-toolbox-reels",
+  "name": "reelkit",
   "private": true,
   "type": "module",
-  "description": "Code-rendered 9:16 news reels for Creators Toolbox: real source media and site-style scenes on canvas, piped to ffmpeg.",
+  "description": "Turn a product link or news story into a narrated 9:16 reel, rendered in code with real source media.",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
+    "setup": "bash scripts/setup.sh",
+    "doctor": "node scripts/doctor.mjs",
+    "catalog:sync": "node scripts/sync-catalog.mjs",
     "reel": "node src/run.mjs",
     "pick": "node src/pick-news.mjs",
     "write": "node src/write-script.mjs",

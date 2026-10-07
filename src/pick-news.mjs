@@ -1,4 +1,4 @@
-// News picker: reads every tool's news[] out of data.ts and ranks what would
+// News picker: reads every product's news[] from the catalog and ranks what would
 // make a good reel for creators — launches, GA, "now available", new models
 // and features for design, video, image, audio, agents and coding — over
 // patch-version changelogs, SDK bumps, admin/security notes and bug fixes.
@@ -16,14 +16,11 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { parseCatalogFromDataTs } from '../../scripts/lib/data-ts.mjs';
+import { products } from './catalog.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 export const REELS = path.resolve(here, '..');
-export const REPO = path.resolve(REELS, '..');
-export const DATA_TS = path.join(REPO, 'data.ts');
 export const EPISODES = path.join(REELS, 'episodes');
-const SITE = 'https://creatorstoolbox.com';
 
 // Below this a candidate isn't worth a reel; --auto makes nothing that day.
 export const MIN_SCORE = 10;
@@ -178,7 +175,7 @@ function alreadyProduced(c, idx, urlCount) {
  * @returns {{ candidates: object[], skipped: object[], since: string, today: string, items: number }}
  */
 export function pickNews({ days = 3, today = todayUTC(), filter = null, includeProduced = false, catalog = null } = {}) {
-  catalog ||= parseCatalogFromDataTs(fs.readFileSync(DATA_TS, 'utf8'));
+  catalog ||= products();
   const since = addDays(today, -days);
   const byId = new Map(catalog.map(t => [t.id, t]));
 
@@ -265,7 +262,7 @@ export function pickNews({ days = 3, today = todayUTC(), filter = null, includeP
       items: group.sort((a, b) => (a === primary ? -1 : b === primary ? 1 : b.score - a.score)),
       tools: [tool, ...tools.filter(t => t !== tool)].map(t => ({
         id: t.id, title: t.title, category: t.category, toolCategory: t.toolCategory,
-        popularity: t.popularity, personas: t.personas, page: `${SITE}/${t.route}/${t.id}`,
+        popularity: t.popularity, personas: t.personas, page: t.page,
       })),
       urls: [...new Set(group.map(i => i.url).filter(Boolean))],
     };
@@ -282,11 +279,11 @@ export function pickNews({ days = 3, today = todayUTC(), filter = null, includeP
   return { candidates, skipped, since, today, items: items.length };
 }
 
-/** The full data.ts entry for a tool, as plain fields (no icons). */
+/** A product's full catalog entry, `page` included (its creatorstoolbox.com page, if it has one). */
 export function toolEntry(id, catalog = null) {
-  catalog ||= parseCatalogFromDataTs(fs.readFileSync(DATA_TS, 'utf8'));
+  catalog ||= products();
   const t = catalog.find(x => x.id === id);
-  return t ? { ...t, page: `${SITE}/${t.route}/${t.id}` } : null;
+  return t ? { ...t } : null;
 }
 
 // ---------------------------------------------------------------- cli

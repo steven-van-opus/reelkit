@@ -1,6 +1,7 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { GlobalFonts } from '@napi-rs/canvas';
+import { BRAND, brandDir } from './brandpack.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 export const ROOT = path.resolve(here, '..');
@@ -9,16 +10,15 @@ export const W = 1080;
 export const H = 1920;
 export const FPS = 30;
 
-// Creators Toolbox palette (public/brand/palette.json + brand-tokens.css).
+// Brand colours come from the brand pack's palette. Scenes read every one of
+// these keys, so a pack must define them all.
+const BRAND_COLOURS = ['ink', 'chalk', 'pink', 'pinkStart', 'pinkEnd', 'pinkDeep', 'rose', 'blush'];
+const missing = BRAND_COLOURS.filter(k => !BRAND.palette[k]);
+if (missing.length) throw new Error(`${path.relative(process.cwd(), path.join(brandDir, 'brand.json'))}: palette is missing ${missing.join(', ')}`);
+
+// The neutrals and paper stock below are the engine's own; a pack's palette
+// may still override them.
 export const C = {
-  ink: '#101014',
-  chalk: '#FAFAFC',
-  pink: '#FF2B88',
-  pinkStart: '#FF338A',
-  pinkEnd: '#FF2387',
-  pinkDeep: '#D81570',
-  rose: '#FFF0FA',
-  blush: '#FFD4F2',
   panel: '#1B1C22',
   divider: '#33343D',
   mute: '#646474',
@@ -30,6 +30,7 @@ export const C = {
   paperCool: '#EEEDF2',
   kraft: '#E9D9C4',
   tape: '#F3E6CF',
+  ...BRAND.palette,
 };
 
 // Safe areas for Instagram/TikTok 9:16: the top ~120px carries the app's own
