@@ -110,7 +110,7 @@ function renderCli(dir, ...extra) {
 
 // cover.png: the reel's custom cover — a designed poster for the Reels tab and
 // the profile grid's 3:4 crop (src/thumbnail.mjs), plus cover-grid.png to
-// preview that crop. Set it as the reel's cover when posting.
+// preview that crop. Use it as the reel's cover.
 async function writeCover(dir) {
   const { renderCover } = await import('./thumbnail.mjs');
   return renderCover(dir);

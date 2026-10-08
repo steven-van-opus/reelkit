@@ -125,7 +125,7 @@ function card(e) {
       </div>
       <p class="sub">${esc(ep.subject?.maker || '')}${ep.source?.url ? ` · <a href="${esc(ep.source.url)}" target="_blank" rel="noopener">source</a>` : ''} · <code>${esc(e.id)}</code></p>
       <div class="art">
-        ${e.files.cover ? `<figure><img src="${e.files.cover}" alt="Reel cover"><figcaption>Custom cover — set it as the reel's cover when posting</figcaption></figure>` : ''}
+        ${e.files.cover ? `<figure><img src="${e.files.cover}" alt="Reel cover"><figcaption>Custom cover for the reel</figcaption></figure>` : ''}
         ${e.files.stills ? `<figure class="wide"><img src="${e.files.stills}" alt="Beat stills"><figcaption>Every beat</figcaption></figure>` : ''}
       </div>
       <table><thead><tr><th>Label</th><th>Voiceover</th><th>Scene</th></tr></thead><tbody>

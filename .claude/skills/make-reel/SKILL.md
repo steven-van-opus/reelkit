@@ -132,8 +132,8 @@ Then tell the person:
   mouth looks early or late.
 - The paths: `episodes/<id>/reel.mp4`, `cover.png`, `caption.txt`.
 - The duration, the voice used, and anything you weren't able to verify.
-- Before posting: set `cover.png` as the reel's cover, paste `caption.txt`,
-  and make sure the account's comment-to-DM automation answers the CTA keyword.
+- `cover.png` is the reel's cover and `caption.txt` its caption. The CTA
+  keyword needs a comment-to-DM automation on the account.
 
 Send `reel.mp4` with SendUserFile when it's available.
 
