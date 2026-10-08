@@ -119,7 +119,7 @@ Every reel ends with the same ask: comment a keyword and get an auto-DM. The
 | `caption` | `Comment “TOOLBOX” and we’ll send you …` | The last line of every post caption |
 
 "We'll send you" is a promise: the account needs an auto-DM (e.g. ManyChat)
-that replies to the keyword before you publish. To skip the house ask for one
+that replies to the keyword. To skip the house ask for one
 reel, set `"cta": { "house": false }` in that episode.
 
 ## What a pack doesn't change
