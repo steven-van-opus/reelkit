@@ -269,12 +269,13 @@ then calls each beat's scene `draw(s)` per frame.
   levels: how far under the voice the bed sits, how far it dips under speech,
   where it drops out. `house` is the mix every reel had before presets, byte
   for byte (`test/sound.test.mjs` checks it). The others were made for
-  particular looks: `cozy` (keys about 12 LU under the voice, barely dipping),
-  `isometric` (a narrow ambient bed near 74 BPM), `blueprint` (a dark pulse
+  particular looks, and are named after them: `diorama` (keys about 12 LU
+  under the voice, barely dipping), `isometric` (a narrow ambient bed near
+  74 BPM), `blueprint` (a dark pulse
   near 110 BPM that drops out on the turn), `timelapse` (the loudest bed, a
   125 BPM pulse that drops out under the payoff), `doodle` (no music, a chime
   on the keyword), `flat` (a minor ambient bed near 90 BPM), `terminal` (a
-  124 BPM pulse under nonstop narration), `atlas` (an understated minor
+  124 BPM pulse under nonstop narration), `map` (an understated minor
   chamber bed) and `minimal`. The reel takes `episode.json`'s `sound`, else
   the brand pack's, else `house`; see
   [brands/README.md](../brands/README.md#sound) for the fields.

@@ -59,7 +59,7 @@ asset that isn't on disk stops the run with an error that names it.
 | `palette` | `{ "pink": "#FF2B88", … }` | Brand colours, as `#RRGGBB` (see [Palette](#palette)) |
 | `assets` | `{ "lockup": "assets/…svg", … }` | Paths relative to the pack folder (see [Assets](#assets)) |
 | `cta` | `{ "keyword": "TOOLBOX", … }` | The house call to action that closes every reel (see [Call to action](#call-to-action)) |
-| `sound` | `"cozy"` | Optional. The music and sound effects every reel of the pack mixes with (see [Sound](#sound)). Without it, the house sound |
+| `sound` | `"diorama"` | Optional. The music and sound effects every reel of the pack mixes with (see [Sound](#sound)). Without it, the house sound |
 
 Every field is required. Keep the default pack's wording style: sentence case,
 plain US English, no hype.
@@ -129,13 +129,13 @@ reel, set `"cta": { "house": false }` in that episode.
 or an object that starts from one and changes it:
 
 ```json
-"sound": "cozy"
+"sound": "diorama"
 "sound": { "preset": "blueprint", "sfx": "none", "musicVolume": 0.8 }
 ```
 
 | Field | Values | Default |
 | --- | --- | --- |
-| `preset` | `house`, `cozy`, `isometric`, `blueprint`, `timelapse`, `doodle`, `flat`, `terminal`, `atlas`, `minimal` | `house` |
+| `preset` | `house`, `diorama`, `isometric`, `blueprint`, `timelapse`, `doodle`, `flat`, `terminal`, `map`, `minimal` | `house` |
 | `mood` | Another music bed: `groove`, `keys`, `ambient`, `dark`, `pulse` | The preset's |
 | `sfx` | Another effects set: `paper`, `cozy`, `interface`, `engineering`, `timelapse`, `minimal`, or `none` | The preset's |
 | `music` | `false` for no music, `true` to switch on a preset that starts without it (`doodle`) | The preset's |

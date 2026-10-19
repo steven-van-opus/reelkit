@@ -31,25 +31,25 @@ export const HOUSE_SOUND = {
  */
 
 /**
- * The presets, one per look they were made for (`musicOn: false` starts with the music off):
+ * The presets, each named after the look it was made for (`musicOn: false` starts with the music off):
  *   house      the groove and the paper set: the paper and studio looks' own sound.
- *   cozy       lamplit rooms, a coach talking you through it: a quiet, steady, beat-light keys bed about 12 LU under
- *              the voice that barely dips, and almost no effects (a soft chime as the closing ask's keyword lands).
- *   isometric  an isometric network that lights up: a soft, fairly narrow ambient bed near 74 BPM that dips about 6 dB
+ *   diorama    lamplit miniature dioramas: a quiet, steady, beat-light keys bed about 12 LU under the voice that
+ *              barely dips, and almost no effects (a soft chime as the closing ask's keyword lands).
+ *   isometric  isometric worlds that light up: a soft, fairly narrow ambient bed near 74 BPM that dips about 6 dB
  *              under speech; a scan across the opening, a chime on the payoff, a double blip on the keyword.
  *   blueprint  a blueprint HUD: a dark minor pulse near 110 BPM, 8 LU under the voice, barely ducked, that drops out for
  *              a bar on the story's turn; a servo whine into the opening, a thunk on the turn and as the keyword locks.
  *   timelapse  a low-poly time-lapse: a low-passed minor pulse near 125 BPM, the loudest bed (7 LU under), clock ticks
  *              on its beat as each line's counter races, swishes on stage changes, and the music drops out under the
  *              payoff.
- *   doodle     a deadpan stick-figure doodle: near-silent with hard cuts (the silence is part of the joke), so it
+ *   doodle     a felt-tip stick-figure doodle: near-silent with hard cuts (the silence is part of the joke), so it
  *              starts with the music off; switched on, soft keys near 92 BPM about 16 LU under the voice; nothing on
  *              the cuts, only a soft chime as the keyword lands.
- *   flat       a flat-vector science short: a minor-leaning ambient pad and plucked arpeggio near 90 BPM, 10 LU under
- *              the voice, dipping 5 dB under speech; interface blips as each step lights.
- *   terminal   a speedrun on a developer's screen: a synth pulse near 124 BPM under a voice that never stops, 9 LU under
- *              it, barely ducked, dropping out under the payoff; interface blips as panes light up.
- *   atlas      a map documentary: an understated chamber bed, the ambient pad and pluck near 95 BPM in a minor key that
+ *   flat       flat vector shapes on a night sky: a minor-leaning ambient pad and plucked arpeggio near 90 BPM, 10 LU
+ *              under the voice, dipping 5 dB under speech; interface blips as each step lights.
+ *   terminal   a developer's terminal against the clock: a synth pulse near 124 BPM under a voice that never stops, 9 LU
+ *              under it, barely ducked, dropping out under the payoff; interface blips as panes light up.
+ *   map        a moving map: an understated chamber bed, the ambient pad and pluck near 95 BPM in a minor key that
  *              resolves on its open major chord, 11 LU under the voice with a gentle 6 dB dip; nothing on the camera
  *              moves, only a soft chime as the keyword lands.
  *   minimal    a soft ambient bed and only the moments every look draws: a card tap when the headline changes and a pop
@@ -58,14 +58,14 @@ export const HOUSE_SOUND = {
  */
 export const SOUNDS = {
   house: { mood: 'groove', bpm: [108, 118], mode: 'major', underVoiceLu: -10, duckDb: 9, breakAt: null, sfx: 'paper', density: 'lots' },
-  cozy: { mood: 'keys', bpm: [80, 88], mode: 'major', underVoiceLu: -12, duckDb: 3, breakAt: null, sfx: 'cozy', density: 'few' },
+  diorama: { mood: 'keys', bpm: [80, 88], mode: 'major', underVoiceLu: -12, duckDb: 3, breakAt: null, sfx: 'cozy', density: 'few' },
   isometric: { mood: 'ambient', bpm: [72, 76], mode: 'major', underVoiceLu: -11, duckDb: 6, breakAt: null, sfx: 'interface', density: 'few' },
   blueprint: { mood: 'dark', bpm: [106, 114], mode: 'minor', underVoiceLu: -8, duckDb: 1, breakAt: 'pivot', sfx: 'engineering', density: 'few' },
   timelapse: { mood: 'pulse', bpm: [120, 130], mode: 'minor', underVoiceLu: -7, duckDb: 3, breakAt: 'payoff', sfx: 'timelapse', density: 'some' },
   doodle: { mood: 'keys', bpm: [88, 96], mode: 'major', underVoiceLu: -16, duckDb: 3, breakAt: null, sfx: 'cozy', density: 'few', musicOn: false },
   flat: { mood: 'ambient', bpm: [84, 96], mode: 'minor', underVoiceLu: -10, duckDb: 5, breakAt: null, sfx: 'interface', density: 'some' },
   terminal: { mood: 'pulse', bpm: [120, 128], mode: 'minor', underVoiceLu: -9, duckDb: 3, breakAt: 'payoff', sfx: 'interface', density: 'some' },
-  atlas: { mood: 'ambient', bpm: [90, 100], mode: 'minor', underVoiceLu: -11, duckDb: 6, breakAt: null, sfx: 'cozy', density: 'few' },
+  map: { mood: 'ambient', bpm: [90, 100], mode: 'minor', underVoiceLu: -11, duckDb: 6, breakAt: null, sfx: 'cozy', density: 'few' },
   minimal: { mood: 'ambient', bpm: [84, 96], mode: 'major', underVoiceLu: -11, duckDb: 5, breakAt: null, sfx: 'minimal', density: 'few' },
 };
 
