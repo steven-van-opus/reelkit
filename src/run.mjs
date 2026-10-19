@@ -10,6 +10,8 @@
 //
 //   --brief "…"     producer notes for the writer: the angle, what to stress
 //                   (with --url or --news; with --episode it replaces the stored one)
+//   --style <id>    design every scene in code in a style (src/styles/: blueprint, isometric, cozy, timelapse,
+//                   doodle, flat, terminal, atlas); with --url, --news or --auto
 //   --date          the story's date for --url when the page doesn't say (default: its published date, else today)
 //   --pick-only     print what --auto would make and stop
 //   --no-render     stop after voice + mix (check timing before spending minutes on frames)
@@ -17,15 +19,16 @@
 //   --force         render even if the script fails validation
 //
 // Steps, in order (names for --from):
-//   pick → seed → media → write → validate → voice → mix → render → stills → cover → caption
+//   pick → seed → media → write → validate → marks → voice → mix → render → stills → cover → caption
 // With --url, pick reads the page instead (src/new.mjs): its product is the
 // catalog's on that domain or a new catalog/local.json entry.
 // seed creates episodes/<date>-<slug>/ with a seed episode.json (id, date,
 // source, subject); media runs src/media.mjs, which collects the sources'
 // images and video into media/ with media.json and a contact sheet; write has
 // Claude look at that media and write the script; the rest voice, mix and
-// draw it. `--from media` re-collects and rewrites, `--from write` rewrites
-// with the media already there, `--from cover` just redoes the cover.
+// draw it; marks looks up the logos a styled reel's scenes place (src/marks.mjs).
+// `--from media` re-collects and rewrites, `--from write` rewrites with the
+// media already there, `--from cover` just redoes the cover.
 //
 // Each finished episode folder holds reel.mp4, cover.png, stills.png,
 // caption.txt, episode.json, media.json and media/. In GitHub Actions the
@@ -42,11 +45,13 @@ import { validateDir, readMedia } from './validate.mjs';
 import { seedEpisode, candidateFor } from './write-script.mjs';
 import { applyHouseCta } from './cta.mjs';
 import { candidateFromUrl } from './new.mjs';
+import { STYLE_IDS, styleOf } from './styles/index.mjs';
 
 const TARGET = [20, 32]; // seconds a reel should land in
+const STYLE_TARGET = [25, 60]; // a styled reel's
 const MEDIA_MAX = Number(process.env.REELS_MEDIA_MAX) || 12;
 
-export const STEPS = ['pick', 'seed', 'media', 'write', 'validate', 'voice', 'mix', 'render', 'stills', 'cover', 'caption'];
+export const STEPS = ['pick', 'seed', 'media', 'write', 'validate', 'marks', 'voice', 'mix', 'render', 'stills', 'cover', 'caption'];
 const FRAMES = ['render', 'stills', 'cover', 'caption'];
 
 const args = process.argv.slice(2);
@@ -130,6 +135,7 @@ const TITLES = {
   media: 'Collecting source media',
   write: `Writing script with claude (${process.env.REELS_MODEL || 'opus'})`,
   validate: 'Validating script',
+  marks: 'Looking up logos',
   voice: 'Voicing',
   mix: 'Mixing music + sfx',
   render: 'Rendering frames → reel.mp4',
@@ -192,14 +198,21 @@ const RUN = {
     done(errors.length ? 'errors ignored (--force)' : 'ok');
   },
 
+  async marks(job) {
+    if (!readEpisode(job.dir).style) return done('skipped (not a styled reel)');
+    const { prepareMarks } = await import('./marks.mjs');
+    const marks = await prepareMarks(job.dir, { log: info });
+    done(`${Object.keys(marks).length} logo${Object.keys(marks).length === 1 ? '' : 's'} → ${rel(job.dir)}/marks.json`);
+  },
+
   async voice(job) {
     const { voiceEpisode } = await import('./tts.mjs');
     job.timing = await voiceEpisode(job.dir);
     // Kokoro's word times are estimates: pin them to the pauses in vo.wav.
     const { alignEpisode } = await import('./align.mjs');
     job.timing = alignEpisode(job.dir, { log: m => info(`captions: ${m}`) });
-    const d = job.timing.duration;
-    done(`${d.toFixed(1)}s${d >= TARGET[0] && d <= TARGET[1] ? '' : ` (outside the ${TARGET[0]}–${TARGET[1]}s target)`}`);
+    const d = job.timing.duration, [lo, hi] = readEpisode(job.dir).style ? STYLE_TARGET : TARGET;
+    done(`${d.toFixed(1)}s${d >= lo && d <= hi ? '' : ` (outside the ${lo}–${hi}s target)`}`);
   },
 
   async mix(job) {
@@ -269,6 +282,8 @@ async function main() {
   if (from && !STEPS.includes(from)) throw new Error(`--from must be one of ${STEPS.join(', ')}`);
 
   const brief = text('--brief');
+  const style = text('--style');
+  if (style && !styleOf(style)) throw new Error(`--style must be one of ${STYLE_IDS.join(', ')}`);
   const url = text('--url');
   const date = text('--date');
   const news = text('--news');
@@ -276,6 +291,7 @@ async function main() {
   if (flag('--episode')) {
     const dir = path.resolve(text('--episode'));
     if (!fs.existsSync(path.join(dir, 'episode.json'))) throw new Error(`no episode.json in ${dir}`);
+    if (style) throw new Error('--style picks the style of a new reel: use it with --url, --news or --auto (an episode keeps the style it was written in)');
     // Without --from an episode re-runs from voice, behind the validation gate.
     const start = from || 'validate';
     if (STEPS.indexOf(start) < STEPS.indexOf('media')) throw new Error(`--from ${start} starts a new story; use --news or --auto for that`);
@@ -292,7 +308,7 @@ async function main() {
 
   if (!has('--auto') && !news && !url) {
     if (brief) throw new Error('--brief needs a story to apply to: pass --url <link> or --news <story> with it (a reel needs a source page to check its facts against)');
-    console.log(`usage: node src/run.mjs --url <link> [--brief "angle"] [--date YYYY-MM-DD] | --news <url-or-title> [--brief "angle"] | --auto [--count 1] [--days 3] | --episode episodes/<id> [--from ${STEPS.slice(2).join('|')}]`);
+    console.log(`usage: node src/run.mjs --url <link> [--brief "angle"] [--date YYYY-MM-DD] [--style <id>] | --news <url-or-title> [--brief "angle"] [--style <id>] | --auto [--count 1] [--days 3] [--style <id>] | --episode episodes/<id> [--from ${STEPS.slice(2).join('|')}]`);
     process.exit(2);
   }
   if ([url, news, has('--auto')].filter(Boolean).length > 1) throw new Error('pick one of --url, --news and --auto');
@@ -304,6 +320,7 @@ async function main() {
   if (url) {
     step(1, steps.length, `Reading ${url}`);
     const cand = await candidateFromUrl(url, { brief, date });
+    if (style) cand.style = style;
     info(`${cand.primary.title} · ${cand.date} · product ${cand.primary.toolId}${cand.tools[0].page ? '' : ' (local catalog)'}`);
     info(`${cand.primary.body.length} characters of page text${brief ? ` · brief: ${brief}` : ''}`);
     done();
@@ -333,6 +350,7 @@ async function main() {
   }
   for (const c of chosen) if (c.alreadyProduced) info(`note: ${c.alreadyProduced}; making it again because --news asked for it`);
   if (brief) for (const c of chosen) c.brief = brief;
+  if (style) for (const c of chosen) c.style = style;
   done();
   if (has('--pick-only')) return results;
 

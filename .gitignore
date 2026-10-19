@@ -28,6 +28,8 @@ episodes/*/stems/
 # contact sheet and decoded video frames. media.json stays as the record of
 # what each id was and where it came from; --from media collects it again.
 episodes/*/media/
+# Logo shapes looked up for a styled reel's <Mark/> (src/marks.mjs).
+episodes/*/marks.json
 
 # Scene test beds made while building scenes.
 episodes/_test-*/

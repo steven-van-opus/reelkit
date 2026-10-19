@@ -12,6 +12,7 @@ import fs from 'fs';
 import path from 'path';
 import { execFileSync } from 'child_process';
 import { loadImage } from '@napi-rs/canvas';
+import { codeMediaIds } from './code/scene.mjs';
 
 export const VIDEO_FPS = 30;
 const MAX_VIDEO_SECONDS = 10;
@@ -33,6 +34,8 @@ export function beatMediaIds(beat) {
   const add = v => (Array.isArray(v) ? v.forEach(add) : typeof v === 'string' && /^m\d+/.test(v) && ids.push(v));
   add(p.media); add(p.before); add(p.after); add(p.image?.startsWith?.('m') ? p.image : null);
   (p.items || []).forEach(it => it && typeof it === 'object' && add(it.media));
+  // A scene drawn in code names its media with asset('m01').
+  if (typeof p.source === 'string') add(codeMediaIds(p.source));
   return [...new Set(ids)];
 }
 

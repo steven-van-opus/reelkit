@@ -7,10 +7,10 @@
 // about half a second or more. The ducker holds through the short gaps the voice leaves between sentences and lines
 // (0.12-0.2 s, tts.mjs), so mid-reel the bed stays at `underVoiceLu`, as it should under continuous narration.
 //
-// A reel picks its sound with `sound` in episode.json, else the brand pack's `sound` (brand.json), else the house
-// sound: the groove and the paper set, exactly as every reel had them before there was a choice. `sound` is a preset
-// name (SOUNDS) or an object that starts from one and changes it (resolveSound). Everything is synthesised in code, so
-// nothing here is a recording.
+// A reel picks its sound with `sound` in episode.json, else its style's preset (a styled reel, src/styles/), else the
+// brand pack's `sound` (brand.json), else the house sound: the groove and the paper set, exactly as every reel had
+// them before there was a choice. `sound` is a preset name (SOUNDS) or an object that starts from one and changes it
+// (resolveSound). Everything is synthesised in code, so nothing here is a recording.
 
 /**
  * @typedef {{
@@ -89,11 +89,12 @@ const KEYS = ['preset', 'mood', 'sfx', 'music', 'musicVolume', 'sfxVolume'];
  *   { preset?, mood?, sfx?, music?, musicVolume?, sfxVolume? }
  * starting from `preset` (default 'house'): another bed (`mood`), another effects set or 'none' (`sfx`), the music on
  * or off (`music`; a preset with `musicOn: false` starts off), and the music's and effects' levels (0.2-2, 1 as the
- * preset has them). Every set but paper lands its closing cue as the comment bar's Post button lights (the paper and
- * studio looks' closing, scenes/cta.mjs); the paper set times its own. Throws on anything it doesn't know, naming it.
+ * preset has them). On the paper and studio looks every set but paper lands its closing cue as the comment bar's Post
+ * button lights (scenes/cta.mjs), and the paper set times its own; on the canvas look (`canvas`, a styled reel) the
+ * cue lands as the keyword is said. Throws on anything it doesn't know, naming it.
  * @returns {Sound | null}
  */
-export function resolveSound(choice, { where = 'sound' } = {}) {
+export function resolveSound(choice, { where = 'sound', canvas = false } = {}) {
   if (choice == null) return null;
   const c = typeof choice === 'string' ? { preset: choice } : choice;
   const fail = msg => { throw new Error(`${where}: ${msg}`); };
@@ -116,7 +117,7 @@ export function resolveSound(choice, { where = 'sound' } = {}) {
     music: (c.music ?? preset.musicOn ?? true)
       ? { mood, bpm: [...bed.bpm], mode: bed.mode, underVoiceLu: preset.underVoiceLu, duckDb: preset.duckDb, breakAt: bed.breakAt, gain: c.musicVolume ?? 1 }
       : null,
-    sfx: set === 'none' ? null : { set, density: set === preset.sfx ? preset.density : SET_DENSITY[set], gain: c.sfxVolume ?? 1, ...(set === 'paper' ? {} : { closing: 'post' }) },
+    sfx: set === 'none' ? null : { set, density: set === preset.sfx ? preset.density : SET_DENSITY[set], gain: c.sfxVolume ?? 1, ...(set === 'paper' || canvas ? {} : { closing: 'post' }) },
   };
   return JSON.stringify(sound) === JSON.stringify(HOUSE_SOUND) ? null : sound;
 }

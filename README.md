@@ -45,6 +45,7 @@ the run: preflight, a draft with stills, review, fixes and the final render.
 | `npm run reel -- --url <https://…> [--brief "…"] [--date YYYY-MM-DD]` | Make a reel from any link. `--brief` is the angle and what to stress; the writer gets it as producer notes. |
 | `npm run reel -- --news "<title or url substring>"` | Make a reel about one story in the catalog's news. Also takes `--brief`. |
 | `npm run reel -- --auto [--count 1] [--days 3]` | Make reels for the best recent catalog news. `--pick-only` prints the picks and stops. |
+| `… --style <id>` | With `--url`, `--news` or `--auto`: design every scene in code in a style (see [Styles](#styles)). |
 | `npm run reel -- --episode episodes/<id> [--from <step>]` | Re-run an existing episode. Without `--from` it re-voices and re-renders, behind the validation check. With `--from write --brief "…"` it rewrites with a new brief. |
 | `… --no-video` | Everything except `reel.mp4`: stills, cover and caption for a quick review. |
 | `… --no-render` | Stop after voice and mix, to check the duration. |
@@ -58,7 +59,7 @@ the run: preflight, a draft with stills, review, fixes and the final render.
 Steps, by the names `--from` takes:
 
 ```
-pick → seed → media → write → validate → voice → mix → render → stills → cover → caption
+pick → seed → media → write → validate → marks → voice → mix → render → stills → cover → caption
 ```
 
 `--from media` collects media again and rewrites the script, `--from write`
@@ -121,6 +122,24 @@ reel with a slider that shifts the voice against the mascot's mouth. **Save**
 writes the lead to `lipsync.json` for every future render; **Re-render this
 reel** bakes it in.
 
+## Styles
+
+A reel can also be made in a style: a whole look the writer designs every
+scene in, as code, instead of filling the paper or studio scenes. There are
+eight: `blueprint` (a technical HUD), `isometric` (systems as little isometric
+worlds), `cozy` (lamplit dioramas), `timelapse` (one low-poly room as time
+races), `doodle` (deadpan stick figures), `flat` (flat-vector science),
+`terminal` (a developer's screen against the clock) and `atlas` (a map that
+moves). Each comes with a reference video the writer remakes for your story.
+
+```sh
+npm run reel -- --url <https://…> --style atlas
+npm run style -- atlas      # the style's reference video as a test episode, to voice and render
+```
+
+Styled reels run about 30–55 s. [docs/STYLES.md](docs/STYLES.md) has the
+details: the canvas look, code scenes, the checks and how to add a style.
+
 ## Sound
 
 Every reel's music and sound effects are synthesised in code, so they're
@@ -128,8 +147,8 @@ royalty-free. The default is the house sound: a light groove with paper
 swipes, taps and a ding on the closing ask. A sound preset swaps it for
 another bed and effects set: `cozy` (quiet keys, almost no effects),
 `isometric`, `blueprint`, `timelapse`, `doodle` (no music), `flat`,
-`terminal`, `atlas` or `minimal`. Set `"sound"` in a brand pack for every
-reel, or in one `episode.json`; [brands/README.md](brands/README.md#sound) has
+`terminal`, `atlas` or `minimal`. A styled reel uses its style's preset. Set
+`"sound"` in a brand pack for every reel, or in one `episode.json`; [brands/README.md](brands/README.md#sound) has
 the fields, and `npm run sounds` lets you hear each bed and set.
 
 ## Brand packs
@@ -190,7 +209,10 @@ The tests use a stand-in voice, so they need no TTS model, network or media.
 ## Third-party licences
 
 The Inter and Inter Display fonts in `assets/fonts/` are under the SIL Open
-Font License 1.1 (`assets/fonts/OFL.txt`). npm dependencies carry their own
+Font License 1.1 (`assets/fonts/OFL.txt`), and so is Fraunces
+(`assets/fonts/OFL-Fraunces.txt`). The map kit's country outlines
+(`src/code/map/`) come from Natural Earth (public domain) via world-atlas (ISC,
+`src/code/map/LICENSE-world-atlas.txt`). npm dependencies carry their own
 licences in `node_modules/`.
 
 ## Costs

@@ -29,6 +29,9 @@ import { readWav } from './tts.mjs';
 import { visemeTrack } from './lipsync.mjs';
 import { alignWords, detectSilences } from './align.mjs';
 import { FX } from './fx.mjs';
+import { createCanvasLook } from './canvas.mjs';
+import { styleOf } from './styles/index.mjs';
+import { declaredLogos } from './code/marks.mjs';
 
 // Kit is drawn this much larger than scenes ask for.
 const KIT_SCALE = 1.1;
@@ -128,6 +131,12 @@ export function loadEpisode(dir) {
     timing = { duration: t + 1, beats };
     timing.beats[timing.beats.length - 1].end = timing.duration;
   }
+  // A styled episode's logos for <Mark/>: their shapes from marks.json (src/marks.mjs), else each set as its name.
+  if (episode.style) {
+    const marks = path.join(dir, 'marks.json');
+    episode.marks = fs.existsSync(marks) ? JSON.parse(fs.readFileSync(marks, 'utf8'))
+      : Object.fromEntries(declaredLogos(episode).map(l => [l.id, { name: l.name, missing: true }]));
+  }
   const frames = Math.ceil(timing.duration * FPS) + 2;
   timing.mouth = mouthTrack(dir, frames);
   // Mouth shapes per frame from the (aligned) words, opened by the loudness.
@@ -201,8 +210,20 @@ function drawBeat(ctx, episode, timing, i, t, T, frame) {
   ctx.restore();
 }
 
+// A styled episode is drawn by the canvas look (src/canvas.mjs), one per style.
+const looks = new Map();
+function canvasLook(id) {
+  if (!looks.has(id)) {
+    const style = styleOf(id);
+    if (!style) throw new Error(`unknown style "${id}"`);
+    looks.set(id, createCanvasLook({ palette: style.palette, frame: style.frame, canvas: createCanvas }));
+  }
+  return looks.get(id);
+}
+
 // opts.captions = false leaves the caption chips out (the cover).
 export function drawFrame(ctx, episode, timing, T, frame = Math.round(T * FPS), { captions = true } = {}) {
+  if (episode.style) { canvasLook(episode.style).draw(ctx, episode, timing, T, frame, { captions }); return; }
   const beats = timing.beats;
   let i = beats.findIndex(b => T >= b.start && T < b.end);
   if (i < 0) i = T < beats[0].start ? 0 : beats.length - 1;

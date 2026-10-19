@@ -23,10 +23,15 @@ moves between steps, and how frames, lip sync and audio are made.
               ▼
  write ──── write-script.mjs: `claude -p` reads the sources (WebFetch) and the
               │        media (Read), writes one spoken take, cuts it into
-              │        beats, picks scenes, lists every claim in sources[];
-              │        the house CTA is appended; ≤2 retries on validation errors
+              │        beats, picks scenes (a styled reel: designs every scene
+              │        in code in its style, src/styles/), lists every claim in
+              │        sources[]; the house CTA is appended; ≤2 retries on
+              │        validation errors
               ▼
- validate ─ validate.mjs: SCENES.md contract, media ids, the take/beat match
+ validate ─ validate.mjs: SCENES.md contract (a styled reel: every code scene
+              │        run and checked), media ids, the take/beat match
+              ▼
+ marks ──── marks.mjs: a styled reel's declared logos → marks.json
               ▼
  voice ──── tts.mjs → vo.wav + voice.json (word timings)
               │        Whisper alignment (voices/align.py), then align.mjs
@@ -34,11 +39,13 @@ moves between steps, and how frames, lip sync and audio are made.
               ▼
  mix ────── audio.mjs: generated music + SFX, ducked under the voice → mix.wav
               ▼
- render ─── render.mjs: scenes draw each frame on canvas → raw RGBA → ffmpeg
+ render ─── render.mjs: scenes draw each frame on canvas (a styled reel: the
+              │        canvas look, canvas.mjs) → raw RGBA → ffmpeg
               │        (parallel segment workers) → reel.mp4 with mix.wav
               ▼
  stills ─── render.mjs --stills → stills.png (one frame per beat)
- cover ──── thumbnail.mjs → cover.png + cover-grid.png
+ cover ──── thumbnail.mjs → cover.png + cover-grid.png (a styled reel: its
+              │        settled opening)
  caption ── run.mjs → caption.txt (caption, hashtags, source links)
 ```
 
@@ -56,11 +63,15 @@ moves between steps, and how frames, lip sync and audio are made.
 | `src/pick-news.mjs` | Ranks catalog news into candidates; `toolEntry()` lookups |
 | `src/media.mjs` | Collects source images and video into `media/`, writes `media.json` and the contact sheet |
 | `src/write-script.mjs` | Writer style guide and prompt; seeds episodes; calls `claude -p`; assembles and retries |
-| `src/validate.mjs` | Checks an episode against `SCENES.md` and `media.json` |
+| `src/validate.mjs` | Checks an episode against `SCENES.md` and `media.json`, and a styled reel's code scenes |
 | `src/tts.mjs` | Voiceover: house voice, ElevenLabs, Kokoro or `say`; word timings; Whisper alignment |
 | `src/align.mjs` | Re-times words around the real pauses in `vo.wav` |
 | `src/pronounce.mjs` | Display text → speakable text (lexicon, acronyms, numbers) |
 | `src/audio.mjs` | Builds and masters `mix.wav`; `src/audio/` holds the music, SFX and DSP |
+| `src/styles/` | The styles a reel can be designed in, and the writer's instructions for them ([STYLES.md](STYLES.md)) |
+| `src/canvas.mjs` | The canvas look a styled reel is drawn on |
+| `src/code/` | Code scenes: the JSX interpreter, the checks, the painter and the map kit |
+| `src/marks.mjs` | Looks up the logos a styled reel's scenes place → `marks.json` |
 | `src/render.mjs` | Frame loop, camera, transitions, overlays, ffmpeg encode, stills, single frames |
 | `src/thumbnail.mjs` | The cover poster and its 3:4 grid preview |
 | `src/serve.mjs` | Local viewer, episode API, lip-sync tuner API |

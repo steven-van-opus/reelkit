@@ -23,6 +23,10 @@ import path from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { STUDIO_SETS, SET_ALIASES } from './brand.mjs';
 import { resolveSound } from './audio/sound.mjs';
+import { STYLE_IDS, styleOf } from './styles/index.mjs';
+import { PLACE_MAX } from './styles/guide.mjs';
+import { CANVAS_STAGE, CODE_LIMITS, codeMediaIds, codeSceneErrors, codeSourceOf } from './code/scene.mjs';
+import { declaredLogos } from './code/marks.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const SCENES_MD = path.join(here, 'scenes', 'SCENES.md');
@@ -36,6 +40,19 @@ export const LIMITS = {
   scriptWords: [60, 75], // the take alone: ~26–32 s once the house CTA is appended
   shortSentence: 10,     // a one-sentence beat this short reads like a caption line
   keyword: 10,
+};
+
+// A styled reel (src/styles/) runs longer, about 30–55 s: a style's reference video is 34–54 s.
+export const STYLE_LIMITS = { ...LIMITS, beats: [7, 11], takeBeats: [6, 10], totalWords: [80, 155], scriptWords: [70, 135] };
+export const limitsFor = episode => (episode?.style != null ? STYLE_LIMITS : LIMITS);
+// How long a reel with that many words runs, in seconds (the narrator says about 2.8 words a second).
+const seconds = ([lo, hi]) => `~${Math.round(lo / 2.8)}–${Math.round(hi / 2.8)} s`;
+
+// A styled reel's scenes besides the house CTA: the opening and every beat after it drawn in code (src/code/scene.mjs).
+const source = { kind: 'string', max: CODE_LIMITS.source, upperWord: false, optional: false };
+export const STYLE_SPECS = {
+  hook: { type: 'hook', built: true, props: { title: { kind: 'string', max: 28, upperWord: false, optional: false }, source } },
+  code: { type: 'code', built: true, props: { source } },
 };
 
 // The studio sets, plus the paper-era names scripts may still use (rose →
@@ -533,6 +550,15 @@ export async function checkEpisode(episode, { specs, media, mediaDir = null } = 
   const beats = Array.isArray(episode.beats) ? episode.beats : [];
   if (!Array.isArray(episode.beats)) errors.push('beats must be an array');
 
+  // A styled reel: its style, its scenes (every one but the closing in code), its limits and its declared logos.
+  const style = episode.style != null ? styleOf(episode.style) : null;
+  if (episode.style != null && !style) errors.push(`style "${episode.style}" must be one of ${STYLE_IDS.join(' | ')}`);
+  if (style) specs = { cta: specs.cta, ...STYLE_SPECS };
+  const L = limitsFor(episode);
+  const logos = style ? declaredLogos(episode) : [];
+  if (style && Array.isArray(episode.logos) && logos.length < episode.logos.length) warnings.push('logos: entries that aren\'t { "id": "m80"–"m89", "name", "domain" } are left out');
+  const known = new Set([...(ctx.media?.keys() ?? []), ...logos.map(l => l.id)]);
+
   // Episode-level fields.
   if (!episode.id) errors.push('id is required');
   if (!episode.date) warnings.push('date is missing');
@@ -564,7 +590,7 @@ export async function checkEpisode(episode, { specs, media, mediaDir = null } = 
   if (!Array.isArray(episode.post?.hashtags) || episode.post.hashtags.length === 0) warnings.push('post.hashtags is empty');
 
   // Beats.
-  if (beats.length < LIMITS.beats[0] || beats.length > LIMITS.beats[1]) errors.push(`${beats.length} beats, needs ${LIMITS.beats[0]}–${LIMITS.beats[1]}`);
+  if (beats.length < L.beats[0] || beats.length > L.beats[1]) errors.push(`${beats.length} beats, needs ${L.beats[0]}–${L.beats[1]}`);
   if (beats.length && beats[0].scene !== 'hook') errors.push(`beat 1 must use the 'hook' scene (got '${beats[0].scene}')`);
   if (beats.length && beats.at(-1).scene !== 'cta') errors.push(`the last beat must use the 'cta' scene (got '${beats.at(-1).scene}')`);
 
@@ -596,7 +622,10 @@ export async function checkEpisode(episode, { specs, media, mediaDir = null } = 
     }
     if (EMOJI_RE.test(b.vo || '')) errors.push(`${at}: vo contains an emoji (captions can't draw them)`);
 
-    if (!b.set) warnings.push(`${at}: no set, defaults to 'pearl'`);
+    if (style) {
+      if (b.scene !== 'cta' && !b.place) warnings.push(`${at}: no "place"; name the set this scene is in, invented from the topic`);
+      else if (b.place && String(b.place).length > PLACE_MAX) warnings.push(`${at}: place is ${String(b.place).length} chars, max ${PLACE_MAX}`);
+    } else if (!b.set) warnings.push(`${at}: no set, defaults to 'pearl'`);
     else if (!setName(b.set)) errors.push(`${at}: set "${b.set}" must be one of ${SET_NAMES.join(' | ')}`);
     else if (OLD_SET_NAMES.includes(b.set)) oldSets.add(b.set);
 
@@ -623,10 +652,16 @@ export async function checkEpisode(episode, { specs, media, mediaDir = null } = 
       errors.push(`${at}: props.before and props.after are both "${props.before}"; a before/after needs two different media ids`);
     }
     for (const id of new Set(propMediaIds(b, spec))) shown.set(id, (shown.get(id) || 0) + 1);
+    // A scene in code: everything the code checks can tell (it runs, its cues, its media and logos, the best practices).
+    const code = style ? codeSourceOf(b) : null;
+    if (code !== null && code.length <= CODE_LIMITS.source) {
+      errors.push(...codeSceneErrors(at, code, String(b.vo || ''), known, CANVAS_STAGE));
+      for (const id of codeMediaIds(code)) if (ctx.media?.has(id)) shown.set(id, (shown.get(id) || 0) + 1);
+    }
   });
 
-  if (beats.length && (total < LIMITS.totalWords[0] || total > LIMITS.totalWords[1])) {
-    errors.push(`voiceover is ${total} words in total, needs ${LIMITS.totalWords[0]}–${LIMITS.totalWords[1]} (~22–32 s)`);
+  if (beats.length && (total < L.totalWords[0] || total > L.totalWords[1])) {
+    errors.push(`voiceover is ${total} words in total, needs ${L.totalWords[0]}–${L.totalWords[1]} (${seconds(L.totalWords)})`);
   }
 
   // The take: one spoken script, cut into the beats before the CTA.
@@ -636,8 +671,8 @@ export async function checkEpisode(episode, { specs, media, mediaDir = null } = 
       const cut = takeBeats(beats);
       if (normTake(episode.script) !== normTake(cut.map(b => b?.vo || '').join(' '))) errors.push(takeMismatch(episode.script, cut));
       const n = words(episode.script).length;
-      const [lo, hi] = LIMITS.scriptWords;
-      if (n < lo || n > hi) warnings.push(`script is ${n} words; aim for ${lo}–${hi} so the reel voices to ~26–32 s with the house CTA`);
+      const [lo, hi] = L.scriptWords;
+      if (n < lo || n > hi) warnings.push(`script is ${n} words; aim for ${lo}–${hi} so the reel voices to ${seconds([lo + 14, hi + 14])} with the house CTA`);
     }
   }
   warnings.push(...registerWarnings(beats));
@@ -648,7 +683,7 @@ export async function checkEpisode(episode, { specs, media, mediaDir = null } = 
     if (last.props?.keyword && last.props.keyword !== keyword) errors.push(`last beat props.keyword "${last.props.keyword}" ≠ cta.keyword "${keyword}"`);
     if (!new RegExp(`\\b${keyword}\\b`, 'i').test(last.vo || '')) errors.push(`last beat vo must say the keyword ${keyword}`);
   }
-  for (const i of beats.keys()) {
+  for (const i of style ? [] : beats.keys()) {
     const a = setName(beats[i - 1]?.set), b = setName(beats[i].set);
     if (i > 0 && b && a === b) warnings.push(`beats ${i} and ${i + 1} share the '${b}' set; alternate sets so cuts read`);
   }

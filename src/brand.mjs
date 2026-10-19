@@ -74,12 +74,16 @@ const DISPLAY_FILES = {
   d900: 'InterDisplay-Black.ttf',
 };
 
+// Fraunces, the serif the styles' code scenes and captions set (src/canvas.mjs canvasFont).
+const SERIF_FILES = { Fraunces: 'Fraunces-ExtraBold.woff2', FrauncesItalic: 'Fraunces-SemiBoldItalic.woff2' };
+
 let registered = false;
 export function registerFonts() {
   if (registered) return;
   for (const [weight, file] of Object.entries({ ...FONT_FILES, ...DISPLAY_FILES })) {
     GlobalFonts.registerFromPath(path.join(ROOT, 'assets/fonts', file), `Inter${weight}`);
   }
+  for (const [name, file] of Object.entries(SERIF_FILES)) GlobalFonts.registerFromPath(path.join(ROOT, 'assets/fonts', file), name);
   registered = true;
 }
 

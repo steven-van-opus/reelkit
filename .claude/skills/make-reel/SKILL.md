@@ -38,6 +38,11 @@ npm run doctor
 | "Whatever's new" | `npm run reel -- --auto --pick-only` to show the picks, then `npm run reel -- --auto --no-video` |
 | An existing episode folder | skip to step 4 |
 
+Add `--style <id>` when they want a style (`npm run style` lists them: a
+blueprint HUD, isometric systems, cozy dioramas, a low-poly time-lapse, deadpan
+doodles, flat-vector science, a developer speedrun, a moving map). A styled
+reel's scenes are all designed in code; it runs about 30–55 s.
+
 Add `--brief "<angle, audience, what to stress or avoid>"` when they told you
 what the reel is for ("for designers", "lead with the price", "explain how it
 works step by step"). The writer gets it as producer notes. For a faceless
@@ -82,7 +87,13 @@ Check each item and note what fails:
 - [ ] **Hook lands.** Beat 1 names the news and has the best media.
 - [ ] **CTA is present.** The last beat is the brand pack's CTA, and the
   caption ends with its line.
-- [ ] **Duration.** `voice.json` `duration` is 20–32 s (the run warns if not).
+- [ ] **Duration.** `voice.json` `duration` is 20–32 s, or 25–60 s for a
+  styled reel (the run warns if not).
+- [ ] **A styled reel follows the best practices.** Nothing important under the
+  captions or the platform's UI, words big and readable, one idea per scene,
+  motion that settles, original drawings, places built for this topic rather
+  than copied from the style's reference (`BEST_PRACTICE_CHECKS` in
+  `src/styles/best-practices.mjs` lists the questions).
 
 Show the person `stills.png` and `cover.png` (SendUserFile when available) with
 a short verdict: what works, what you'd change.

@@ -11,6 +11,9 @@
 //
 // episode.cover { title, kicker, media } overrides the defaults (the hook's
 // title/kicker and the first real image the reel shows).
+//
+// A styled reel's cover is its opening once it has settled, without captions:
+// the opening is designed in code as the reel's title card, in its style.
 import fs from 'fs';
 import path from 'path';
 import { createCanvas } from '@napi-rs/canvas';
@@ -39,8 +42,21 @@ function coverMedia(episode, dir) {
   return hook || ids.find(id => kinds.get(id) === 'image') || ids[0] || null;
 }
 
+// A styled reel's opening, late in its beat once its pieces have landed.
+async function styledCover(dir) {
+  const { loadEpisode, prepareAssets, drawFrame } = await import('./render.mjs');
+  const { episode, timing } = loadEpisode(dir);
+  const first = timing.beats[0];
+  const T = first.start + (first.end - first.start) * 0.88;
+  await prepareAssets(episode, dir, timing, [first.start, first.end]);
+  const cv = createCanvas(W, H);
+  drawFrame(cv.getContext('2d'), episode, timing, T, undefined, { captions: false });
+  return cv;
+}
+
 export async function renderCover(dir) {
   const episode = applyHouseCta(JSON.parse(fs.readFileSync(path.join(dir, 'episode.json'), 'utf8')));
+  if (episode.style) return writeCover(dir, await styledCover(dir));
   const hook = episode.beats[0]?.props || {};
   const title = episode.cover?.title || hook.title || episode.subject?.name || '';
   const kicker = episode.cover?.kicker ?? hook.kicker ?? 'Just shipped';
@@ -101,9 +117,13 @@ export async function renderCover(dir) {
   ctx.restore();
   tape(ctx, 95, GRID.bottom - 136, 70, 26, -0.6, { seed: 'cover-tag-tape' });
 
+  return writeCover(dir, cv);
+}
+
+// cover.png, and how it looks on the profile grid (centre 3:4) as cover-grid.png.
+function writeCover(dir, cv) {
   const out = path.join(dir, 'cover.png');
   fs.writeFileSync(out, cv.toBuffer('image/png'));
-  // How it looks on the profile grid (centre 3:4).
   const grid = createCanvas(1080, 1440);
   grid.getContext('2d').drawImage(cv, 0, GRID.top, 1080, 1440, 0, 0, 1080, 1440);
   fs.writeFileSync(path.join(dir, 'cover-grid.png'), grid.toBuffer('image/png'));
