@@ -42,6 +42,9 @@ export default {
 
 ## Look: paper (default) and studio
 
+A **styled** reel (`"style": "<id>"`, docs/STYLES.md) doesn't use this catalog: every scene but the house CTA is
+drawn in code in the style, and the validator checks it as a code scene.
+
 The default theme is **paper** — the hand-made cut-paper diorama: grain, torn edges, tape, warm paper
 sets, stop-motion on twos. Scenes that exist in both looks live in `paper/<type>.mjs` and
 `studio/<type>.mjs` behind a `<type>.mjs` wrapper that picks by `isStudio()`. In paper, real media

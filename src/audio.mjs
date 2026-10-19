@@ -22,6 +22,7 @@ import { composeSfx } from './audio/sfx.mjs';
 import { HOUSE_SOUND, breakWindow, resolveSound } from './audio/sound.mjs';
 import { applyHouseCta } from './cta.mjs';
 import { BRAND } from './brandpack.mjs';
+import { styleOf } from './styles/index.mjs';
 
 const TARGET_LUFS = -14;
 const CEILING_DBTP = -1.5;    // limiter ceiling: margin under -1 dBTP for the AAC encode
@@ -73,9 +74,15 @@ function speechBlocks(act, min = 0.9) {
 
 // ---------------------------------------------------------------- mix
 
-/** The sound an episode mixes with (sound.mjs Sound), or null for the house sound: its own `sound`, else the brand pack's. */
+/**
+ * The sound an episode mixes with (sound.mjs Sound), or null for the house sound: its own `sound`, else its style's
+ * preset (a styled reel), else the brand pack's.
+ */
 export function episodeSound(episode) {
-  if (episode.sound != null) return resolveSound(episode.sound, { where: 'episode.json "sound"' });
+  const canvas = episode.style != null;
+  if (episode.sound != null) return resolveSound(episode.sound, { where: 'episode.json "sound"', canvas });
+  const style = styleOf(episode.style);
+  if (style) return resolveSound(style.id, { where: `style "${style.id}"`, canvas });
   return resolveSound(BRAND.sound ?? null, { where: 'brand.json "sound"' });
 }
 
