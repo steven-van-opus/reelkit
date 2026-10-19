@@ -1,18 +1,18 @@
-// Expert Coach (id 'cozy', the cozy diorama style): every scene is a small warm set built from simple shapes for what
+// Lamplit diorama (id 'diorama'): every scene is a small warm set built from simple shapes for what
 // its line says (a floor in perspective, a pool of lamplight, the props the line needs), and the facts as objects in
 // the set: split-flap counters, gauges and dials, scales, paper cards and printouts. Its characters are its own soft
 // round pebbles in knit beanies, dressed for each role, and its motion is toy-box physics (things drop in, bounce and
 // settle). Each scene names its beat on a taped paper banner across the top (BANNER); the canvas look adds grain and a
 // vignette and sets the captions one serif word at a time on a terracotta paper chip. Its reference video is told in
-// chapters (cozy-reference.mjs), which reelkit draws a scene per set. Its identity (what every reel keeps) is told apart
+// chapters (reference.mjs), which reelkit draws a scene per set. Its identity (what every reel keeps) is told apart
 // from what each topic brings, so a new reel builds its own sets instead of the reference video's rooms. Every example
 // and every set of its reference passes the code-scene checks on the canvas stage (test/styles.test.mjs).
 
-import { COZY_REFERENCE } from './cozy-reference.mjs';
+import { DIORAMA_REFERENCE } from './reference.mjs';
 
 const FEEL = "A cosy miniature world built like a diorama. Every scene is a set built for its line, never a bare background (a room, a shop, a workshop, a street): a backdrop in a gradient from colors.floor at the top down to colors.wall (it never changes colour), a floor in perspective, and a lamp, fire or sun throwing a big soft pool of warm light (a radial gradient of #FFD08A at half opacity). Dress it with the props its line needs; a night window or clock is welcome dressing, never the same room again. Facts are objects in the set: split-flap counters (chalk flaps in a dark cardInk housing, each flipping round to its digit), gauges and dials whose needles swing and settle, scales, and chalk paper cards, tags and printouts for anything that would be a screen. Most scenes have one of this style's own pebbles, dressed for its role and reacting to the fact: an egg-shaped body in colors.rose, an accent knit beanie with a chalk pompom, dot eyes, blush cheeks; never a boxy or square mascot. Motion is toy-box physics: things drop in and land with a squash (spring, easeOutBack), needles overshoot and settle, flaps flip. colors.accent marks the one thing that matters.";
 
-// What every Expert Coach reel keeps, what its topic brings, and what it never copies from the reference video.
+// What every Lamplit diorama reel keeps, what its topic brings, and what it never copies from the reference video.
 const IDENTITY = {
   constant: [
     "This style's own pebble characters (an egg-shaped body in colors.rose, an accent knit beanie with a chalk pompom, dot eyes, blush cheeks), dressed for each role: a headset, a hard hat, a chef's apron",
@@ -52,9 +52,9 @@ const CONTRAST = {
 // Every scene, the opening too, draws its beat's headline itself: the reference video's chapters had the look draw it.
 const BANNER = 'Every scene, the opening too, names its beat in three or four words on the same taped banner across the top: a torn() strip of chalk centred around y 330, uppercase heavy sans at 60–66 px in cardInk, masking tape (#EADFC0) at each end.';
 
-export const COZY = {
-  id: 'cozy',
-  name: 'Expert Coach',
+export const DIORAMA = {
+  id: 'diorama',
+  name: 'Lamplit diorama',
   feel: `${FEEL} ${BANNER}`,
   identity: IDENTITY,
   contrast: CONTRAST,
@@ -66,9 +66,9 @@ export const COZY = {
   // Lamplit rooms at night, as the format's sets are: a night-indigo wall, rust paper (primary → colors.accent), gold
   // pebbles (accent → colors.rose) and cream text.
   palette: { primary: '#C9583A', accent: '#F2B441', ink: '#F7EFE1', background: '#1F2447' },
-  reference: COZY_REFERENCE,
+  reference: DIORAMA_REFERENCE,
   // A quiet, steady, beat-light bed about 12 LU under the voice that barely dips, and almost no effects.
-  sound: 'cozy',
+  sound: { mood: 'keys', bpm: [80, 88], mode: 'major', underVoiceLu: -12, duckDb: 3, breakAt: null, sfx: 'cozy', density: 'few' },
   opening: {
     title: 'A split-flap counter drops onto a sideboard at night and flips round to the number, while a pebble checks its phone',
     line: 'You unlock your phone 96 times a day.',
@@ -429,3 +429,5 @@ export const COZY = {
     },
   ],
 };
+
+export default DIORAMA;

@@ -1,4 +1,4 @@
-// Flat Vector's reference video (index.mjs `reference`): "How much of you is new today?", a big-question science
+// Flat vector's reference video (../index.mjs `reference`): "How much of you is new today?", a big-question science
 // short in eight scenes that climb one ladder of time, at the detail every video in the style should have: one hero
 // object per scene floating on the plum night with a soft glow and drifting dust, every shape shaded the same way (a
 // darker crescent on the side away from the light, one small highlight), this style's own beans for people, the
@@ -14,8 +14,8 @@
 // gut lining renews every 3–5 days (Darwich et al., Molecular Pharmaceutics, 2014); fat cells average about ten years
 // old, about a tenth renewed each year (Spalding et al., Nature, 2008); no neurons are added to the adult human
 // neocortex (Bhardwaj et al., PNAS, 2006); the fibre cells at the centre of the eye's lens form before birth and stay
-// (Lynnerup et al., PLoS ONE, 2008). A new Flat Vector video remakes it. Each scene names its
-// place (a new hero per scene, the last a bookend of the first), which a new video never copies (guide.mjs
+// (Lynnerup et al., PLoS ONE, 2008). A new Flat vector video remakes it. Each scene names its
+// place (a new hero per scene, the last a bookend of the first), which a new video never copies (../guide.mjs
 // lookGuide). Bump the id when the video changes (a place is text only: it changes no frame).
 //
 // Every scene's code stands alone, so each spells out the same small kit (FLAT_KIT, written into it below): on(t, d),
@@ -27,7 +27,7 @@
 // big soft radial glow and the drifting dust, FLAT_DUST); flatHead draws the ladder tag and the row of scene dots;
 // flatBig, the huge number and its unit line.
 
-/** The kit every Flat Vector scene starts from (see above), indented for a scene's body. */
+/** The kit every Flat vector scene starts from (see above), indented for a scene's body. */
 export const FLAT_KIT = String.raw`const on = (t, d) => easeOut(clamp((time - t) / (d || 0.5)));
   const Orb = ({ id, x, y, r, c, children }) => <g>
     <clipPath id={id}><circle cx={x} cy={y} r={r}/></clipPath>

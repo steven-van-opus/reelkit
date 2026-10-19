@@ -10,8 +10,8 @@
 //
 //   --brief "…"     producer notes for the writer: the angle, what to stress
 //                   (with --url or --news; with --episode it replaces the stored one)
-//   --style <id>    design every scene in code in a style (src/styles/: blueprint, isometric, cozy, timelapse,
-//                   doodle, flat, terminal, atlas); with --url, --news or --auto
+//   --style <id>    design every scene in code in a style (src/styles/: blueprint, diorama, doodle, flat,
+//                   isometric, map, terminal, timelapse); with --url, --news or --auto
 //   --date          the story's date for --url when the page doesn't say (default: its published date, else today)
 //   --pick-only     print what --auto would make and stop
 //   --no-render     stop after voice + mix (check timing before spending minutes on frames)

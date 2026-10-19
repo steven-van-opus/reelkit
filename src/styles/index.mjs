@@ -13,12 +13,14 @@
 //     platform UI covers the edges and the captions are drawn in CAPTION_BAND (y 1300–1470).
 //   - `colors` come from the style's palette: `wall` the background, `floor` a deeper tone of it, `ink` text on the
 //     background, `chalk` cards and paper, `cardInk` text on chalk, `accent` the primary highlight, `rose` the
-//     secondary accent, `blush` a soft tint of the accent (canvas.mjs canvasColors).
+//     secondary accent, `blush` a soft tint of the accent (src/canvas.mjs canvasColors).
 //   - The same helpers as every code scene (at, clamp, ease*, spring, interpolate, range, torn, <Mark/> for logos,
 //     land() and geo() for maps: src/code/map/kit.mjs).
 //
-// To add a style: write src/styles/<id>.mjs exporting its CanvasStyle, import it and add `<id>: <STYLE>,` below (the
-// key is the style's id), and give it a sound preset (src/audio/sound.mjs SOUNDS) of the same name.
+// One folder per style, registered by being there: src/styles/<id>/style.mjs default-exports its CanvasStyle (its id
+// is the folder's name), usually with its reference video beside it in reference.mjs. Its sound preset is its own
+// `sound`, which src/audio/sound.mjs offers under the style's id. A style is named after what it looks like (Lamplit
+// diorama, Blueprint HUD, Terminal), never what it's for or whose format it follows. docs/STYLES.md has the steps.
 
 /**
  * How the canvas look draws the spoken words in the style's band (CAPTION_BAND).
@@ -54,35 +56,30 @@
  *   reference?: import('./reference.mjs').ReferenceVideo,
  *   frame: { captions: CaptionTreatment, grain: boolean, vignette: boolean },
  *   palette: { primary: string, accent: string, ink: string, background: string },
- *   sound: string,
+ *   sound: import('../audio/sound.mjs').SoundPreset,
  * }} CanvasStyle
  *   `feel`: the visual language, written to the writer (materials, type, colour, layout habits, motion, pacing).
  *   `contrast`: a second reel in the style on another topic, outlined as text for the writer (never drawn).
  *   `opening` and `examples`: scenes to design from for a style without a reference video; a style with one keeps
- *   them only as its first designs. `reference`: a whole reel in the style that a new reel remakes. `sound`: its
- *   sound preset (src/audio/sound.mjs SOUNDS).
+ *   them only as its first designs. `reference`: a whole reel in the style that a new reel remakes. `sound`: how
+ *   reels in it sound (src/audio/sound.mjs SoundPreset), its sound preset under its id.
  */
 
-import { ATLAS } from './atlas.mjs';
-import { BLUEPRINT } from './blueprint.mjs';
-import { COZY } from './cozy.mjs';
-import { DOODLE } from './doodle.mjs';
-import { FLAT } from './flat.mjs';
-import { ISOMETRIC } from './isometric.mjs';
-import { TERMINAL } from './terminal.mjs';
-import { TIMELAPSE } from './timelapse.mjs';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath, pathToFileURL } from 'url';
 
-/** @type {Record<string, CanvasStyle>} */
-export const STYLES = {
-  blueprint: BLUEPRINT,
-  isometric: ISOMETRIC,
-  cozy: COZY,
-  timelapse: TIMELAPSE,
-  doodle: DOODLE,
-  flat: FLAT,
-  terminal: TERMINAL,
-  atlas: ATLAS,
-};
+const here = path.dirname(fileURLToPath(import.meta.url));
+
+/** @type {Record<string, CanvasStyle>} Every style folder's, by id (the folder's name), in name order. */
+export const STYLES = {};
+for (const dir of fs.readdirSync(here, { withFileTypes: true }).filter(d => d.isDirectory()).map(d => d.name).sort()) {
+  const file = path.join(here, dir, 'style.mjs');
+  if (!fs.existsSync(file)) continue;
+  const style = (await import(pathToFileURL(file).href)).default;
+  if (style?.id !== dir) throw new Error(`styles/${dir}/style.mjs must default-export a style whose id is "${dir}"`);
+  STYLES[dir] = style;
+}
 
 export const STYLE_IDS = Object.keys(STYLES);
 

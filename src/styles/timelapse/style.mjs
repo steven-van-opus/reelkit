@@ -5,7 +5,7 @@
 // same all video, on a dark gradient above the serif captions. Its identity (IDENTITY: what every video keeps) is told
 // apart from what each topic brings, so a new video picks its own place, never the reference video's room.
 
-import { TIMELAPSE_REFERENCE } from './timelapse-reference.mjs';
+import { TIMELAPSE_REFERENCE } from './reference.mjs';
 
 const OPENING = {
   title: 'The question over a lamp-lit bedroom: the clock spins through a day and night while the sleeper behind the desk droops',
@@ -393,10 +393,12 @@ export const TIMELAPSE = {
   examples: EXAMPLES,
   reference: TIMELAPSE_REFERENCE,
   frame: { captions: { kind: 'serif', font: 'serif', weight: 600, size: 58, upper: false, color: 'chalk', highlight: 'accent', dim: 0.55 }, grain: false, vignette: true },
-  // A teal-painted room: the wall's floor (canvas.mjs canvasColors) lands near its dark teal HUD backdrop,
+  // A teal-painted room: the wall's floor (src/canvas.mjs canvasColors) lands near its dark teal HUD backdrop,
   // and the gold title still reads on the wall. Coral stays off the wall as text (about 2.5:1).
   palette: { background: '#2C5F5A', ink: '#FBF3E6', primary: '#E9A84C', accent: '#E07A5F' },
   // A low-passed, music-forward pulse, clock ticks on the beat as time races, swishes on each stage, and the music
-  // drops out under the payoff: about 10 effects per 10 s with the voice over them (src/audio/sound.mjs SOUNDS.timelapse).
-  sound: 'timelapse',
+  // drops out under the payoff: about 10 effects per 10 s with the voice over them.
+  sound: { mood: 'pulse', bpm: [120, 130], mode: 'minor', underVoiceLu: -7, duckDb: 3, breakAt: 'payoff', sfx: 'timelapse', density: 'some' },
 };
+
+export default TIMELAPSE;

@@ -1,4 +1,4 @@
-// Atlas (id 'atlas'): a style (index.mjs) for "why does X exist?" map documentaries, the format that
+// Moving map (id 'map'): a style (../index.mjs) for "why does X exist?" map documentaries, the format that
 // explains a strange border, an enclave, a split or a purchase with a map that moves: the odd shape, a pull back to
 // where it is, a starting date, the key event, the deal drawn as a line on the map, the consequence today and a
 // kicker. Every scene is a view of one clean modern map (a pale sea with a faint graticule, land in chalk with a thin
@@ -10,17 +10,17 @@
 // map does: cardInk on land, ink on the sea, never the accent or rose). Countries are drawn only with the map kit
 // (land() and geo(), src/code/map/kit.mjs: real Natural Earth outlines, never traced by hand), every country in
 // view under each scene. It copies the format only, never another creator's figures, map styling, logos, title cards
-// or catchphrases. Its reference video ("Why does Lesotho exist?", atlas-reference.mjs, with the camera and kit every
+// or catchphrases. Its reference video ("Why does Lesotho exist?", reference.mjs, with the camera and kit every
 // scene spells out) is what the writer remakes; its identity (IDENTITY) is told apart from what
 // each topic brings, so a new video maps its own region, never Lesotho. Every scene passes the code-scene checks on
 // the canvas stage with its own line (test/styles.test.mjs).
 
-import { isReferenceHold } from './reference.mjs';
-import { ATLAS_REFERENCE } from './atlas-reference.mjs';
+import { isReferenceHold } from '../reference.mjs';
+import { MAP_REFERENCE } from './reference.mjs';
 
 const FEEL = `A storyteller's atlas: a clean map on a pale sea (colors.wall, a faint graticule), land in colors.chalk with a thin coastline in colors.cardInk at 30%. Each scene is a new map view of the whole frame, wide for where or close on a border, river or city. Start from the reference's camera and kit; draw land only with land(): <Land/> is every country in view, L(['FR', 'DE']) real outlines (ISO codes) to colour, and P(lon, lat) places every city, arrow and figure; never trace a coastline by hand (a river along a border is that stretch of L(), clipped). Territory is colour: the subject in colors.accent at 70%, spreading from its capital as a growing clip circle; its rival in colors.rose; disputed land hatched with thin diagonals. Movement is fat curved arrows drawing themselves on. Cities are dots with uppercase serif labels; place names are italic serif, colors.cardInk on land, colors.ink on sea (drawn before the land); no words in accent or rose (underline the subject's name in accent). Every scene keeps the date cartouche at the top left (ticking from the last scene's year, or TODAY) and <Scale/>, the scale bar over the sea-toned margin the captions sit on. People are this style's own round-head figures with a sash in their side's colour, fading in once the camera settles, each with a blunt one-line speech bubble ("We'll take the river."). Camera moves are the transitions: pan and zoom from the last view, easeInOut over about a second. Nothing bounces.`;
 
-// What every Atlas video keeps, what its topic brings, and what it never copies from the reference video.
+// What every moving map video keeps, what its topic brings, and what it never copies from the reference video.
 const IDENTITY = {
   constant: [
     "A storyteller's map as the whole frame: a pale sea in colors.wall with a faint graticule, land in colors.chalk with a thin coastline in colors.cardInk at 30%, and the camera always somewhere over it",
@@ -59,23 +59,23 @@ const CONTRAST = {
   ],
 };
 
-// A style with a reference video doesn't give the writer its opening and examples (guide.mjs lookGuide), and Atlas
+// A style with a reference video doesn't give the writer its opening and examples (../guide.mjs lookGuide), and the moving map
 // was made with its reference from the start: its opening is the reference's own first scene and it keeps no separate
-// examples (index.mjs `reference`).
-const [hook] = ATLAS_REFERENCE.beats;
-// Atlas's reference isn't told in chapters, so its first beat is a shot with a scene of its own, never a hold.
-if (isReferenceHold(hook)) throw new Error("Atlas's reference must open on a scene of its own");
+// examples (../index.mjs `reference`).
+const [hook] = MAP_REFERENCE.beats;
+// The moving map's reference isn't told in chapters, so its first beat is a shot with a scene of its own, never a hold.
+if (isReferenceHold(hook)) throw new Error("the moving map's reference must open on a scene of its own");
 const OPENING = { title: hook.label, line: hook.line, source: hook.source };
 
-export const ATLAS = {
-  id: 'atlas',
-  name: 'Atlas',
+export const MAP = {
+  id: 'map',
+  name: 'Moving map',
   feel: FEEL,
   identity: IDENTITY,
   contrast: CONTRAST,
   opening: OPENING,
   examples: [],
-  reference: ATLAS_REFERENCE,
+  reference: MAP_REFERENCE,
   // A quiet serif line on a light paper grain, the word being said in the accent; no vignette (it muddies a light map).
   // The line sits on the map's sea-toned foot (the kit's Scale draws it), so it reads in any brand's colours.
   frame: {
@@ -92,6 +92,8 @@ export const ATLAS = {
   // resolves on (music.mjs's ambient bed always ends on I add9), about 11 LU under the voice with a gentle 6 dB dip
   // under speech. (At 12 LU and 4 dB, this minor bed's first pluck dies away before the pad swells in and the hook
   // opens on 0.22 s of near-silence.) The camera moves are the map's own: nothing whooshes on them, only the cozy set's
-  // soft chime as the closing ask's keyword lands (src/audio/sound.mjs SOUNDS.atlas).
-  sound: 'atlas',
+  // soft chime as the closing ask's keyword lands.
+  sound: { mood: 'ambient', bpm: [90, 100], mode: 'minor', underVoiceLu: -11, duckDb: 6, breakAt: null, sfx: 'cozy', density: 'few' },
 };
+
+export default MAP;

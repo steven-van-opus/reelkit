@@ -1,4 +1,4 @@
-// Deadpan Doodle's reference video (index.mjs `reference`): "Why you stay up too late", a deadpan stick-figure
+// Felt-tip doodle's reference video (../index.mjs `reference`): "Why you stay up too late", a deadpan stick-figure
 // explainer of revenge bedtime procrastination in eight drawings on one white page, at the detail every video in the
 // style should have: the page and its wobbly ground stroke, this style's own stick figures (the one who is "you" in
 // the red-pen scarf), hand-printed labels with curved arrows, the red pen circling, crossing out and filling the one
@@ -6,8 +6,8 @@
 // the thing, the official version, the honest one, a crude chart, the escalation, the fix and a dry callback. Its
 // facts are plain ones: "bedtime procrastination" is failing to go to bed when you meant to with nothing stopping you
 // (Kroese et al., Frontiers in Psychology, 2014), the "revenge" name spread online in 2020, and an hour a night for a
-// week is seven hours, a whole night's sleep. A new Deadpan Doodle video remakes it. Each scene
-// names its place (the drawing it is set in, a new one per scene), which a new video never copies (guide.mjs
+// week is seven hours, a whole night's sleep. A new Felt-tip doodle video remakes it. Each scene
+// names its place (the drawing it is set in, a new one per scene), which a new video never copies (../guide.mjs
 // lookGuide). Bump the id when the video changes (a place is text only: it changes no frame).
 //
 // Every scene's code stands alone, so each spells out the same small kit (DOODLE_KIT, written into it below): J, the

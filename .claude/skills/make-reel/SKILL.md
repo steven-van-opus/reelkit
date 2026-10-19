@@ -39,8 +39,8 @@ npm run doctor
 | An existing episode folder | skip to step 4 |
 
 Add `--style <id>` when they want a style (`npm run style` lists them: a
-blueprint HUD, isometric systems, cozy dioramas, a low-poly time-lapse, deadpan
-doodles, flat-vector science, a developer speedrun, a moving map). A styled
+blueprint HUD, a lamplit diorama, felt-tip doodles, flat vector, isometric
+worlds, a moving map, a terminal, a low-poly time-lapse). A styled
 reel's scenes are all designed in code; it runs about 30–55 s.
 
 Add `--brief "<angle, audience, what to stress or avoid>"` when they told you

@@ -126,15 +126,16 @@ reel** bakes it in.
 
 A reel can also be made in a style: a whole look the writer designs every
 scene in, as code, instead of filling the paper or studio scenes. There are
-eight: `blueprint` (a technical HUD), `isometric` (systems as little isometric
-worlds), `cozy` (lamplit dioramas), `timelapse` (one low-poly room as time
-races), `doodle` (deadpan stick figures), `flat` (flat-vector science),
-`terminal` (a developer's screen against the clock) and `atlas` (a map that
-moves). Each comes with a reference video the writer remakes for your story.
+eight, each named after what it looks like: `blueprint` (a technical HUD),
+`diorama` (lamplit miniature dioramas), `doodle` (felt-tip stick figures),
+`flat` (flat vector shapes), `isometric` (systems as little isometric worlds),
+`map` (a map that moves), `terminal` (a developer's screen against the clock)
+and `timelapse` (one low-poly room as time races). Each comes with a reference
+video the writer remakes for your story.
 
 ```sh
-npm run reel -- --url <https://…> --style atlas
-npm run style -- atlas      # the style's reference video as a test episode, to voice and render
+npm run reel -- --url <https://…> --style map
+npm run style -- map        # the style's reference video as a test episode, to voice and render
 ```
 
 ![The eight styles' reference videos](docs/styles.jpg)

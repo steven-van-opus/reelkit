@@ -33,8 +33,11 @@ const scenesOf = style => [
   ...style.examples,
 ];
 
-test('every style is whole: its id, identity, reference video, sound preset, palette and caption frame', () => {
+test('every style is whole: its folder, id, identity, reference video, sound, palette and caption frame', () => {
   assert.deepEqual(STYLE_IDS, Object.keys(STYLES));
+  // One folder per style, each registered by its style.mjs (its id the folder's name).
+  const folders = fs.readdirSync(path.join(ROOT, 'src/styles'), { withFileTypes: true }).filter(d => d.isDirectory()).map(d => d.name).sort();
+  assert.deepEqual(STYLE_IDS, folders);
   for (const [id, style] of Object.entries(STYLES)) {
     assert.equal(style.id, id, 'its key is its id');
     assert.equal(styleOf(id), style);
@@ -47,9 +50,9 @@ test('every style is whole: its id, identity, reference video, sound preset, pal
       assert.ok(b.place && b.place.length <= 60, `${id}: ${b.label} has a place`);
       assert.ok(b.label.length <= STYLE_LIMITS.label, `${id}: ${b.label}`);
     }
-    // Its sound is the preset of the same name.
-    assert.equal(style.sound, id, `${id}: its sound preset`);
-    assert.ok(SOUNDS[id], `${id}: SOUNDS.${id}`);
+    // Its sound is its own, offered as the preset of its id.
+    assert.ok(style.sound && style.sound.mood && style.sound.sfx, `${id}: its sound`);
+    assert.equal(SOUNDS[id], style.sound, `${id}: SOUNDS.${id}`);
     // Its colours read: text on the wall, text on a card.
     const colors = canvasColors(style.palette);
     assert.ok(contrastRatio(colors.ink, colors.wall) >= 4.5, `${id}: ink on the wall is ${contrastRatio(colors.ink, colors.wall).toFixed(2)}:1`);
@@ -95,9 +98,9 @@ test('every style\'s reference video is a valid styled episode, mixed with its o
     assert.equal(sound.music === null, SOUNDS[id].musicOn === false, id);
   }
   // A style that doesn't exist, and a styled reel with a scene that isn't code, are refused.
-  const atlas = applyHouseCta(referenceEpisode(STYLES.atlas));
-  assert.match((await checkEpisode({ ...atlas, style: 'nope' }, { media: null })).errors.join('\n'), /style "nope" must be one of/);
-  const fixed = { ...atlas, beats: atlas.beats.map((b, i) => (i === 2 ? { ...b, scene: 'stat', props: { value: '1' } } : b)) };
+  const map = applyHouseCta(referenceEpisode(STYLES.map));
+  assert.match((await checkEpisode({ ...map, style: 'nope' }, { media: null })).errors.join('\n'), /style "nope" must be one of/);
+  const fixed = { ...map, beats: map.beats.map((b, i) => (i === 2 ? { ...b, scene: 'stat', props: { value: '1' } } : b)) };
   assert.match((await checkEpisode(fixed, { media: null })).errors.join('\n'), /beat 3 \(stat\): unknown scene 'stat' \(known: cta, hook, code\)/);
 });
 

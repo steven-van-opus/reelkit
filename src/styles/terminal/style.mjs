@@ -1,4 +1,4 @@
-// Speedrun (id 'terminal'): a style (index.mjs) for fast, dry developer explainers told against the
+// Terminal (id 'terminal'): a style (../index.mjs) for fast, dry developer explainers told against the
 // clock, the short-form "a dev topic in under a minute" format, in its own look. A developer's screen late at
 // night: a near-black wall with a faint dot grid, at most two floating panes in a scene (an editor, a terminal, a
 // browser, a request inspector) with a hard accent shadow, short real code that types itself in, diagrams in the same
@@ -6,15 +6,15 @@
 // the same top bar: a "> speedrun <topic>" prompt line and a countdown chip that runs from the video's own length to
 // 00:00 across the whole video. Nothing in it is another creator's: no flame or orange-on-black brand, no "in 100
 // seconds" series name, no meme images or sounds (reactions are drawn as type). Its reference video (webhooks,
-// terminal-reference.mjs) is what the writer remakes; its identity (IDENTITY) is told apart from what each topic brings, so a new video
+// reference.mjs) is what the writer remakes; its identity (IDENTITY) is told apart from what each topic brings, so a new video
 // builds its own panes, files and commands, never the webhook scenes. Every scene passes the code-scene checks on the
 // canvas stage with its own line (test/styles.test.mjs).
 
-import { clockOf, CODE, GLITCH, PANE, TERMINAL_REFERENCE, topBar } from './terminal-reference.mjs';
+import { clockOf, CODE, GLITCH, PANE, TERMINAL_REFERENCE, topBar } from './reference.mjs';
 
 const FEEL = `A developer's screen late at night, explained against the clock. The wall: colors.wall with a faint 60 px dot grid. Every scene carries the same top bar: a mono prompt line at the top left ("> speedrun git rebase", 36 px, ink at 60%, the ">" in colors.accent; the topic at most 20 characters, like "> speedrun rsc") and a countdown chip at the top right running from the video's length (rounded to 5 s) to 00:00 in the last line, each scene an equal share, over a draining accent bar. Below, at most two floating panes: a code editor (a file tab, dim line numbers, keywords in colors.accent, strings in colors.rose, the line talked about on an accent bar), a terminal (a "$" prompt, commands typing at 45 characters a second, output line by line, a blinking block cursor), a browser or a request inspector. Panes are colors.floor, tilted 1–2°, with a hard accent shadow offset 14 px. Code is short, real and runnable: 3–9 lines of mono at 34–36 px, under 36 characters a line, indent included. Between panes, diagrams in the same mono type: chips, arrows, a packet travelling. Logos slam in as <Mark> stamps. For a joke, cut to a reaction card: a huge verdict in heavy sans (110–180 px), tilted −4°, in colors.rose. Numbers count in mono. Motion is snappy: panes slide up 80 px in 0.25 s, words punch from 120%, every scene opens on a two-frame glitch. Never a slow fade.`;
 
-// What every Speedrun video keeps, what its topic brings, and what it never copies from the reference video.
+// What every Terminal video keeps, what its topic brings, and what it never copies from the reference video.
 const IDENTITY = {
   constant: [
     "A developer's screen late at night: the wall in colors.wall with a faint 60 px dot grid",
@@ -52,8 +52,8 @@ const CONTRAST = {
   ],
 };
 
-// The opening and examples, kept as every style keeps them (index.mjs `reference`). With a reference video, the
-// writer doesn't see them (guide.mjs lookGuide), so the moves only they show (a regex explained token by token, a <Mark> stamp over an editor, a browser pane, two stacks
+// The opening and examples, kept as every style keeps them (../index.mjs `reference`). With a reference video, the
+// writer doesn't see them (../guide.mjs lookGuide), so the moves only they show (a regex explained token by token, a <Mark> stamp over an editor, a browser pane, two stacks
 // compared) reach the writer only as the feel's words. The tests check them like the reference's scenes.
 const OPENING = {
   title: 'The name slams in with an accent and a rose ghost, then a pattern pane: each token of a regex pops in with its meaning under it, and two test strings pass and fail',
@@ -219,7 +219,7 @@ const EXAMPLES = [
 
 export const TERMINAL = {
   id: 'terminal',
-  name: 'Speedrun',
+  name: 'Terminal',
   feel: FEEL,
   identity: IDENTITY,
   contrast: CONTRAST,
@@ -227,7 +227,7 @@ export const TERMINAL = {
   examples: EXAMPLES,
   reference: TERMINAL_REFERENCE,
   // Sans captions until a mono face is bundled: the mono is a system font chain that sets differently from machine to
-  // machine (canvas.mjs canvasFont), and a caption line must fit its band.
+  // machine (src/canvas.mjs canvasFont), and a caption line must fit its band.
   frame: { captions: { kind: 'line-left', font: 'sans', weight: 800, size: 58, upper: false, color: 'ink', highlight: 'accent', dim: 0.4 }, grain: false, vignette: false },
   // A terminal's colours: phosphor green for the prompt, cursor, clock, shadows, keywords and the caption highlight
   // (primary → colors.accent), editor-string yellow for strings and the verdicts (accent → colors.rose), in a neutral
@@ -235,5 +235,7 @@ export const TERMINAL = {
   palette: { primary: '#4ADE80', accent: '#F4E35C', ink: '#E8ECEF', background: '#0D1014' },
   // A synth pulse under a voice that never stops, barely ducked, that drops out under the payoff; interface blips as
   // each pane lights up, a scan into the opening and a double blip on the keyword.
-  sound: 'terminal',
+  sound: { mood: 'pulse', bpm: [120, 128], mode: 'minor', underVoiceLu: -9, duckDb: 3, breakAt: 'payoff', sfx: 'interface', density: 'some' },
 };
+
+export default TERMINAL;

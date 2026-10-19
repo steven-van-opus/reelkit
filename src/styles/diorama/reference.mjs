@@ -1,20 +1,21 @@
-// Expert Coach's reference video (reference.mjs): "Let AI draft your weekly update", told in chapters the way the
+// Lamplit diorama's reference video (../reference.mjs): "Let AI draft your weekly update", told in chapters the way the
 // style's coach tells a tip: one continuous take on the coach's skeleton (a hook with a number, "That's
 // because", "So", "Then", "And get this", "But", "Which means"), seven chapters under a taped headline banner (which
-// a reelkit scene draws itself, cozy.mjs BANNER), and one protagonist, Bea, a pebble team lead in a lanyard, writing her Friday update in every chapter.
+// a reelkit scene draws itself, style.mjs BANNER), and one protagonist, Bea, a pebble team lead in a lanyard,
+// writing her Friday update in every chapter.
 // Each set is a place built from the topic (an attic study, a farmhouse kitchen, a craft table by a wood stove, an
 // office under the stairs, a hallway doorframe, a pantry shelf), the first coming back as a bookend; two sets are held
-// across a second sentence (reelkit draws a scene per set, reference.mjs referenceSets). No scene of it draws the
+// across a second sentence (reelkit draws a scene per set, ../reference.mjs referenceSets). No scene of it draws the
 // banner: in chapters, the look did. Its facts: Noy and Zhang, "Experimental evidence on the productivity effects of generative artificial
 // intelligence", Science, 14 July 2023 (453 professionals, writing time down 40%, quality up 18% as graded blind by
 // experienced professionals in the same occupations; MIT News, 14 July 2023), and their March 2023 MIT working paper
 // (time spent before AI: about a quarter brainstorming, half on the rough draft, a quarter editing). The three parts
-// follow the common Progress, Plans, Problems status format. A new Expert Coach video remakes it.
-// Each set names its place, which a new video never copies (guide.mjs lookGuide). Bump the id when the video
+// follow the common Progress, Plans, Problems status format. A new Lamplit diorama video remakes it.
+// Each set names its place, which a new video never copies (../guide.mjs lookGuide). Bump the id when the video
 // changes (a place is text only: it changes no frame).
 
-export const COZY_REFERENCE = {
-  id: 'cozy-2',
+export const DIORAMA_REFERENCE = {
+  id: 'diorama-2',
   title: 'Let AI draft your weekly update',
   caption: 'One prompt turns a week of messy notes into your update. What’s on your stuck list?',
   layout: 'chapters',

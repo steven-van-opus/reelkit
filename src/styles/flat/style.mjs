@@ -1,21 +1,21 @@
-// Flat Vector (id 'flat'): a style (index.mjs) for big-question science shorts, the "what if / why / how"
+// Flat vector (id 'flat'): a style (../index.mjs) for big-question science shorts, the "what if / why / how"
 // format: a question and one striking number, a cascade of consequences up a ladder of time or scale, a twist and an
 // awe close. Every scene is one hero object from the topic (a planet, a cell, an organ, a machine) floating big on a
 // deep plum night in flat vector: smooth shapes with no outlines, each shaded the same way (a darker crescent on the
 // side away from the light, one small highlight), a soft glow and drifting dust behind. Its people are its own beans;
 // the ladder tag at the top left carries the step in time or scale; numbers are the climax; the camera pushes in and
 // pulls back between ideas. It copies the format only: no birds or any other channel's creatures, logos, end cards or
-// palette (ours is plum, sun yellow and mint). Its reference video ("How much of you is new today?", flat-reference.mjs,
+// palette (ours is plum, sun yellow and mint). Its reference video ("How much of you is new today?", reference.mjs,
 // with the kit every scene spells out) is what the writer remakes; the opening and examples below
 // are kept as every style keeps them, unused while it has one. Its identity (IDENTITY: what every video keeps) is told
 // apart from what each topic brings, so a new video floats its own hero objects, never the reference's cells. Every
 // scene passes the code-scene checks on the canvas stage with its own line (test/styles.test.mjs).
 
-import { FLAT_KIT, FLAT_REFERENCE, flatBig, flatHead, flatSky, tagWidth } from './flat-reference.mjs';
+import { FLAT_KIT, FLAT_REFERENCE, flatBig, flatHead, flatSky, tagWidth } from './reference.mjs';
 
 const FEEL = `Big-question science in flat vector on a deep plum night. Paint colors.wall edge to edge, a soft radial glow (colors.accent or colors.rose, brightest stop 0.24) and 40–60 drifting dust dots. Every scene is one hero object from the topic, floating big mid-stage with air around it: a planet, a cell, an organ, a machine. Build it from smooth geometric shapes with no outlines, shaded one way: its flat colour, colors.cardInk at 30% over it, then the same shape offset a tenth of its size toward the top left, all clipped to the shape, so a darker crescent stays on the far side; then one small chalk highlight. People are this style's own beans: capsules 60–500 px tall in palette tints, two chalk eyes with dark pupils, no limbs, alone or in crowds of 3 to 40. Every scene starts with the ladder tag at the top left, the step in time or scale ("EVERY SECOND", "× 1,000": uppercase sans 800, 36 px, colors.wall on a colors.accent tag, corners 12), and one dot per scene at the top right, lit up to this one. Numbers are the climax: heavy sans 150–230 px in colors.accent over a unit line. Labels sit on chalk tags with a leader line. The camera is the transition: pull back from inside the hero, or push in until it fills the frame (easeInOut). Things breathe (scale 1 ± 0.02), orbit, pulse and drift; never an outline, a hard cut or a bounce.`;
 
-// What every Flat Vector video keeps, what its topic brings, and what it never copies from the reference video.
+// What every Flat vector video keeps, what its topic brings, and what it never copies from the reference video.
 const IDENTITY = {
   constant: [
     'Flat vector on a deep plum night (colors.wall edge to edge): a big soft radial glow, tiny drifting dust, and smooth geometric shapes with no outlines',
@@ -54,8 +54,8 @@ const CONTRAST = {
   ],
 };
 
-// The opening and examples, kept as every style keeps them (index.mjs `reference`). With a reference video, the
-// writer doesn't see them (guide.mjs lookGuide), so the moves only they show (a tunnel through a planet, a heart's beat, a pull back across space, a push into a drop) reach
+// The opening and examples, kept as every style keeps them (../index.mjs `reference`). With a reference video, the
+// writer doesn't see them (../guide.mjs lookGuide), so the moves only they show (a tunnel through a planet, a heart's beat, a pull back across space, a push into a drop) reach
 // the writer only as the feel's words. The tests check them like the reference's scenes.
 const OPENING = {
   title: 'The planet cut open like a fruit, a tunnel straight through its core: a bean on top drops a ball, it falls through and pops out the far side as the ladder tag counts the minutes',
@@ -196,7 +196,7 @@ const EXAMPLES = [
 
 export const FLAT = {
   id: 'flat',
-  name: 'Flat Vector',
+  name: 'Flat vector',
   feel: FEEL,
   identity: IDENTITY,
   contrast: CONTRAST,
@@ -213,5 +213,7 @@ export const FLAT = {
   // An ambient pad and plucked arpeggio, minor-leaning (the default style bed is major), that dips under the curious
   // voice and swells in its pauses; interface blips as each step up the ladder lights, a scan into the opening and a
   // chime on the twist's payoff.
-  sound: 'flat',
+  sound: { mood: 'ambient', bpm: [84, 96], mode: 'minor', underVoiceLu: -10, duckDb: 5, breakAt: null, sfx: 'interface', density: 'some' },
 };
+
+export default FLAT;

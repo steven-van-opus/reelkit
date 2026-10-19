@@ -82,7 +82,7 @@ export function episodeSound(episode) {
   const canvas = episode.style != null;
   if (episode.sound != null) return resolveSound(episode.sound, { where: 'episode.json "sound"', canvas });
   const style = styleOf(episode.style);
-  if (style) return resolveSound(style.sound, { where: `style "${style.id}"`, canvas });
+  if (style) return resolveSound(style.id, { where: `style "${style.id}"`, canvas });
   return resolveSound(BRAND.sound ?? null, { where: 'brand.json "sound"' });
 }
 

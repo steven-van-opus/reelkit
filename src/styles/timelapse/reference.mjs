@@ -1,11 +1,11 @@
-// Low-poly time-lapse's reference video (index.mjs `reference`): a body-limit question, "How long can you go
+// Low-poly time-lapse's reference video (../index.mjs `reference`): a body-limit question, "How long can you go
 // without food?", told in one place chosen for it, an eat-in kitchen held by a fixed camera (pushing in twice, on the
 // fridge), while the counter races from 0 hours to 382 days and the stages escalate: a first threshold, a safe limit,
 // the body adapting, danger, an extreme case and a verdict. Escalation shows in the room's state, never in a new set:
 // the light, the character (cheerful, yawning, tired, propped up, slumped, then beaming over breakfast), the fridge
 // door, and the chalkboard panel on it, wiped for one graphic per beat. A FUN FACT footer about a named real person
 // stays the same in every scene. Every scene names the same place, word for word, as a writer names a set it stays in
-// (guide.mjs): the one place a new video never copies (guide.mjs lookGuide). Each scene's code stands
+// (../guide.mjs): the one place a new video never copies (../guide.mjs lookGuide). Each scene's code stands
 // alone, so each spells out the room and character with two tiny helpers, F (a facet) and R (a rect).
 // Its numbers and their sources:
 //   - Stored sugar (glycogen) is used up after about 24 hours without food; fat then breaks down into fatty acids that

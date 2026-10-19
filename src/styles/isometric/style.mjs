@@ -1,7 +1,7 @@
-// The 'Isometric network' style (index.mjs): systems explained as small isometric worlds on deep navy,
+// The 'Isometric' style (../index.mjs): systems explained as small isometric worlds on deep navy,
 // where blocks light up and packets travel glowing paths between them, a step tracker across the top. Its reference
 // video (REFERENCE below, eight scenes) is what a new video remakes; the opening and
-// examples stay until every style has a reference (index.mjs). Its identity (IDENTITY: what every video keeps) is
+// examples stay until every style has a reference (../index.mjs). Its identity (IDENTITY: what every video keeps) is
 // told apart from what each topic brings, so a new video draws its own system, never the reference's network. Every
 // scene draws the whole 1080 × 1920 frame and passes the code-scene checks on the canvas stage
 // (test/styles.test.mjs).
@@ -225,7 +225,7 @@ ${kit(540, 690, 48)}
   </svg>;
 }`;
 
-// The style's reference video (reference.mjs): "How Shazam hears your song", one real system everyone has used,
+// The style's reference video (../reference.mjs): "How Shazam hears your song", one real system everyone has used,
 // told stage by stage under a step tracker (LISTEN · MAP · CODES · SEND · MATCH) that stays on screen, every scene on
 // the whole frame in the kit above and a new set per stage. A new video in this style remakes it.
 // The tracker every scene draws: a stop lights once `k` (0–4, the scene's own) reaches it; the readout on the right.
@@ -521,7 +521,7 @@ const REFERENCE = {
   ],
 };
 
-// What every Isometric network video keeps, what its topic brings, and what it never copies from the reference video.
+// What every Isometric video keeps, what its topic brings, and what it never copies from the reference video.
 const IDENTITY = {
   constant: [
     'Small isometric worlds on deep navy: 2:1 projection on a raised plinth, built from the kit (P(), Box, Ring, Tag), every block with three shaded faces',
@@ -558,7 +558,7 @@ const CONTRAST = {
 
 export const ISOMETRIC = {
   id: 'isometric',
-  name: 'Isometric network',
+  name: 'Isometric',
   identity: IDENTITY,
   contrast: CONTRAST,
   feel: `Systems drawn as small isometric worlds on deep navy: calm and precise, like an engineering diagram that comes alive. Paint the whole frame: a faint isometric floor grid fading out at the top and under the captions, then a raised plinth carrying a small world built for its line. Everything is in 2:1 isometric projection with three shaded faces (copy the kit: P() projects a point, Box draws a block, Ring a glow ring, Tag a label): the topic's own buildings, machines, devices and cards lying flat, each built from a few blocks. One accent does the lighting (colors.accent, cyan by default): a block's top glows when it's named, glowing paths join blocks along the grid, and a bright packet (a chalk dot in a soft halo) travels them; soft rings pulse out from what's active. When the story is a journey, a step tracker runs across the top: dots on a line, short uppercase mono labels (34 px) that light as it moves on, and a timer or count on the right in the accent. Name things with uppercase tags in rounded chips (fontFamily="mono"), a thin leader line to what they name. Now and then a bright chalk UI card (a message, a web page, a code) in colors.cardInk, or a huge number (150–210 px) over a short uppercase line. colors.rose is a second accent for a warning or a cost, used sparingly. The camera never moves: things light up and travel (easeOut, easeInOut, never a bounce).`,
@@ -597,6 +597,8 @@ export const ISOMETRIC = {
   palette: { primary: '#22D3EE', accent: '#F5A524', ink: '#E6EDF5', background: '#0B1220' },
   reference: REFERENCE,
   // A soft, fairly narrow bed near 74 BPM that dips about 6 dB under speech, and almost no effects (none on its cuts):
-  // a scan across the opening, a chime on the reveal, a double blip on the keyword (src/audio/sound.mjs SOUNDS.isometric).
-  sound: 'isometric',
+  // a scan across the opening, a chime on the reveal, a double blip on the keyword.
+  sound: { mood: 'ambient', bpm: [72, 76], mode: 'major', underVoiceLu: -11, duckDb: 6, breakAt: null, sfx: 'interface', density: 'few' },
 };
+
+export default ISOMETRIC;

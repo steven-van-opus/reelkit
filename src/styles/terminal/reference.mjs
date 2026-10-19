@@ -1,5 +1,5 @@
-// Speedrun's reference video (index.mjs `reference`): webhooks explained against the clock, eight scenes in one
-// story, each a different Speedrun move (the name slammed over a two-pane flow, a terminal spamming polls cut by a
+// Terminal's reference video (../index.mjs `reference`): webhooks explained against the clock, eight scenes in one
+// story, each a different Terminal move (the name slammed over a two-pane flow, a terminal spamming polls cut by a
 // reaction card, an editor typing a route, curl against a server log, a request inspector, a diagram, two lines of
 // code swapped against a ring timer, the recap as the clock hits zero). The facts: an Express route with
 // express.json() and res.sendStatus(200) (which answers "OK"), curl's --json flag (curl 7.82 and later), the headers

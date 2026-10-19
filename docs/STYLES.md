@@ -9,10 +9,10 @@ story. The paper and studio looks and their scene catalog
 (`src/scenes/SCENES.md`) are untouched; a reel is styled only when it asks.
 
 ```sh
-npm run reel -- --url <https://…> --style atlas      # a new reel in a style
+npm run reel -- --url <https://…> --style map        # a new reel in a style
 npm run style                                        # the styles and their reference videos
-npm run style -- atlas                               # a style's reference video as a test episode
-npm run reel -- --episode episodes/_test-style-atlas --from voice
+npm run style -- map                                 # a style's reference video as a test episode
+npm run reel -- --episode episodes/_test-style-map --from voice
 ```
 
 ## The styles
@@ -22,16 +22,18 @@ npm run reel -- --episode episodes/_test-style-atlas --from voice
 | Id | Name | What it looks like | Reference video |
 | --- | --- | --- | --- |
 | `blueprint` | Blueprint HUD | Technical line art of the subject on a near-black blueprint grid, mono readouts, orange and cyan callouts | How the Golden Gate hangs its road |
-| `isometric` | Isometric network | Systems as small isometric worlds on deep navy, glowing paths between them | How Shazam hears your song |
-| `cozy` | Expert Coach | Lamplit miniature dioramas, pebble characters in knit beanies, facts as split-flap counters and paper cards | Let AI draft your weekly update |
+| `diorama` | Lamplit diorama | Lamplit miniature dioramas, pebble characters in knit beanies, facts as split-flap counters and paper cards | Let AI draft your weekly update |
+| `doodle` | Felt-tip doodle | Black felt-tip stick figures on a white page, a red pen circling the point | Why you stay up too late |
+| `flat` | Flat vector | One flat-shaded hero object per scene floating on a plum night, a ladder of time or scale | How much of you is new today? |
+| `isometric` | Isometric | Systems as small isometric worlds on deep navy, glowing paths between them | How Shazam hears your song |
+| `map` | Moving map | A clean modern map the camera moves across, territory as colour, arrows that draw themselves | Why does Lesotho exist? |
+| `terminal` | Terminal | A developer's screen late at night: panes, code that types itself, a countdown | Webhooks, against the clock |
 | `timelapse` | Low-poly time-lapse | One low-poly room held by a fixed camera while a counter races and the room changes | How long can you go without food? |
-| `doodle` | Deadpan Doodle | Black felt-tip stick figures on a white page, a red pen circling the point | Why you stay up too late |
-| `flat` | Flat Vector | One flat-shaded hero object per scene floating on a plum night, a ladder of time or scale | How much of you is new today? |
-| `terminal` | Speedrun | A developer's screen late at night: panes, code that types itself, a countdown | Webhooks, against the clock |
-| `atlas` | Atlas | A clean modern map the camera moves across, territory as colour, arrows that draw themselves | Why does Lesotho exist? |
 
-Each copies a format, never another creator's characters, title cards, logos,
-palette or catchphrases: its characters and finish are its own, and its
+A style is named after what it looks like, never what it's for or whose format
+it follows: Lamplit diorama, not a coaching template; Terminal, not a speedrun
+series. Each copies a format, never another creator's characters, title cards,
+logos, palette or catchphrases: its characters and finish are its own, and its
 `identity.never` list tells the writer what not to copy from its own reference.
 
 ## How a styled reel is made
@@ -42,7 +44,7 @@ palette or catchphrases: its characters and finish are its own, and its
 | write | The writer's instructions swap the scene catalog for the style (`src/styles/guide.mjs`): designing the reel, how to write a code scene, the opening, the best practices (`src/styles/best-practices.mjs`), and the style's feel, identity and reference video, scene by scene. Beat 1 is a `hook` with `title` and `source`; every other beat is a `code` scene with `source` and a `place` (the set it's in, never drawn). Logos it places are declared in a top-level `"logos"` list. |
 | validate | Every scene is run and checked (`src/code/scene.mjs` `codeSceneErrors`): it runs at every frame, cues only words its line says, uses only media ids from `media.json` and declared logos, keeps its words inside the stage and out of the captions, big enough and readable against what's behind them, fills the stage, and never flashes. Styled reels run longer: 6–10 beats and 70–135 words before the house CTA, about 30–55 s. |
 | marks | Each declared logo's exact vector shapes are looked up (its SVG logo on Wikimedia Commons, as Wikidata names it, and its symbol from Simple Icons) into `marks.json`, cached in `.cache/marks/`; one that isn't found is set as its name. `marks.json` holds third-party logos, so it's never committed. |
-| mix | The style's sound preset (`SOUNDS.<id>` in `src/audio/sound.mjs`), unless the episode sets its own `sound` |
+| mix | The style's own sound (its `sound`, offered as the preset `<id>` in `src/audio/sound.mjs`), unless the episode sets its own `sound` |
 | render, stills | The canvas look (`src/canvas.mjs`) instead of the paper or studio look |
 | cover | The opening once it has settled, without captions |
 
@@ -103,14 +105,27 @@ and imply no view on any dispute.
 
 ## Adding a style
 
-1. Write `src/styles/<id>.mjs` exporting the style (see the `CanvasStyle`
-   typedef in `src/styles/index.mjs`): its name, feel, identity, frame (caption
-   treatment, grain, vignette), palette, a reference video (6–10 scenes, each
-   with a label, a line, a place and its code, about 45 s with the closing
-   ask), and an opening and examples to design from.
-2. Register it in `src/styles/index.mjs` and add its sound preset to `SOUNDS`
-   in `src/audio/sound.mjs`, under the same id.
+A style is one folder, and being there registers it:
+
+```
+src/styles/<id>/
+  style.mjs       default-exports the style (its id is the folder's name)
+  reference.mjs   its reference video, when it doesn't fit in style.mjs
+```
+
+1. Name it after what it looks like (Lamplit diorama, Terminal), never what
+   it's for or a creator, and give it a short id from that name for its folder:
+   lowercase, one word (`diorama`, `terminal`).
+2. Write `style.mjs` (see the `CanvasStyle` typedef in
+   `src/styles/index.mjs`): its name, feel, identity, frame (caption
+   treatment, grain, vignette), palette, sound (a bed, an effects set and their
+   levels; `src/audio/sound.mjs` offers it as the preset `<id>`), a reference
+   video (6–10 scenes, each with a label, a line, a place and its code, about
+   45 s with the closing ask), and an opening and examples to design from.
 3. `node --test test/styles.test.mjs`: every scene must pass the code checks
    and paint in Node, its colours must read, and its reference video must
    validate as an episode.
 4. `npm run style -- <id>`, voice and render it, and watch it.
+
+Nothing else changes: the writer, the validator, the renderer, the cover, the
+`--style` flag and the sound presets all read the registry.

@@ -1,20 +1,20 @@
-// Deadpan Doodle (id 'doodle'): a style (index.mjs) for the deadpan stick-figure explainer, the format
+// Felt-tip doodle (id 'doodle'): a style (../index.mjs) for the deadpan stick-figure explainer, the format
 // faceless creators use for relatable psychology, money, work and everyday-life topics. Every scene is one drawing in
 // black felt-tip on a blank white page that makes its line's point, often its joke: this style's own stick figures
 // (the one who is "you" in a red-pen scarf) on one wobbly ground stroke, their place sketched in a few strokes,
 // hand-printed labels with curved arrows, the red pen circling, crossing out and correcting, crude charts, and a
 // quick push-in on the punchline. It copies the format only, never another creator's figures, title cards, window
-// chrome or catchphrases. Its reference video ("Why you stay up too late", doodle-reference.mjs, with the kit every
+// chrome or catchphrases. Its reference video ("Why you stay up too late", reference.mjs, with the kit every
 // scene spells out) is what the writer remakes; the opening and examples stay until every style
 // has one. Its identity (IDENTITY: what every video keeps) is told apart from what each topic brings, so a new video
 // sketches its own places, never the reference's bed or sofa. Every scene passes the code-scene checks on the canvas
 // stage with its own line (test/styles.test.mjs).
 
-import { DOODLE_KIT, DOODLE_BLANK, DOODLE_PAGE, DOODLE_REFERENCE } from './doodle-reference.mjs';
+import { DOODLE_KIT, DOODLE_BLANK, DOODLE_PAGE, DOODLE_REFERENCE } from './reference.mjs';
 
 const FEEL = `A deadpan stick-figure explainer in black felt-tip on a white page. Paint the page edge to edge in colors.wall, empty (no gradients, cards, shading or painted sets) but for one wobbly ground stroke near y 1150. Every scene is one drawing that makes its line's point, often its joke, its place sketched in a few strokes. Open every scene with the reference scenes' helpers (J, on, Fig, Arrow, Ring), copied exactly, and draw every figure with Fig: circle head, dot eyes, flat mouth, single-stroke limbs; "you" wears the red-pen scarf. Props take three to eight strokes. Draw like a person with a marker: lines a little uneven, loops not quite closed, and a gentle boil (thin lines redrawn within 2 px three times a second: texture, never a flicker); words never boil. Labels are hand-printed uppercase (sans 800, 40–56 px) in colors.ink or the red pen, with a curved arrow to what they name. colors.accent is the red pen: it circles, underlines, crosses out and corrects the one thing that matters; colors.rose is the blue pen, for strokes and fills only (a second line, figure or "meanwhile"). Charts are crude: two hand-drawn axes, a lumpy line, one red dot. In a list video, the item's number sits top left in red ("#3"). Motion is deadpan: figures pop in fast (0.25 s ease-out), strokes draw on like a pen, and the punchline gets a quick push-in (scale 1.12 in 0.2 s, held). Never a bounce or a slow fade.`;
 
-// What every Deadpan Doodle video keeps, what its topic brings, and what it never copies from the reference video.
+// What every Felt-tip doodle video keeps, what its topic brings, and what it never copies from the reference video.
 const IDENTITY = {
   constant: [
     'A blank white page in colors.wall with one wobbly ground stroke near y 1150: no gradients, cards, shading or painted sets, only what the line needs, sketched in a few strokes',
@@ -212,7 +212,7 @@ const EXAMPLES = [
 
 export const DOODLE = {
   id: 'doodle',
-  name: 'Deadpan Doodle',
+  name: 'Felt-tip doodle',
   feel: FEEL,
   identity: IDENTITY,
   contrast: CONTRAST,
@@ -229,6 +229,8 @@ export const DOODLE = {
   // The format is near-silent (the silence is part of the joke), with hard cuts: a reel starts with the music off, and
   // with it on (`"sound": { "preset": "doodle", "music": true }`), soft keys about 6 dB under the house bed that barely
   // dip under the deadpan voice. Nothing plays on the cuts: its only effect is the cozy set's soft chime as the closing
-  // ask's keyword lands (src/audio/sound.mjs SOUNDS.doodle).
-  sound: 'doodle',
+  // ask's keyword lands.
+  sound: { mood: 'keys', bpm: [88, 96], mode: 'major', underVoiceLu: -16, duckDb: 3, breakAt: null, sfx: 'cozy', density: 'few', musicOn: false },
 };
+
+export default DOODLE;

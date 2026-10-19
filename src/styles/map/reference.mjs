@@ -1,4 +1,4 @@
-// Atlas's reference video (index.mjs `reference`): "Why does Lesotho exist?", a "why does X exist?" map
+// The moving map's reference video (../index.mjs `reference`): "Why does Lesotho exist?", a "why does X exist?" map
 // documentary in eight scenes, at the detail every video in the style should have: a clean modern map on a pale sea
 // (a faint graticule, land in chalk with a thin coastline), the camera always somewhere over it and moving between
 // views for its transitions, the subject's territory in the accent spreading from a point and its rival in rose,
@@ -29,14 +29,14 @@
 //   above sea level, the highest lowest point of any country; its highest, Thabana Ntlenyana, is 3,482 m (Wikipedia,
 //   "Lesotho", "Geography of Lesotho" and "Makhaleng River").
 // The farmland is drawn as the land west of the river within about 65 km of it, an illustration of where the fighting
-// was, not a surveyed boundary. A new Atlas video remakes the video. Each scene names its place
-// (a new map view per scene), which a new video never copies (guide.mjs lookGuide). Bump the id when the
+// was, not a surveyed boundary. A new moving map video remakes the video. Each scene names its place
+// (a new map view per scene), which a new video never copies (../guide.mjs lookGuide). Bump the id when the
 // video changes (a place is text only: it changes no frame).
 //
 // Every scene's code stands alone, so each spells out its camera and the kit (written into it below). The camera
-// (atlasCamera) moves from the last scene's view to this one's, each a centre and a width in degrees of longitude,
+// (cameraMove) moves from the last scene's view to this one's, each a centre and a width in degrees of longitude,
 // with easeInOut over 1.1 s (the opening pushes in over its whole line): `cam` its progress, `cx`, `cy` and `cw` the
-// view now, and `view` that view as [west, south, east, north] for the map kit. ATLAS_KIT: on(t, d), an ease-out
+// view now, and `view` that view as [west, south, east, north] for the map kit. KIT: on(t, d), an ease-out
 // from the moment t; L(codes), land() on the scene's view across the whole frame (centred on the stage); P(lon, lat),
 // geo() on the same map; deg, pixels per degree of longitude; tick(a, b), a year ticking with the camera; Sea, the
 // pale sea and its faint graticule; Land, every country in the view (land()'s '*', so no neighbour in frame is left
@@ -44,12 +44,12 @@
 // capital); Name, an italic serif place name (in cardInk, for land; a sea's is set in ink and drawn before the land;
 // words are never set in the accent or rose, which a brand's colours can make unreadable on chalk land, so the
 // subject's name gets an accent underline instead); Stamp, the date cartouche at the top left; Scale, the scale bar
-// and north arrow at the bottom right over the map's foot, a sea-toned margin (ATLAS_MARGIN) the captions are drawn
-// on, so they read whatever land runs under them and whatever the brand's colours. ATLAS_CITY: City, a dot
-// with an uppercase serif label. ATLAS_FIGURES: Fig, this style's own figure (a round head, dot eyes, a robe and a
+// and north arrow at the bottom right over the map's foot, a sea-toned margin (MARGIN) the captions are drawn
+// on, so they read whatever land runs under them and whatever the brand's colours. CITY: City, a dot
+// with an uppercase serif label. FIGURES: Fig, this style's own figure (a round head, dot eyes, a robe and a
 // sash in its side's colour) standing at `at`, and Say, a blunt one-line speech bubble with its tail to `to`; figures
-// fade in once the camera has settled. ATLAS_ROUTE: Route, a fat curved arrow that draws itself (p, 0–1).
-// ATLAS_HATCH: Hatch, thin diagonal lines across a box, clipped to its children (disputed land). ATLAS_CALEDON: this
+// fade in once the camera has settled. ROUTE: Route, a fat curved arrow that draws itself (p, 0–1).
+// HATCH: Hatch, thin diagonal lines across a box, clipped to its children (disputed land). CALEDON: this
 // video's own river and the land beside it (see below).
 
 /** A view: its centre (longitude, latitude) and its width in degrees of longitude, across the frame's 1080 px. */
@@ -57,7 +57,7 @@
 const r2 = (n) => Math.round(n * 100) / 100;
 
 /** The camera from the last scene's view to this one's, over `over` seconds (an expression: '1.1', 'duration'). */
-export const atlasCamera = ([x0, y0, w0], [x1, y1, w1], over = '1.1') => String.raw`const cam = easeInOut(clamp(time / ${over})), cx = ${x0} + ${r2(x1 - x0)} * cam, cy = ${y0} + ${r2(y1 - y0)} * cam, cw = ${w0} * Math.pow(${w1} / ${w0}, cam);
+export const cameraMove = ([x0, y0, w0], [x1, y1, w1], over = '1.1') => String.raw`const cam = easeInOut(clamp(time / ${over})), cx = ${x0} + ${r2(x1 - x0)} * cam, cy = ${y0} + ${r2(y1 - y0)} * cam, cw = ${w0} * Math.pow(${w1} / ${w0}, cam);
   const view = [cx - cw / 2, cy - 0.01, cx + cw / 2, cy + 0.01];`;
 
 /**
@@ -66,10 +66,10 @@ export const atlasCamera = ([x0, y0, w0], [x1, y1, w1], over = '1.1') => String.
  * colour, the pair a brand kit is checked for, never on chalk land in a dark brand's near-white. A hint of the land
  * shows through.
  */
-export const ATLAS_MARGIN = String.raw`<rect x={-9} y={1290} width={1098} height={640} fill={colors.wall} opacity={0.9} stroke={colors.ink} strokeOpacity={0.3} strokeWidth={3}/>`;
+export const MARGIN = String.raw`<rect x={-9} y={1290} width={1098} height={640} fill={colors.wall} opacity={0.9} stroke={colors.ink} strokeOpacity={0.3} strokeWidth={3}/>`;
 
-/** The kit every Atlas scene starts from, after its camera (see above), indented for a scene's body. */
-export const ATLAS_KIT = String.raw`const on = (t, d = 0.5) => easeOut(clamp((time - t) / d));
+/** The kit every moving map scene starts from, after its camera (see above), indented for a scene's body. */
+export const KIT = String.raw`const on = (t, d = 0.5) => easeOut(clamp((time - t) / d));
   const L = c => land(view, 0, -390, 1080, 2310, c), P = (x, y) => geo(x, y, view, 0, -390, 1080, 2310);
   const deg = 1080 / cw, tick = (a, b) => Math.round(a + (b - a) * cam), g = deg < 135 ? 5 : 1, gx = P(Math.round(cx / g) * g, cy)[0];
   const Sea = () => <g><rect x={0} y={0} width={1080} height={1920} fill={colors.wall}/>
@@ -81,18 +81,18 @@ export const ATLAS_KIT = String.raw`const on = (t, d = 0.5) => easeOut(clamp((ti
     return <g><rect x={60} y={262} width={w} height={96} fill={colors.chalk} stroke={colors.cardInk} strokeWidth={3}/><rect x={68} y={270} width={w - 16} height={80} fill="none" stroke={colors.cardInk} strokeOpacity={0.35} strokeWidth={2}/>
       <text x={60 + w / 2} y={333} textAnchor="middle" fontFamily="serif" fontSize={64} fontWeight={700} fill={colors.cardInk}>{v}</text></g>; };
   const Scale = () => { const k = deg / (111.32 * Math.cos(cy * Math.PI / 180)), km = [10, 25, 50, 100, 250, 500, 1000].filter(n => n * k <= 230).slice(-1)[0] || 10, w = km * k, x = 842 - w;
-    return <g fontFamily="serif" fontWeight={700} fill={colors.cardInk} textAnchor="middle">${ATLAS_MARGIN}
+    return <g fontFamily="serif" fontWeight={700} fill={colors.cardInk} textAnchor="middle">${MARGIN}
       <rect x={x} y={1172} width={w + 118} height={104} fill={colors.chalk} stroke={colors.cardInk} strokeWidth={3}/>
       <text x={x + 24 + w / 2} y={1226} fontSize={34}>{km + ' KM'}</text><text x={912} y={1214} fontSize={34}>N</text>
       <rect x={x + 24} y={1242} width={w} height={14} fill={colors.chalk} stroke={colors.cardInk} strokeWidth={2}/><rect x={x + 24} y={1242} width={w / 2} height={14} fill={colors.cardInk}/>
       <polygon points="912,1220 926,1264 912,1254 898,1264" fill={colors.cardInk}/></g>; };`;
 
 /** A city: a dot with an uppercase serif label to its right (or `left`). */
-export const ATLAS_CITY = String.raw`const City = ({ at, name, p = 1, left }) => <g opacity={p}><circle cx={at[0]} cy={at[1]} r={11} fill={colors.cardInk} stroke={colors.chalk} strokeWidth={4}/>
+export const CITY = String.raw`const City = ({ at, name, p = 1, left }) => <g opacity={p}><circle cx={at[0]} cy={at[1]} r={11} fill={colors.cardInk} stroke={colors.chalk} strokeWidth={4}/>
     <text x={at[0] + (left ? -24 : 24)} y={at[1] + 13} textAnchor={left ? 'end' : 'start'} fontFamily="serif" fontSize={36} fontWeight={700} letterSpacing={2} fill={colors.cardInk}>{name}</text></g>;`;
 
 /** This style's own figures and their speech bubbles (see above). */
-export const ATLAS_FIGURES = String.raw`const R = 'M -40 0 L -30 -112 Q 0 -126 30 -112 L 40 0 Z';
+export const FIGURES = String.raw`const R = 'M -40 0 L -30 -112 Q 0 -126 30 -112 L 40 0 Z';
   const Fig = ({ id, at, s = 1, c, up }) => <g transform={'translate(' + at[0] + ' ' + at[1] + ') scale(' + s + ')'} stroke={colors.cardInk} strokeWidth={4} strokeLinecap="round">
     <clipPath id={id}><path d={R}/></clipPath>
     <path d={up ? 'M 24 -100 L 56 -172' : 'M 26 -100 L 42 -38'} strokeWidth={14}/>
@@ -107,7 +107,7 @@ export const ATLAS_FIGURES = String.raw`const R = 'M -40 0 L -30 -112 Q 0 -126 3
     </g>; };`;
 
 /** A fat curved arrow from a through q to b that draws itself (p, 0–1) and lands with an arrowhead. */
-export const ATLAS_ROUTE = String.raw`const Route = ({ a, q, b, p, c }) => { const n = Math.sqrt((b[0] - q[0]) ** 2 + (b[1] - q[1]) ** 2), u = (b[0] - q[0]) / n, v = (b[1] - q[1]) / n, e = [b[0] - 34 * u, b[1] - 34 * v];
+export const ROUTE = String.raw`const Route = ({ a, q, b, p, c }) => { const n = Math.sqrt((b[0] - q[0]) ** 2 + (b[1] - q[1]) ** 2), u = (b[0] - q[0]) / n, v = (b[1] - q[1]) / n, e = [b[0] - 34 * u, b[1] - 34 * v];
     const len = n + Math.sqrt((q[0] - a[0]) ** 2 + (q[1] - a[1]) ** 2);
     return <g fill={c} stroke={c} opacity={p > 0 ? 1 : 0}>
       <path d={'M ' + a.join(' ') + ' Q ' + q.join(' ') + ' ' + e.join(' ')} fill="none" strokeWidth={18} strokeLinecap="round" strokeDasharray={len} strokeDashoffset={len * (1 - p)}/>
@@ -115,7 +115,7 @@ export const ATLAS_ROUTE = String.raw`const Route = ({ a, q, b, p, c }) => { con
     </g>; };`;
 
 /** Disputed land: thin diagonal lines across the box x, y, w, h, clipped to the shapes it's given. */
-export const ATLAS_HATCH = String.raw`const Hatch = ({ id, x, y, w, h, c, p = 1, children }) => <g opacity={p}><clipPath id={id}>{children}</clipPath>
+export const HATCH = String.raw`const Hatch = ({ id, x, y, w, h, c, p = 1, children }) => <g opacity={p}><clipPath id={id}>{children}</clipPath>
     <g clipPath={'url(#' + id + ')'}>{range(Math.min(64, Math.ceil((w + h) / 24))).map(i => <line x1={x + i * 24 - h} y1={y + h} x2={x + i * 24} y2={y} stroke={c} strokeWidth={4}/>)}</g></g>;`;
 
 /**
@@ -124,7 +124,7 @@ export const ATLAS_HATCH = String.raw`const Hatch = ({ id, x, y, w, h, c, p = 1,
  * the farmland, within about 65 km of the river; and the Caledon itself, the stretch of Lesotho's outline inside "nw",
  * where the border runs along the river, in a water tone (drawn from land(), never traced).
  */
-export const ATLAS_CALEDON = String.raw`<clipPath id="nw"><polygon points={[P(28.7, -28.55), P(29.5, -27), P(20, -27), P(20, -30.6), P(25.98, -30.5), P(26.71, -30.69), P(27.38, -30.33), P(27.02, -29.7)].map(q => q.join(',')).join(' ')}/></clipPath>
+export const CALEDON = String.raw`<clipPath id="nw"><polygon points={[P(28.7, -28.55), P(29.5, -27), P(20, -27), P(20, -30.6), P(25.98, -30.5), P(26.71, -30.69), P(27.38, -30.33), P(27.02, -29.7)].map(q => q.join(',')).join(' ')}/></clipPath>
     <Grow id="fm" at={P(27.3, -29.05)} r={0.62 * deg}/>
     <path d={L('LS')} fill="none" stroke={colors.floor} strokeWidth={10} clipPath="url(#nw)"/>`;
 
@@ -143,8 +143,8 @@ const LOW = [28.85, -29.85, 4.2];
 // frame (the cover reads), a slow push in over the line, the hole ringed on "hole" and filled in the accent from Maseru
 // on "country".
 const HOOK = String.raw`export default function Scene({ time, duration, colors }) {
-  ${atlasCamera(ZA, HOLE, 'duration')}
-  ${ATLAS_KIT}
+  ${cameraMove(ZA, HOLE, 'duration')}
+  ${KIT}
   const ls = P(28.25, -29.55), r = 1.35 * deg, ring = on(at('hole'), 0.6), fill = on(at('country'), 0.8);
   return <svg>
     <Sea/>
@@ -167,8 +167,8 @@ const HOOK = String.raw`export default function Scene({ time, duration, colors }
 // 2. Where it is: the camera pulls back to southern Africa, South Africa tints rose on "South", arrowheads close in on
 // Lesotho from every side, and its size lands over its name; the ocean names fade in once the camera settles.
 const REGION_SCENE = String.raw`export default function Scene({ time, duration, colors }) {
-  ${atlasCamera(HOLE, REGION)}
-  ${ATLAS_KIT}
+  ${cameraMove(HOLE, REGION)}
+  ${KIT}
   const ls = P(28.25, -29.55), sa = on(at('South')), every = on(at('every'), 0.6), seas = on(1.2);
   return <svg>
     <Sea/>
@@ -197,9 +197,9 @@ const REGION_SCENE = String.raw`export default function Scene({ time, duration, 
 // valley around it, on both sides of the river (not yet today's country: the highlands come later); today's border is
 // only a faint dashed ghost.
 const BOSIU_SCENE = String.raw`export default function Scene({ time, duration, colors }) {
-  ${atlasCamera(REGION, BOSIU)}
-  ${ATLAS_KIT}
-  ${ATLAS_FIGURES}
+  ${cameraMove(REGION, BOSIU)}
+  ${KIT}
+  ${FIGURES}
   const t = P(27.67, -29.35), m = on(at('Moshoeshoe'), 0.6), grow = on(at('people'), 1.4), says = on(at('mountain'), 0.3);
   return <svg>
     <Sea/>
@@ -210,7 +210,7 @@ const BOSIU_SCENE = String.raw`export default function Scene({ time, duration, c
       <g clipPath="url(#nw)"><path d={L('ZA')} clipPath="url(#fm)"/></g>
     </g>
     <path d={L('LS')} fill="none" stroke={colors.cardInk} strokeOpacity={0.3} strokeWidth={3} strokeDasharray="10 12"/>
-    ${ATLAS_CALEDON}
+    ${CALEDON}
     <Name at={P(27.8, -29.75)} s={46} p={grow}>BASOTHO</Name>
     <g opacity={m}>
       <path d={'M ' + (t[0] - 96) + ' ' + t[1] + ' L ' + (t[0] - 56) + ' ' + (t[1] - 58) + ' L ' + (t[0] + 56) + ' ' + (t[1] - 58) + ' L ' + (t[0] + 96) + ' ' + t[1] + ' Z'} fill={colors.floor} stroke={colors.cardInk} strokeWidth={4} strokeLinejoin="round"/>
@@ -227,11 +227,11 @@ const BOSIU_SCENE = String.raw`export default function Scene({ time, duration, c
 // from Bloemfontein up to the river, its arrows push east into the farmland, and the farmland goes contested: both
 // colours, hatched.
 const RIVER_SCENE = String.raw`export default function Scene({ time, duration, colors }) {
-  ${atlasCamera(BOSIU, RIVER)}
-  ${ATLAS_KIT}
-  ${ATLAS_CITY}
-  ${ATLAS_ROUTE}
-  ${ATLAS_HATCH}
+  ${cameraMove(BOSIU, RIVER)}
+  ${KIT}
+  ${CITY}
+  ${ROUTE}
+  ${HATCH}
   const b = P(26.21, -29.12), f = P(27.3, -29.05), fs = on(at('Free'), 1.4), farm = on(at('farmland'));
   return <svg>
     <Sea/>
@@ -242,7 +242,7 @@ const RIVER_SCENE = String.raw`export default function Scene({ time, duration, c
     <g clipPath="url(#fs)"><path d={L('ZA')} fill={colors.rose} fillOpacity={0.5} clipPath="url(#nw)"/></g>
     <g clipPath="url(#nw)"><g clipPath="url(#fm)"><Hatch id="hz" x={f[0] - 160} y={f[1] - 160} w={320} h={320} c={colors.cardInk} p={0.6 * farm}><path d={L('ZA')}/></Hatch></g></g>
     <path d={L('LS')} fill="none" stroke={colors.cardInk} strokeOpacity={0.3} strokeWidth={3} strokeDasharray="10 12"/>
-    ${ATLAS_CALEDON}
+    ${CALEDON}
     <City at={b} name="BLOEMFONTEIN" left={true} p={fs}/>
     {[[-28.62, 27.8], [-29.38, 27.28], [-29.72, 26.98]].map((q, i) => <Route a={P(26.5, q[0] + 0.08)} q={P(26.95, q[0] - 0.12)} b={P(q[1], q[0])} p={on(at('fought') + i * 0.25, 0.8)} c={colors.rose}/>)}
     <Name at={P(27.3, -29.1)} s={38} p={farm}>FARMLAND</Name>
@@ -259,9 +259,9 @@ const RIVER_SCENE = String.raw`export default function Scene({ time, duration, c
 // the Caledon (all the treaty fixed), draws itself down the river in ink while the cartouche ticks over; the rest of
 // today's border is a faint dashed ghost, and the farmland is the Free State's.
 const BORDER_SCENE = String.raw`export default function Scene({ time, duration, colors }) {
-  ${atlasCamera(RIVER, BORDER)}
-  ${ATLAS_KIT}
-  ${ATLAS_FIGURES}
+  ${cameraMove(RIVER, BORDER)}
+  ${KIT}
+  ${FIGURES}
   const line = on(at('1869'), 1.6), mo = P(28.05, -30.45), uk = P(29.55, -28.85), brit = on(at('Britain', 2), 0.3);
   return <svg>
     <Sea/>
@@ -269,7 +269,7 @@ const BORDER_SCENE = String.raw`export default function Scene({ time, duration, 
     <path d={L('ZA')} fill={colors.rose} fillOpacity={0.5} clipPath="url(#nw)"/>
     <path d={L('LS')} fill={colors.accent} fillOpacity={0.7}/>
     <path d={L('LS')} fill="none" stroke={colors.cardInk} strokeOpacity={0.3} strokeWidth={3} strokeDasharray="10 12"/>
-    ${ATLAS_CALEDON}
+    ${CALEDON}
     <Grow id="tr" at={P(28.7, -28.55)} r={2.6 * deg * line}/>
     <g clipPath="url(#nw)"><path d={L('LS')} fill="none" stroke={colors.cardInk} strokeWidth={6} strokeLinejoin="round" clipPath="url(#tr)" opacity={line > 0 ? 1 : 0}/></g>
     <Name at={P(28.55, -29.25)} s={46} p={brit}>BASUTOLAND</Name>
@@ -288,9 +288,9 @@ const BORDER_SCENE = String.raw`export default function Scene({ time, duration, 
 // one union in rose, and Basutoland alone stays in the accent, its figure (in once the camera settles, standing on the
 // Drakensberg side of it) refusing.
 const UNION_SCENE = String.raw`export default function Scene({ time, duration, colors }) {
-  ${atlasCamera(BORDER, UNION)}
-  ${ATLAS_KIT}
-  ${ATLAS_FIGURES}
+  ${cameraMove(BORDER, UNION)}
+  ${KIT}
+  ${FIGURES}
   const grow = on(at('joined'), 1.6) * 9 * deg, caps = [P(18.42, -33.92), P(30.38, -29.6), P(28.19, -25.75), P(26.21, -29.12)], mo = P(30.1, -28.8);
   return <svg>
     <Sea/>
@@ -310,10 +310,10 @@ const UNION_SCENE = String.raw`export default function Scene({ time, duration, c
 // 7. Independence: the camera pushes back in, and once it settles South Africa's figure asks and Britain's says no
 // while the years tick on through the line; on "1966" BASUTOLAND becomes LESOTHO, with Maseru as its capital.
 const TODAY_SCENE = String.raw`export default function Scene({ time, duration, colors }) {
-  ${atlasCamera(UNION, TODAY)}
-  ${ATLAS_KIT}
-  ${ATLAS_CITY}
-  ${ATLAS_FIGURES}
+  ${cameraMove(UNION, TODAY)}
+  ${KIT}
+  ${CITY}
+  ${FIGURES}
   const ls = P(28.5, -29.55), free = on(at('1966'), 0.6), sa = P(26.6, -30.9), uk = P(29.6, -30.75), seen = on(1.1, 0.3);
   return <svg>
     <Sea/>
@@ -335,8 +335,8 @@ const TODAY_SCENE = String.raw`export default function Scene({ time, duration, c
 // 8. The kicker: back to today, the hole is ringed again, a pin drops on the lowest point, and an altitude key fills
 // to the country's highest peak, every bit of it above the 1,400-metre line (the one figure the line says).
 const LOW_SCENE = String.raw`export default function Scene({ time, duration, colors }) {
-  ${atlasCamera(TODAY, LOW)}
-  ${ATLAS_KIT}
+  ${cameraMove(TODAY, LOW)}
+  ${KIT}
   const ls = P(28.2, -29.6), pt = P(27.38, -30.33), pin = on(at('lowest'), 0.4), key = on(at('metres'), 0.8), top = on(at('higher'), 0.6), y = m => 1100 - m * 0.16;
   return <svg>
     <Sea/>
@@ -364,8 +364,8 @@ const LOW_SCENE = String.raw`export default function Scene({ time, duration, col
   </svg>;
 }`;
 
-export const ATLAS_REFERENCE = {
-  id: 'atlas-1',
+export const MAP_REFERENCE = {
+  id: 'map-1',
   title: 'Why does Lesotho exist?',
   caption: 'Lesotho is a whole country inside South Africa. A mountain fortress, a border war and a British treaty put it there.',
   beats: [

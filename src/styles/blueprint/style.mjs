@@ -1,4 +1,4 @@
-// Blueprint HUD: a style (index.mjs) for engineering explainers. Technical line art of the subject (side
+// Blueprint HUD: a style (../index.mjs) for engineering explainers. Technical line art of the subject (side
 // elevations, plan views, cross-sections) in thin strokes on a near-black grid, measured with dimension lines and
 // labelled with callouts, and the numbers in HUD chart panels whose glowing accent curve draws itself. Every scene
 // carries the video's series line under an accent rule that grows like a progress bar. Its reference video (how the
@@ -309,7 +309,7 @@ const POOL = String.raw`export default function Scene({ time, colors }) {
   </svg>;
 }`;
 
-// The reference video (reference.mjs): how the Golden Gate Bridge hangs its road, eight scenes in one story told
+// The reference video (../reference.mjs): how the Golden Gate Bridge hangs its road, eight scenes in one story told
 // in two acts. Act one follows the weight down (a hook over the whole bridge, then the road on its ropes, the ropes on
 // the cables and the cables pressing on the towers); the pivot names the cables' pull into the anchorages, a what-if
 // sets the stakes, a 4 + 4-word couplet sums up both acts and a kicker fact closes. Each scene is a different
@@ -839,8 +839,8 @@ export const BLUEPRINT = {
   },
   palette: { primary: '#FF7A2E', accent: '#3CCFEF', ink: '#E9EDF1', background: '#0A0C0F' },
   // A dark electronic bed near 110 BPM, 8 LU under the voice and barely ducked, that drops out on the story's turn;
-  // only a few effects, matched to what's drawn (src/audio/sound.mjs SOUNDS.blueprint).
-  sound: 'blueprint',
+  // only a few effects, matched to what's drawn.
+  sound: { mood: 'dark', bpm: [106, 114], mode: 'minor', underVoiceLu: -8, duckDb: 1, breakAt: 'pivot', sfx: 'engineering', density: 'few' },
   reference: {
     id: 'blueprint-3',
     title: 'How the Golden Gate hangs its road',
@@ -857,3 +857,5 @@ export const BLUEPRINT = {
     ],
   },
 };
+
+export default BLUEPRINT;
