@@ -225,7 +225,9 @@ then calls each beat's scene `draw(s)` per frame.
 - **Safe areas.** `SAFE` in `src/brand.mjs` keeps content out of the platform
   UI: 150 px at the top, 340 px at the bottom, 70 px on the left and 150 px on
   the right (likes, comments, shares). Scenes draw in y 330–1420 and caption
-  chips sit around y 1500. The cover keeps everything that matters in
+  chips sit around y 1372 (`BAND.captionY`), above the strip Instagram Reels
+  and TikTok cover with their own caption and buttons; the paper hook's
+  prints and titles end above them. The cover keeps everything that matters in
   y 240–1680 for the profile grid's 3:4 crop.
 
 ## Lip sync
@@ -249,17 +251,43 @@ then calls each beat's scene `draw(s)` per frame.
 - **Music** (`src/audio/music.mjs`) is synthesised sample by sample, so it's
   royalty-free by construction. Key, tempo and patterns are seeded by the
   episode id; the tempo is nudged so the final chord lands after the last
-  word.
-- **SFX** (`src/audio/sfx.mjs`) are synthesised too and timed to the picture:
-  a swipe on each beat change, a tap when a label lands, a shimmer on the
-  hook's confetti, key ticks and a ding on the CTA.
+  word. Five moods: `groove` (marimba, kalimba hook, claps; the house bed),
+  `keys` (warm electric piano, beat-light), `ambient` (soft pad and plucked
+  arpeggio), `dark` (a minor drone and sub pulse that drops out for a bar on
+  the story's turn) and `pulse` (a low-passed synth pulse on a four-on-the-floor
+  kick that drops out under the payoff line).
+- **SFX** (`src/audio/sfx.mjs`) are synthesised too and timed to the picture,
+  in sets. `paper` (the house set): a swipe on each beat change, a tap when a
+  label lands, a shimmer on the hook's confetti, key ticks and a ding on the
+  CTA. The others play only on moments their looks draw: `cozy` a soft chime
+  on the keyword; `interface` a scan across the opening, a chime on the payoff
+  and blips; `engineering` a servo whine, thunks on the turn and the keyword;
+  `timelapse` swishes and clock ticks on the music's beat; `minimal` a tap
+  when the label changes and a pop on the keyword. A set's moments come in
+  tiers (`few`, `some`, `lots`).
+- **Sound presets** (`src/audio/sound.mjs`) pair a bed with a set and their
+  levels: how far under the voice the bed sits, how far it dips under speech,
+  where it drops out. `house` is the mix every reel had before presets, byte
+  for byte (`test/sound.test.mjs` checks it). The others were made for
+  particular looks, and are named after them: `diorama` (keys about 12 LU
+  under the voice, barely dipping), `isometric` (a narrow ambient bed near
+  74 BPM), `blueprint` (a dark pulse
+  near 110 BPM that drops out on the turn), `timelapse` (the loudest bed, a
+  125 BPM pulse that drops out under the payoff), `doodle` (no music, a chime
+  on the keyword), `flat` (a minor ambient bed near 90 BPM), `terminal` (a
+  124 BPM pulse under nonstop narration), `map` (an understated minor
+  chamber bed) and `minimal`. The reel takes `episode.json`'s `sound`, else
+  the brand pack's, else `house`; see
+  [brands/README.md](../brands/README.md#sound) for the fields.
 - **Ducking.** The music ducks under the voice like a sidechain.
 - **Mastering** (`src/audio/dsp.mjs`): BS.1770 loudness to −14 LUFS
   integrated, with a true-peak limiter ceiling of −1.5 dBTP so the AAC encode
   stays under −1 dBTP.
 
 `npm run mix -- episodes/<id> --stems` also writes `stems/`; `--json` prints
-the full level report.
+the full level report; `--sound <preset>` (with `--mood`, `--sfx`,
+`--no-music`) mixes with another sound for that run. `npm run sounds` writes a
+short sample of every bed and set to `.tmp/sounds/`.
 
 ## Related docs
 

@@ -20,6 +20,7 @@ import { screenshotFrame } from '../shots.mjs';
 import { drawCover } from '../mediastore.mjs';
 import { toolInfo, logoTile } from '../logos.mjs';
 import { clamp, lerp, ease, luminance, rng, boil, onTwos, hexToRgb } from '../util.mjs';
+import { freeImage } from '../free-image.mjs';
 
 const FRAMES = ['card', 'browser', 'phone'];
 const TOP = 384;            // frames start below the header
@@ -363,8 +364,10 @@ function printCaption(ctx, str, cx, cy, maxW, size, lines = 1, reveal = 1) {
 // A photo print with outer box (x, y, w, h). The media is cover-fit inside
 // the border (pushed in / toward `focus`); `develop` 0 → 1 clears it from
 // blank instant film; `caption` is written on the bottom border. Returns the
-// picture's rect.
-export function photoPrint(ctx, x, y, w, h, {
+// picture's rect. Scenes draw through photoPrint (at the end of this file),
+// which shows an image as itself and keeps this print for video and for the
+// placeholder while there's no picture.
+function paperPrint(ctx, x, y, w, h, {
   img = null, border = null, bottom = null, lift = 1.6, zoom = 1, focus = null, toward = 0,
   develop = 1, video = false, label = '', caption = '', captionSize = 40, captionLines = 1, captionReveal = 1,
 } = {}) {
@@ -401,7 +404,8 @@ export function photoPrint(ctx, x, y, w, h, {
 // Tape holding something to the wall: 1–2 strips at its corners or along its
 // top, picked by `seed` (or `style`: 'corners' | 'top' | 'diagonal' | 'pair' |
 // 'left'). `k` 0 → 1 slaps them on. Draw it in the same transform as the print.
-export function printTape(ctx, x, y, w, h, { seed = 'print', k = 1, style = null, scale = 1, color = null } = {}) {
+// Scenes tape through printTape (at the end of this file).
+function paperTape(ctx, x, y, w, h, { seed = 'print', k = 1, style = null, scale = 1, color = null } = {}) {
   if (k <= 0) return;
   const r = rng(`${seed}-tape`);
   // Masking tape or pink washi, per print.
@@ -723,3 +727,24 @@ export default {
     });
   },
 };
+
+// Images as themselves (src/free-image.mjs): an image is drawn whole in the print's box with a soft
+// shadow, fading in with `develop`, its caption under it; only video keeps paperPrint's frame. Same arguments and
+// return value (the picture's rect) as paperPrint. This module's scenes tape a print right after drawing it, so
+// printTape skips the tape for the image photoPrint just drew free.
+let freeRect = null;
+export function photoPrint(ctx, x, y, w, h, opts = {}) {
+  if (!opts.img || opts.video) return paperPrint(ctx, x, y, w, h, opts);
+  freeRect = [x, y, w, h];
+  const size = opts.captionSize ?? 40, lines = opts.captionLines ?? 1;
+  const band = opts.caption ? Math.round(size * 1.5 * lines + 24) : 0;
+  const drawn = freeImage(ctx, opts.img, x, y, w, h - band, { lift: opts.lift ?? 1.6, alpha: 0.25 + 0.75 * clamp(opts.develop ?? 1) });
+  if (opts.caption) printCaption(ctx, opts.caption, x + w / 2, y + h - band / 2, w - 24, size, lines, opts.captionReveal ?? 1);
+  return drawn;
+}
+export function printTape(ctx, x, y, w, h, opts) {
+  const free = freeRect;
+  freeRect = null;
+  if (free && free[0] === x && free[1] === y && free[2] === w && free[3] === h) return;
+  return paperTape(ctx, x, y, w, h, opts);
+}

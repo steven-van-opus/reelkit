@@ -1,0 +1,197 @@
+{
+  "id": "2026-10-06-ad-multiplier",
+  "date": "2026-10-06",
+  "source": {
+    "toolId": "higgsfield",
+    "newsTitle": "Ad Multiplier",
+    "url": "https://higgsfield.ai/creator-hub/changelog#ad-multiplier",
+    "extraUrls": [
+      "https://higgsfield.ai/ads-studio/ad-multiplier"
+    ]
+  },
+  "subject": {
+    "name": "Ad Multiplier",
+    "maker": "Higgsfield",
+    "accent": "#B69CFF"
+  },
+  "voice": {
+    "id": "af_heart",
+    "speed": 1.06
+  },
+  "cta": {
+    "keyword": "TOOLBOX"
+  },
+  "post": {
+    "caption": "Got an ad that already works? Higgsfield just gave Ad Multiplier a visual interface, and it's built for remaking that ad as your own.\n\nUpload the original, add your product and your cast, and it keeps the shots, the timing and the audio while it swaps in your stuff.\n\nFrom there, move it somewhere new, try as many hooks as you want without re-uploading, or just type the change. In Higgsfield's demo, that's \"have her open the juice while she talks.\"\n\nTo start, open Ad Multiplier in Ads Studio and upload one reference video, 4 to 30 seconds long. You're rebuilding an existing ad, so use one you have the rights to.\n\nEvery clip in this reel is one of Higgsfield's own demos.\n\nSource: Higgsfield's creator hub changelog (Oct 6) and the Ad Multiplier page\n\nComment TOOLBOX and we'll send you the latest tools, news, and resources every day!",
+    "hashtags": [
+      "#higgsfield",
+      "#aivideo",
+      "#adcreative",
+      "#videoediting",
+      "#creatortools",
+      "#creatorstoolbox"
+    ]
+  },
+  "sources": [
+    {
+      "claim": "The news (Oct 6): Higgsfield gave Ad Multiplier a visual interface; it recreates a video ad with your own characters, products and locations from one reference",
+      "url": "https://higgsfield.ai/creator-hub/changelog#ad-multiplier"
+    },
+    {
+      "claim": "It's built for remaking an ad that already works as your own: the page banner (m01) reads \"Recreate any ad with your characters, product and settings\"; the KLOMP demo stills (m08 → m09) swap the original white sneaker for a yellow KLOMP sneaker in the same shot",
+      "url": "https://higgsfield.ai/ads-studio/ad-multiplier"
+    },
+    {
+      "claim": "Upload the original ad, add your assets (product, cast) and describe the new scene; it keeps the original's structure and swaps in what you specify",
+      "url": "https://higgsfield.ai/creator-hub/changelog#ad-multiplier"
+    },
+    {
+      "claim": "Ad Multiplier swaps the characters, outfits, locations and products; motion, timing and audio stay untouched (\"keeps the shots, the timing and the audio while swapping in your stuff\"), shown by the KLOMP clip m10 (one runner to another, forest to city street)",
+      "url": "https://higgsfield.ai/ads-studio/ad-multiplier"
+    },
+    {
+      "claim": "You can change the product, cast, location, script, hook or CTA (\"move it somewhere new, try a different hook\")",
+      "url": "https://higgsfield.ai/creator-hub/changelog#ad-multiplier"
+    },
+    {
+      "claim": "\"Move it somewhere new\": the \"One ad, many versions\" demo (m04) wipes the same running shot from a forest to a city street; m12 is its frame at 7.50 s after the wipe",
+      "url": "https://higgsfield.ai/ads-studio/ad-multiplier"
+    },
+    {
+      "claim": "\"Find a better hook or CTA\" demo: versions of one ad that differ in the opening move, pointing at the lava (m02), a hair touch (m05), looking back at the eruption (m03); the rest is the same shot",
+      "url": "https://higgsfield.ai/ads-studio/ad-multiplier"
+    },
+    {
+      "claim": "\"Say it your way\" demo (m07): the Ads Studio prompt box types \"Have her open the juice while she talks.\", then the new take shows her opening the juice box (about 2–4 s)",
+      "url": "https://higgsfield.ai/ads-studio/ad-multiplier"
+    },
+    {
+      "claim": "Caption: you can try as many hooks and CTAs as you want without re-uploading the reference",
+      "url": "https://higgsfield.ai/creator-hub/changelog#ad-multiplier"
+    },
+    {
+      "claim": "Caption: to start, open Ads Studio, then Ad Multiplier, upload one reference video (4 to 30 seconds, plus up to 20 images), then Generate",
+      "url": "https://higgsfield.ai/creator-hub/changelog#ad-multiplier"
+    }
+  ],
+  "script": "Higgsfield just gave Ad Multiplier a visual interface, and it's built for taking an ad that already works and remaking it as your own. Upload the original, add your product and your cast, and it keeps the shots, the timing and the audio while swapping in your stuff. You can move it somewhere new, try a different hook, or just type the change, like having her open the juice while she talks.",
+  "beats": [
+    {
+      "label": "Ad Multiplier gets an interface",
+      "vo": "Higgsfield just gave Ad Multiplier a visual interface,",
+      "set": "pearl",
+      "scene": "hook",
+      "props": {
+        "kicker": "New interface",
+        "title": "Ad Multiplier",
+        "by": "in Higgsfield Ads Studio",
+        "media": "m01"
+      },
+      "mascot": {
+        "pose": "cheer",
+        "face": "wow"
+      }
+    },
+    {
+      "label": "Remake an ad that already works",
+      "vo": "and it's built for taking an ad that already works and remaking it as your own.",
+      "set": "light",
+      "scene": "beforeafter",
+      "props": {
+        "before": "m08",
+        "after": "m09",
+        "beforeLabel": "Original",
+        "afterLabel": "Your own"
+      },
+      "mascot": {
+        "pose": "point",
+        "face": "happy"
+      }
+    },
+    {
+      "label": "Bring your product and cast",
+      "vo": "Upload the original, add your product and your cast,",
+      "set": "muted",
+      "scene": "steps",
+      "props": {
+        "items": [
+          "Upload the original ad",
+          "Add your product",
+          "Add your cast"
+        ]
+      },
+      "mascot": {
+        "pose": "hold",
+        "face": "smile"
+      }
+    },
+    {
+      "label": "Same shots, timing and audio",
+      "vo": "and it keeps the shots, the timing and the audio while swapping in your stuff.",
+      "set": "ink",
+      "scene": "media",
+      "props": {
+        "media": "m10",
+        "frame": "card",
+        "caption": "Same shots, new runner and city"
+      },
+      "mascot": {
+        "pose": "point",
+        "face": "wow"
+      }
+    },
+    {
+      "label": "New spot, new hook",
+      "vo": "You can move it somewhere new, try a different hook,",
+      "set": "lavender",
+      "scene": "gallery",
+      "props": {
+        "media": [
+          "m12",
+          "m02",
+          "m05",
+          "m03"
+        ],
+        "labels": [
+          "New spot: city",
+          "Points at lava",
+          "Touches hair",
+          "Looks back"
+        ]
+      },
+      "mascot": {
+        "pose": "think",
+        "face": "grin"
+      }
+    },
+    {
+      "label": "Or just type the change",
+      "vo": "or just type the change, like having her open the juice while she talks.",
+      "set": "light",
+      "scene": "media",
+      "props": {
+        "media": "m07",
+        "frame": "card",
+        "caption": "“Have her open the juice”"
+      },
+      "mascot": {
+        "pose": "type",
+        "face": "focus"
+      }
+    },
+    {
+      "label": "Comment TOOLBOX, we'll send it",
+      "vo": "Comment TOOLBOX and we'll send you the latest tools, news, and resources every day!",
+      "set": "pink",
+      "scene": "cta",
+      "props": {
+        "keyword": "TOOLBOX",
+        "line": "and we'll send you daily drops"
+      },
+      "mascot": {
+        "pose": "wave",
+        "face": "happy"
+      }
+    }
+  ]
+}

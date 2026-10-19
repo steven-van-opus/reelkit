@@ -45,8 +45,9 @@ export default {
 The default theme is **paper** — the hand-made cut-paper diorama: grain, torn edges, tape, warm paper
 sets, stop-motion on twos. Scenes that exist in both looks live in `paper/<type>.mjs` and
 `studio/<type>.mjs` behind a `<type>.mjs` wrapper that picks by `isStudio()`. In paper, real media
-(screenshots, generated images, video) appears as **taped photo prints** — white border, slight
-tilt, tape at the corners, boil — never as clean UI cards.
+(screenshots, generated images, video) is never a clean UI card: an image is drawn whole, as itself,
+with a soft shadow that follows its shape (`src/free-image.mjs`), and video plays in a **taped photo
+print** (white border, slight tilt, tape at the corners, boil).
 
 ### The studio theme (REELS_THEME=studio)
 

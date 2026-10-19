@@ -30,7 +30,8 @@ the run: preflight, a draft with stills, review, fixes and the final render.
    │      take, cuts it into beats, picks a scene per beat, lists every claim
  validate ── the script follows src/scenes/SCENES.md
  voice ── vo.wav + word timings (voice.json), aligned to the audio
- mix ── generated music and SFX under the voice → mix.wav (−14 LUFS)
+ mix ── generated music and SFX under the voice → mix.wav (−14 LUFS);
+   │      the sound preset comes from the episode or the brand pack
  render ── every frame drawn on canvas → ffmpeg → reel.mp4
  stills · cover · caption ── review sheet, poster, post copy
 ```
@@ -70,6 +71,8 @@ npm run write -- --episode episodes/<id> --prompt   # print the writer's exact p
 npm run validate -- episodes/<id>                   # exits 1 on contract errors
 npm run voice -- episodes/<id>                      # vo.wav + voice.json
 npm run mix -- episodes/<id> [--stems]              # mix.wav (and stems/ with --stems)
+npm run mix -- episodes/<id> --sound diorama        # mix with another sound preset, this run only
+npm run sounds                                      # a sample of every music bed and effects set → .tmp/sounds/
 npm run render -- episodes/<id> --stills            # stills.png only
 npm run render -- episodes/<id> --frame 3.2         # one full-size frame at 3.2 s
 ```
@@ -118,6 +121,18 @@ reel with a slider that shifts the voice against the mascot's mouth. **Save**
 writes the lead to `lipsync.json` for every future render; **Re-render this
 reel** bakes it in.
 
+## Sound
+
+Every reel's music and sound effects are synthesised in code, so they're
+royalty-free. The default is the house sound: a light groove with paper
+swipes, taps and a ding on the closing ask. A sound preset swaps it for
+another bed and effects set: `diorama` (quiet keys, almost no effects),
+`isometric`, `blueprint`, `timelapse`, `doodle` (no music), `flat`,
+`terminal`, `map` or `minimal`. Each is named after the look it was made for.
+Set `"sound"` in a brand pack for every reel, or in one `episode.json`;
+[brands/README.md](brands/README.md#sound) has the fields, and `npm run sounds`
+lets you hear each bed and set.
+
 ## Brand packs
 
 Name, handle, site, mascot name, colours, logos and the closing call to action
@@ -154,6 +169,15 @@ episode's files are uploaded as a workflow artifact; nothing is committed. To
 keep a script, copy its `episode.json`, `media.json`, `stills.png`,
 `cover.png` and `caption.txt` into `episodes/<id>/` and open a PR.
 
+## Tests
+
+```sh
+npm test                              # every test file, one at a time
+node --test test/sound.test.mjs       # one file
+```
+
+The tests use a stand-in voice, so they need no TTS model, network or media.
+
 ## Requirements
 
 - **Node 20+** (22+ recommended) and **ffmpeg** with ffprobe. Required.
@@ -163,6 +187,12 @@ keep a script, copy its `episode.json`, `media.json`, `stills.png`,
 - **uv**, on Apple Silicon, for the house voice.
 
 `npm run setup -- --check` lists what's missing, with the install command.
+
+## Third-party licences
+
+The Inter and Inter Display fonts in `assets/fonts/` are under the SIL Open
+Font License 1.1 (`assets/fonts/OFL.txt`). npm dependencies carry their own
+licences in `node_modules/`.
 
 ## Costs
 

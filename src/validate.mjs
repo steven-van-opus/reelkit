@@ -22,6 +22,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { STUDIO_SETS, SET_ALIASES } from './brand.mjs';
+import { resolveSound } from './audio/sound.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const SCENES_MD = path.join(here, 'scenes', 'SCENES.md');
@@ -543,6 +544,10 @@ export async function checkEpisode(episode, { specs, media, mediaDir = null } = 
   const keyword = episode.cta?.keyword;
   if (!keyword) errors.push('cta.keyword is required');
   else if (!new RegExp(`^[A-Z][A-Z0-9]{1,${LIMITS.keyword - 1}}$`).test(keyword)) errors.push(`cta.keyword "${keyword}" must be ONE uppercase word, 2–${LIMITS.keyword} chars`);
+
+  if (episode.sound != null) {
+    try { resolveSound(episode.sound); } catch (e) { errors.push(e.message); }
+  }
 
   if (!Array.isArray(episode.sources) || episode.sources.length === 0) errors.push('sources must list at least one { claim, url }');
   else episode.sources.forEach((s, i) => {

@@ -20,9 +20,11 @@ import { TITLES } from './titles/index.mjs';
 
 // The print on the wall: top edge and the biggest it may be (border included).
 // The sign is SIGN_W wide and its strings hang STRING_IN from its ends, so a
-// print up to PRINT.maxW (plus its tilt) stays between them.
+// print up to PRINT.maxW (plus its tilt) stays between them. Every opening
+// keeps clear of the subtitles (BAND.captionY; their chips start near y 1300):
+// short prints, and titles that end above them.
 const SIGN_W = 880, STRING_IN = 32;
-const PRINT = { top: 334, maxW: 2 * (SIGN_W / 2 - STRING_IN - 34), maxH: 490 };
+const PRINT = { top: 334, maxW: 2 * (SIGN_W / 2 - STRING_IN - 34), maxH: 380 };
 const SIGN_GAP = 32;   // print bottom → sign top
 
 // Two title lines split evenly ("Nano / Banana 2.1", not "Nano Banana / 2.1").
@@ -60,7 +62,7 @@ function drawTitled(s, style) {
   const coverLike = style === 'strips' && img;
   const print = img
     ? coverLike
-      ? printSize(img.width / img.height, 820, 560, { crop: props.fit === 'contain' ? 1 : 1.25 })
+      ? printSize(img.width / img.height, 820, 460, { crop: props.fit === 'contain' ? 1 : 1.25 })
       : printSize(img.width / img.height, asPrint ? 900 : PRINT.maxW, asPrint ? 640 : 420, { crop: props.fit === 'cover' ? 1.25 : 1 })
     : null;
 
@@ -94,8 +96,9 @@ function drawTitled(s, style) {
         ctx.restore();
       }
     }
-    // No by-line strip here: the narrator says it, and the headline matches the cover's size.
-    ({ bottom } = titleStrips(ctx, s, { cx: 430, top: PRINT.top + print.h + 26, bottom: 1420, title, kicker: props.kicker, toolId: null, maxW: 700 }));
+    // No by-line strip here: the narrator says it, and the headline matches the cover's size. It ends by y 1230,
+    // above the subtitles.
+    ({ bottom } = titleStrips(ctx, s, { cx: 430, top: PRINT.top + print.h + 26, bottom: 1230, title, kicker: props.kicker, toolId: null, maxW: 700 }));
     confetti(ctx, { x: 430, y: Math.min(bottom, 1100), t, at: 0.45, seed: 'hook-confetti', count: 34 });
     const rise = s.spring(0.3, { freq: 1.8, damp: 0.45 });
     ctx.save();
@@ -123,8 +126,8 @@ function drawTitled(s, style) {
   } else {
     const top = print ? PRINT.top + print.h + 30 : 360;
     const make = style === 'letters' ? titleLetters : TITLES[style] ? (c, st, o) => TITLES[style].draw(c, st, o) : titleStrips;
-    // Leave the floor area to Kit: the title fills what's above it.
-    ({ bottom } = make(ctx, s, { cx, top, bottom: print ? 1180 : 1010, title, kicker: props.kicker, by: props.by, toolId, maxW: print ? 820 : 900 }));
+    // Leave the floor area to Kit and the subtitles: the title fills what's above y 1010.
+    ({ bottom } = make(ctx, s, { cx, top, bottom: 1010, title, kicker: props.kicker, by: props.by, toolId, maxW: print ? 820 : 900 }));
   }
   confetti(ctx, { x: cx, y: Math.min(bottom, 1100), t, at: 0.45, seed: 'hook-confetti', count: 34 });
   // Kit cheers from the floor — to the side when the title runs low.
