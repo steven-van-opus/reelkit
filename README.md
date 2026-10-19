@@ -72,7 +72,7 @@ npm run write -- --episode episodes/<id> --prompt   # print the writer's exact p
 npm run validate -- episodes/<id>                   # exits 1 on contract errors
 npm run voice -- episodes/<id>                      # vo.wav + voice.json
 npm run mix -- episodes/<id> [--stems]              # mix.wav (and stems/ with --stems)
-npm run mix -- episodes/<id> --sound cozy           # mix with another sound preset, this run only
+npm run mix -- episodes/<id> --sound diorama        # mix with another sound preset, this run only
 npm run sounds                                      # a sample of every music bed and effects set → .tmp/sounds/
 npm run render -- episodes/<id> --stills            # stills.png only
 npm run render -- episodes/<id> --frame 3.2         # one full-size frame at 3.2 s
@@ -147,10 +147,11 @@ details: the canvas look, code scenes, the checks and how to add a style.
 Every reel's music and sound effects are synthesised in code, so they're
 royalty-free. The default is the house sound: a light groove with paper
 swipes, taps and a ding on the closing ask. A sound preset swaps it for
-another bed and effects set: `cozy` (quiet keys, almost no effects),
+another bed and effects set: `diorama` (quiet keys, almost no effects),
 `isometric`, `blueprint`, `timelapse`, `doodle` (no music), `flat`,
-`terminal`, `atlas` or `minimal`. A styled reel uses its style's preset. Set
-`"sound"` in a brand pack for every reel, or in one `episode.json`; [brands/README.md](brands/README.md#sound) has
+`terminal`, `map` or `minimal`. Each is named after the look it was made for,
+and a styled reel uses its style's preset. Set `"sound"` in a brand pack for
+every reel, or in one `episode.json`; [brands/README.md](brands/README.md#sound) has
 the fields, and `npm run sounds` lets you hear each bed and set.
 
 ## Brand packs

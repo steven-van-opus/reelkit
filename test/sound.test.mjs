@@ -32,10 +32,10 @@ test('choices resolve to a sound, the house sound to null, and anything unknown 
   assert.equal(resolveSound({ preset: 'house', musicVolume: 1, sfxVolume: 1 }), null);
   assert.deepEqual(resolveSound({ musicVolume: 1.5 }).music, { ...HOUSE_SOUND.music, gain: 1.5 });
   // Another set on the paper look lands its closing cue as the Post button lights; the paper set times its own.
-  assert.deepEqual(resolveSound('cozy').sfx, { set: 'cozy', density: 'few', gain: 1, closing: 'post' });
+  assert.deepEqual(resolveSound('diorama').sfx, { set: 'cozy', density: 'few', gain: 1, closing: 'post' });
   assert.deepEqual(resolveSound({ sfx: 'timelapse' }).sfx, { set: 'timelapse', density: 'some', gain: 1, closing: 'post' });
   // A mood chosen over the preset's brings its tempo, mode and drop-out; the preset keeps its levels.
-  assert.deepEqual(resolveSound({ preset: 'cozy', mood: 'dark' }).music, { mood: 'dark', bpm: [104, 114], mode: 'minor', underVoiceLu: -12, duckDb: 3, breakAt: 'pivot', gain: 1 });
+  assert.deepEqual(resolveSound({ preset: 'diorama', mood: 'dark' }).music, { mood: 'dark', bpm: [104, 114], mode: 'minor', underVoiceLu: -12, duckDb: 3, breakAt: 'pivot', gain: 1 });
   assert.equal(resolveSound('doodle').music, null, 'doodle starts with the music off');
   assert.equal(resolveSound({ preset: 'doodle', music: true }).music.mood, 'keys');
   assert.equal(resolveSound({ preset: 'blueprint', sfx: 'none' }).sfx, null);
@@ -46,7 +46,7 @@ test('choices resolve to a sound, the house sound to null, and anything unknown 
     [{ music: 'yes' }, /"music" must be true or false/],
     [{ musicVolume: 3 }, /"musicVolume" must be a number from 0.2 to 2/],
     [{ volume: 1 }, /unknown field "volume"/],
-    [['cozy'], /must be a preset name/],
+    [['diorama'], /must be a preset name/],
   ]) assert.throws(() => resolveSound(bad), message);
 });
 
@@ -90,9 +90,9 @@ test('every preset mixes at -14 LUFS, at its own level under the voice, with onl
       const names = new Set(report.sfx.map(e => e.sfx));
       for (const sfx of names) assert.ok(allowed[preset.sfx].includes(sfx), `${name}: ${sfx}`);
       if (preset.sfx !== 'paper' && preset.sfx !== 'timelapse') for (const sfx of PAPER_ONLY) assert.ok(!names.has(sfx), `${name}: no ${sfx}`);
-      if (name === 'cozy') assert.ok(report.sfx.length <= 1, 'cozy: almost no effects');
-      // Doodle and Atlas: nothing on the cuts, only the chime as the keyword lands.
-      if (name === 'doodle' || name === 'atlas') {
+      if (name === 'diorama') assert.ok(report.sfx.length <= 1, 'diorama: almost no effects');
+      // Doodle and map: nothing on the cuts, only the chime as the keyword lands.
+      if (name === 'doodle' || name === 'map') {
         assert.deepEqual(plain(report.sfx.map(e => e.sfx)), ['chime'], name);
         for (const e of report.sfx) assert.ok(timing.beats.every(b => Math.abs(e.t - b.start) >= 0.15), `${name}: ${e.sfx} at ${e.t} s, on a cut`);
       }
@@ -148,10 +148,10 @@ test('a brand pack’s `sound` is checked when it loads', () => {
       fs.writeFileSync(path.join(pack, 'brand.json'), JSON.stringify({ ...brand, sound }));
       return spawnSync(process.execPath, ['--input-type=module', '-e', `const { BRAND } = await import(${JSON.stringify(path.join(ROOT, 'src/brandpack.mjs'))}); console.log(JSON.stringify(BRAND.sound))`], { env: { ...process.env, REELKIT_BRAND: pack }, encoding: 'utf8' });
     };
-    const ok = load('cozy');
+    const ok = load('diorama');
     assert.equal(ok.status, 0, ok.stderr);
-    assert.equal(ok.stdout.trim(), '"cozy"');
-    const bad = load({ preset: 'cozy', mood: 'jazz' });
+    assert.equal(ok.stdout.trim(), '"diorama"');
+    const bad = load({ preset: 'diorama', mood: 'jazz' });
     assert.notEqual(bad.status, 0);
     assert.match(bad.stderr, /brand\.json "sound": no mood "jazz"/);
   } finally { fs.rmSync(pack, { recursive: true, force: true }); }
