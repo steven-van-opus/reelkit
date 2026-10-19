@@ -128,9 +128,10 @@ royalty-free. The default is the house sound: a light groove with paper
 swipes, taps and a ding on the closing ask. A sound preset swaps it for
 another bed and effects set: `diorama` (quiet keys, almost no effects),
 `isometric`, `blueprint`, `timelapse`, `doodle` (no music), `flat`,
-`terminal`, `map` or `minimal`. Each is named after the look it was made for. Set `"sound"` in a brand pack for every
-reel, or in one `episode.json`; [brands/README.md](brands/README.md#sound) has
-the fields, and `npm run sounds` lets you hear each bed and set.
+`terminal`, `map` or `minimal`. Each is named after the look it was made for.
+Set `"sound"` in a brand pack for every reel, or in one `episode.json`;
+[brands/README.md](brands/README.md#sound) has the fields, and `npm run sounds`
+lets you hear each bed and set.
 
 ## Brand packs
 
