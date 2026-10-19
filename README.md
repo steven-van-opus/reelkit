@@ -137,6 +137,8 @@ npm run reel -- --url <https://…> --style atlas
 npm run style -- atlas      # the style's reference video as a test episode, to voice and render
 ```
 
+![The eight styles' reference videos](docs/styles.jpg)
+
 Styled reels run about 30–55 s. [docs/STYLES.md](docs/STYLES.md) has the
 details: the canvas look, code scenes, the checks and how to add a style.
 

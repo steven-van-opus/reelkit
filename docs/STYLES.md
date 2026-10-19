@@ -17,6 +17,8 @@ npm run reel -- --episode episodes/_test-style-atlas --from voice
 
 ## The styles
 
+![Each style's reference video: its opening, and its fourth scene with captions](styles.jpg)
+
 | Id | Name | What it looks like | Reference video |
 | --- | --- | --- | --- |
 | `blueprint` | Blueprint HUD | Technical line art of the subject on a near-black blueprint grid, mono readouts, orange and cyan callouts | How the Golden Gate hangs its road |
