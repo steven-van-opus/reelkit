@@ -16,6 +16,7 @@ import { logoTile, toolInfo } from '../../logos.mjs';
 import { beatShotSrc, shotImage } from '../../shots.mjs';
 import { drawCover } from '../../mediastore.mjs';
 import { clamp, lerp, ease, rng, boil, rgba, luminance } from '../../util.mjs';
+import { freeImage } from '../../free-image.mjs';
 
 const ICONS = new Set(['check', 'x', 'bolt', 'image', 'phone', 'cursor', 'sparkle', 'chat', 'code', 'play', 'star', 'layers', 'globe', 'heart', 'arrow', 'lock', 'bell']);
 
@@ -52,14 +53,16 @@ export function printSize(ar, maxW, maxH, { caption = false, crop = 1.3 } = {}) 
   return { iw: Math.round(iw), ih: Math.round(ih), w: Math.round(iw) + b * 2, h: Math.round(ih) + b * 2 + cap, b, cap };
 }
 
-// A real image or video frame as a photo print, centred on the origin: chalk
-// paper border (thicker at the bottom when it carries a caption, like an
-// instant photo), the picture printed onto it with a whisper of grain and a
-// gloss glint, and 1–2 pieces of tape. Callers place, tilt and slap it in.
+// A video frame as a photo print (a blank one while there's no picture),
+// centred on the origin: chalk paper border (thicker at the bottom when it
+// carries a caption, like an instant photo), the picture printed onto it with a
+// whisper of grain and a gloss glint, and 1–2 pieces of tape. Callers place,
+// tilt and slap it in through photoPrint (at the end of this file), which shows
+// an image as itself and keeps this print for video and the blank.
 //   size     printSize() result
 //   tapes    0, 1 (top centre) or 2 (top corners); tapeIn 0..1 grows them on
 //   pan      'top' keeps a screenshot's header in view and scrolls down a touch
-export function photoPrint(ctx, img, size, { caption = '', seed = 'print', t = 0, dur = 4, video = false, lift = 2, tapes = 2, tapeIn = 1, pan = 'center', fill = C.chalk } = {}) {
+function paperPrint(ctx, img, size, { caption = '', seed = 'print', t = 0, dur = 4, video = false, lift = 2, tapes = 2, tapeIn = 1, pan = 'center', fill = C.chalk } = {}) {
   const { iw, ih, w, h, b, cap } = size;
   const x = -w / 2, y = -h / 2, px = x + b, py = y + b;
   paper(ctx, c => roundRectPath(c, x, y, w, h, 5), { fill, lift, rim: 0.7 });
@@ -735,3 +738,17 @@ export default {
     });
   },
 };
+
+// Images as themselves (src/free-image.mjs): an image is drawn whole with a soft shadow in the print's
+// box, centred on the origin, with its caption (if any) under it; only video keeps paperPrint's frame. Same arguments
+// and return value as paperPrint.
+export function photoPrint(ctx, img, size, opts = {}) {
+  if (!img || opts.video) return paperPrint(ctx, img, size, opts);
+  const strip = opts.caption && size.cap ? size.b + size.cap : 0;
+  freeImage(ctx, img, -size.w / 2, -size.h / 2, size.w, size.h - strip, { lift: opts.lift ?? 2 });
+  if (strip) {
+    const fit = fitWrapped(ctx, opts.caption, 700, size.w - 16, 1, Math.round(Math.min(44, strip * 0.42)), 34);
+    text(ctx, fit.lines[0] || '', 0, size.h / 2 - strip / 2, { weight: 700, size: fit.size, color: C.ink });
+  }
+  return { w: size.w, h: size.h };
+}

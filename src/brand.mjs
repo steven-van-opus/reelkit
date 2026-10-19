@@ -49,7 +49,10 @@ export const BAND = {
   stageTop: 330,      // diorama content lives between stageTop and stageBottom
   stageBottom: 1420,
   floorY: 1330,       // where the set's floor/desk meets the wall
-  captionY: 1500,     // centre line of the spoken-word caption chips
+  // Centre line of the spoken-word caption chips: above the strip Instagram Reels and TikTok cover with their own
+  // caption and buttons (about 24% and 22% of the frame from the bottom). Centred at 1372, a two-line-high chip ends
+  // above 1440 (it was 1500, where those apps covered it).
+  captionY: 1372,
 };
 
 const FONT_FILES = {

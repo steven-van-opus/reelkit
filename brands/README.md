@@ -59,6 +59,7 @@ asset that isn't on disk stops the run with an error that names it.
 | `palette` | `{ "pink": "#FF2B88", … }` | Brand colours, as `#RRGGBB` (see [Palette](#palette)) |
 | `assets` | `{ "lockup": "assets/…svg", … }` | Paths relative to the pack folder (see [Assets](#assets)) |
 | `cta` | `{ "keyword": "TOOLBOX", … }` | The house call to action that closes every reel (see [Call to action](#call-to-action)) |
+| `sound` | `"cozy"` | Optional. The music and sound effects every reel of the pack mixes with (see [Sound](#sound)). Without it, the house sound |
 
 Every field is required. Keep the default pack's wording style: sentence case,
 plain US English, no hype.
@@ -121,6 +122,29 @@ Every reel ends with the same ask: comment a keyword and get an auto-DM. The
 "We'll send you" is a promise: the account needs an auto-DM (e.g. ManyChat)
 that replies to the keyword. To skip the house ask for one
 reel, set `"cta": { "house": false }` in that episode.
+
+### Sound
+
+`sound` picks the soundtrack's music bed and sound effects. It's a preset name,
+or an object that starts from one and changes it:
+
+```json
+"sound": "cozy"
+"sound": { "preset": "blueprint", "sfx": "none", "musicVolume": 0.8 }
+```
+
+| Field | Values | Default |
+| --- | --- | --- |
+| `preset` | `house`, `cozy`, `isometric`, `blueprint`, `timelapse`, `doodle`, `flat`, `terminal`, `atlas`, `minimal` | `house` |
+| `mood` | Another music bed: `groove`, `keys`, `ambient`, `dark`, `pulse` | The preset's |
+| `sfx` | Another effects set: `paper`, `cozy`, `interface`, `engineering`, `timelapse`, `minimal`, or `none` | The preset's |
+| `music` | `false` for no music, `true` to switch on a preset that starts without it (`doodle`) | The preset's |
+| `musicVolume`, `sfxVolume` | 0.2 to 2, against the preset's own level | 1 |
+
+An episode's own `sound` (same shape, in `episode.json`) wins over the pack's.
+`npm run sounds` writes a short sample of every bed and set to `.tmp/sounds/`;
+[docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md#audio) says what each preset
+sounds like.
 
 ## What a pack doesn't change
 

@@ -22,7 +22,7 @@ pick → seed → media → write → validate → voice → mix → render → 
 | write | `src/write-script.mjs` (`claude -p`) | the full `episode.json` |
 | validate | `src/validate.mjs` | errors and warnings |
 | voice | `src/tts.mjs`, then `src/align.mjs` | `vo.wav`, `voice.json` |
-| mix | `src/audio.mjs` | `mix.wav` |
+| mix | `src/audio.mjs` (sound from `src/audio/sound.mjs`) | `mix.wav` |
 | render | `src/render.mjs` + `src/scenes/` | `reel.mp4` |
 | stills, cover, caption | `render.mjs --stills`, `src/thumbnail.mjs`, `run.mjs` | `stills.png`, `cover.png`, `caption.txt` |
 
@@ -41,6 +41,10 @@ pick → seed → media → write → validate → voice → mix → render → 
 - `src/cta.mjs`: applies the brand pack's house CTA to every episode.
 - `src/brand.mjs`: palette, fonts, frame size, safe areas, layout bands, theme.
 - `src/pronounce.mjs`: what the narrator says for words TTS misreads.
+- `src/audio/sound.mjs`: the sound presets (music bed + effects set) and how
+  an episode's or brand pack's `sound` resolves; `house` must keep mixing
+  byte for byte as before (`test/sound.test.mjs`).
+- `test/`: `npm test` (node:test, one file at a time, a stand-in voice).
 - `voices/`: Python tools for the house voice and Whisper alignment.
 - `docs/ARCHITECTURE.md`, `docs/VOICE.md`, `brands/README.md`: the details.
 
@@ -90,6 +94,9 @@ npm run pick [-- --days 7 --top 20 --json]
 npm run write -- --episode episodes/<id> --prompt      # print the writer prompt, no Claude call
 npm run validate -- episodes/<id>
 npm run render -- episodes/<id> --stills | --frame <seconds> [--cover] [--out file.png]
+npm run mix -- episodes/<id> [--sound <preset>] [--stems] [--json]
+npm run sounds                                         # a sample of every bed and effects set → .tmp/sounds/
+npm test                                               # the test suite, one file at a time
 npm run serve                                          # viewer at http://localhost:4310
 npm run catalog:sync -- /path/to/Creators-Toolbox
 ```

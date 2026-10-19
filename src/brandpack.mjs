@@ -11,6 +11,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { resolveSound } from './audio/sound.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const BRANDS = path.join(ROOT, 'brands');
@@ -48,6 +49,10 @@ function load() {
   if (!raw.palette || typeof raw.palette !== 'object') fail('brand.json needs a "palette" object of brand colours');
   for (const [k, v] of Object.entries(raw.palette)) {
     if (!/^#[0-9a-f]{6}$/i.test(v)) fail(`brand.json palette.${k} must be a #RRGGBB colour (got ${JSON.stringify(v)})`);
+  }
+
+  if (raw.sound != null) {
+    try { resolveSound(raw.sound, { where: 'brand.json "sound"' }); } catch (e) { fail(e.message); }
   }
 
   // Asset paths are relative to the pack; resolve them and make sure each file exists.
