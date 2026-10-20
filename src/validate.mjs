@@ -25,7 +25,8 @@ import { STUDIO_SETS, SET_ALIASES } from './brand.mjs';
 import { resolveSound } from './audio/sound.mjs';
 import { STYLE_IDS, styleOf } from './styles/index.mjs';
 import { PLACE_MAX } from './styles/guide.mjs';
-import { CANVAS_STAGE, CODE_LIMITS, codeMediaIds, codeSceneErrors, codeSourceOf } from './code/scene.mjs';
+import { CANVAS_STAGE, CODE_LIMITS, codeMediaIds, codeSceneErrors, codeSceneWarnings, codeSourceOf } from './code/scene.mjs';
+import { estimateBeat, holdAfter } from './code/timing.mjs';
 import { declaredLogos } from './code/marks.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -625,6 +626,10 @@ export async function checkEpisode(episode, { specs, media, mediaDir = null } = 
     if (style) {
       if (b.scene !== 'cta' && !b.place) warnings.push(`${at}: no "place"; name the set this scene is in, invented from the topic`);
       else if (b.place && String(b.place).length > PLACE_MAX) warnings.push(`${at}: place is ${String(b.place).length} chars, max ${PLACE_MAX}`);
+      if (i > 0 && b.scene === 'hook') errors.push(`${at}: only beat 1 is the 'hook'; every beat after it is a 'code' scene`);
+      // The payoff (best-practices.mjs "A held payoff"): one beat after the opening, marked so its scene holds.
+      if (b.payoff !== undefined && b.payoff !== true) errors.push(`${at}: payoff must be true (the line the reel builds to) or left out`);
+      else if (b.payoff === true && (i === 0 || b.scene === 'cta')) errors.push(`${at}: only a beat after the opening and before the closing ask can be the payoff`);
     } else if (!b.set) warnings.push(`${at}: no set, defaults to 'pearl'`);
     else if (!setName(b.set)) errors.push(`${at}: set "${b.set}" must be one of ${SET_NAMES.join(' | ')}`);
     else if (OLD_SET_NAMES.includes(b.set)) oldSets.add(b.set);
@@ -652,13 +657,25 @@ export async function checkEpisode(episode, { specs, media, mediaDir = null } = 
       errors.push(`${at}: props.before and props.after are both "${props.before}"; a before/after needs two different media ids`);
     }
     for (const id of new Set(propMediaIds(b, spec))) shown.set(id, (shown.get(id) || 0) + 1);
-    // A scene in code: everything the code checks can tell (it runs, its cues, its media and logos, the best practices).
+    // A scene in code: everything the code checks can tell (it runs, its cues, its media and logos, the best practices),
+    // then what they advise: a scene whose drawing doesn't act on its words. The opening, beat 1, may land its hook word
+    // as type. A payoff is checked on its own clock, through its hold.
     const code = style ? codeSourceOf(b) : null;
     if (code !== null && code.length <= CODE_LIMITS.source) {
-      errors.push(...codeSceneErrors(at, code, String(b.vo || ''), known, CANVAS_STAGE));
+      const hold = holdAfter(b, episode), run = hold ? estimateBeat(String(b.vo || ''), hold) : undefined;
+      const found = codeSceneErrors(at, code, String(b.vo || ''), known, CANVAS_STAGE, run);
+      errors.push(...found);
+      if (!found.length && i > 0) warnings.push(...codeSceneWarnings(at, code, String(b.vo || ''), CANVAS_STAGE, run));
       for (const id of codeMediaIds(code)) if (ctx.media?.has(id)) shown.set(id, (shown.get(id) || 0) + 1);
     }
   });
+
+  // A styled reel holds one payoff (code/timing.mjs PAYOFF_HOLD): the line it builds to.
+  if (style && beats.length) {
+    const payoffs = beats.filter(b => b?.payoff === true).length;
+    if (payoffs > 1) errors.push(`${payoffs} beats are marked "payoff": true; mark only the one line the reel builds to`);
+    else if (!payoffs) warnings.push('no beat is marked "payoff": true; mark the line the reel builds to, so its scene holds its final state for a second before the closing ask');
+  }
 
   if (beats.length && (total < L.totalWords[0] || total > L.totalWords[1])) {
     errors.push(`voiceover is ${total} words in total, needs ${L.totalWords[0]}–${L.totalWords[1]} (${seconds(L.totalWords)})`);

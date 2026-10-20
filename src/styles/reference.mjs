@@ -41,18 +41,20 @@ export function referenceSets(reference) {
 
 /**
  * The reference as an episode of the style: the opening a 'hook' drawn in code (its title the video's), every other
- * set a 'code' scene, and the closing ask left to the house CTA. Its sources and post copy are placeholders: it's a
- * demo of the style, not a reel to post.
+ * set a 'code' scene, its last the payoff it builds to (held, best-practices.mjs "A held payoff"), and the closing ask
+ * left to the house CTA. Its sources and post copy are placeholders: it's a demo of the style, not a reel to post.
  * @param {{ id: string, name: string, reference: ReferenceVideo }} style
  */
 export function referenceEpisode(style) {
   const ref = style.reference;
-  const beats = referenceSets(ref).map((b, i) => ({
+  const sets = referenceSets(ref);
+  const beats = sets.map((b, i) => ({
     label: b.label,
     vo: b.line,
     scene: i === 0 ? 'hook' : 'code',
     props: i === 0 ? { title: ref.title.slice(0, 28), source: b.source } : { source: b.source },
     ...(b.place ? { place: b.place } : {}),
+    ...(i > 0 && i === sets.length - 1 ? { payoff: true } : {}),
   }));
   return {
     id: `_test-style-${style.id}`,

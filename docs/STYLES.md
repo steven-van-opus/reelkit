@@ -41,9 +41,10 @@ logos, palette or catchphrases: its characters and finish are its own, and its
 | Step | What changes for a styled reel |
 | --- | --- |
 | seed | `episode.json` gets `"style": "<id>"` |
-| write | The writer's instructions swap the scene catalog for the style (`src/styles/guide.mjs`): designing the reel, how to write a code scene, the opening, the best practices (`src/styles/best-practices.mjs`), and the style's feel, identity and reference video, scene by scene. Beat 1 is a `hook` with `title` and `source`; every other beat is a `code` scene with `source` and a `place` (the set it's in, never drawn). Logos it places are declared in a top-level `"logos"` list. |
-| validate | Every scene is run and checked (`src/code/scene.mjs` `codeSceneErrors`): it runs at every frame, cues only words its line says, uses only media ids from `media.json` and declared logos, keeps its words inside the stage and out of the captions, big enough and readable against what's behind them, fills the stage, and never flashes. Styled reels run longer: 6–10 beats and 70–135 words before the house CTA, about 30–55 s. |
+| write | The writer's instructions swap the scene catalog for the style (`src/styles/guide.mjs`): designing the reel, how to write a code scene, the opening, the best practices (`src/styles/best-practices.mjs`), and the style's feel, identity and reference video, scene by scene. Beat 1 is a `hook` with `title` and `source`; every other beat is a `code` scene with `source` and a `place` (the set it's in, never drawn), and the one the reel builds to is marked `"payoff": true`. Logos it places are declared in a top-level `"logos"` list. |
+| validate | Every scene is run and checked (`src/code/scene.mjs` `codeSceneErrors`): it runs at every frame, cues only words its line says, uses only media ids from `media.json` and declared logos, keeps its words inside the stage and out of the captions, big enough and readable against what's behind them, fills the stage, and never flashes. A scene after the opening whose drawing doesn't act on its words is warned (`codeSceneWarnings`, see "How scenes are designed"), as is a reel with no payoff marked; two payoffs, or a `hook` after beat 1, are refused. Styled reels run longer: 6–10 beats and 70–135 words before the house CTA, about 30–55 s. |
 | marks | Each declared logo's exact vector shapes are looked up (its SVG logo on Wikimedia Commons, as Wikidata names it, and its symbol from Simple Icons) into `marks.json`, cached in `.cache/marks/`; one that isn't found is set as its name. `marks.json` holds third-party logos, so it's never committed. |
+| voice | The payoff beat runs on `PAYOFF_HOLD` (1 s, `src/code/timing.mjs`) after its line before the next beat cuts in, voiced or not; every other beat, and every house reel, is timed as before |
 | mix | The style's own sound (its `sound`, offered as the preset `<id>` in `src/audio/sound.mjs`), unless the episode sets its own `sound` |
 | render, stills | The canvas look (`src/canvas.mjs`) instead of the paper or studio look |
 | cover | The opening once it has settled, without captions |
@@ -60,6 +61,67 @@ Kit isn't drawn: a style's characters are drawn in its scenes' code.
 The style's palette (`primary`, `accent`, `ink`, `background`) becomes the
 scenes' `colors`: `wall`, `floor` (a deeper wall), `ink`, `chalk` (cards),
 `cardInk` (text on cards), `accent`, `rose` and `blush`.
+
+## How scenes are designed
+
+Whatever the style, a styled reel's scenes follow the best practices in
+`src/styles/best-practices.mjs`: the writer reads them, the make-reel review
+asks their questions of the finished reel, and `src/styles/guide.mjs` tells the
+writer how to build them (designing the reel, the opening, writing a code
+scene). Each style keeps them in its own idiom: its identity has a line on how
+things act in it (a packet flies between panes, territory floods across a
+border, a cable draws taut). The ones that decide how a scene is designed:
+
+- **Objects act out the words.** Each scene after the opening is led by the
+  thing its line names (drawn, or the source media or a logo) doing what the
+  line says, on the word that names it: a request packet hops from the app to
+  the server on "sends", a bar grows to its real value on its number, a heart
+  tips a scale on "heart", a screenshot zooms to the button the line names. It
+  changes state on its word (it moves, tips, flips, fills, swaps, gets flung or
+  breaks) rather than only arriving, then settles. A short label, tag or
+  speech bubble beside it is fine, and a number can land on its word too; but
+  when only text or a number changes on the word the scene is text-led, and
+  text never stands in for the thing (a text box, a typed line, a stat box, or
+  a counter or gauge acting alone). Glyph art counts as a drawn thing only when
+  its characters form a picture.
+- **One material, one motion.** Everything drawn in a reel is made and moves
+  the way its style does: the helpers at the top of the style's reference
+  scenes are its kit, copied into every scene, with an `act(t)` in the style's
+  own ease added only where it has none. Nothing adds shading, an outline or a
+  bounce the style rules out, and each kind of move uses the same ease
+  throughout.
+- **The hook lands on its word.** The opening's title is on its first frame,
+  and its key word lands big as it's said, within about the first two seconds:
+  the reel's biggest move happens on that word. When the key word is in the
+  title, the word slams in far bigger as it's said; otherwise it's its own slam.
+  The opening is the one scene a word may lead. (The cover is taken later, once
+  the opening has landed.)
+- **A held payoff.** The line the reel builds to is marked `"payoff": true`.
+  Its scene runs on `PAYOFF_HOLD` (1 s) after its line, so its final state lands
+  big on the payoff word, even the line's last, and holds still before the
+  closing ask.
+
+A reference video shows its style's look, not always these at their best: where
+one of its scenes is led by a number, typed code or a card, the writer is told
+to keep the look and redesign the moment around something that acts.
+
+The validator can tell one of these from the code. `codeSceneWarnings` runs
+each scene after the opening twice on the same clock, once as its line is said
+and once with none of its words said yet (each moved past the scene's end, the
+gaps between them kept, so a count run from one word to the next still runs),
+so whatever runs on the clock alone (a drift, a pulse, a loop, a hand-drawn
+jitter) is the same in both and only what the words set off differs. It
+compares every element's box, opacity, colour and attributes, the paint it
+inherits from its groups (a stroke, a dash offset) and the gradients it paints
+with. When no shape or image differs, only words and numbers, the scene is
+warned as text-led; when nothing differs, it's warned that nothing lands on a
+word (`voStart` and `voEnd` stay put, so a change timed from the end of the
+line rather than a word doesn't count); when the code fails with none of its
+words said, it says it couldn't check. It's a warning, not an error, and a
+floor: any shape that changes on a word counts as the drawing acting, so a
+caret that follows the typing, an underline, a highlight bar, a leader line, a
+label's pill, a card that slides in under its number or a gauge's needle lets a
+text-led scene through. The review asks the rest.
 
 ## Code scenes
 
@@ -123,8 +185,11 @@ src/styles/<id>/
    video (6–10 scenes, each with a label, a line, a place and its code, about
    45 s with the closing ask), and an opening and examples to design from.
 3. `node --test test/styles.test.mjs`: every scene must pass the code checks
-   and paint in Node, its colours must read, and its reference video must
-   validate as an episode.
+   and paint in Node, every scene after the opening of its reference video
+   must raise no `codeSceneWarnings` (no text-led warning: the floor, so make
+   its things act on their words as well), its colours must read, and its
+   reference video must validate as an episode, its last scene the held
+   payoff. Give its identity a line on how things act in it.
 4. `npm run style -- <id>`, voice and render it, and watch it.
 
 Nothing else changes: the writer, the validator, the renderer, the cover, the

@@ -10,6 +10,7 @@ import { execFileSync } from 'child_process';
 import { ROOT } from './brand.mjs';
 import { applyHouseCta } from './cta.mjs';
 import { speakable } from './pronounce.mjs';
+import { holdAfter } from './code/timing.mjs';
 
 export const SAMPLE_RATE = 24000;
 const LEAD_IN = 0.35;          // silence before the first word
@@ -406,7 +407,7 @@ export async function voiceEpisode(dir) {
       words.push(...displayTimes(beat.vo, r.words, cursor, dur));
       cursor += dur;
       beats.push({ index: bi, start: +beatStart.toFixed(3), voStart: words[0]?.start ?? cursor, voEnd: +cursor.toFixed(3), words });
-      cursor += BEAT_GAP;
+      cursor += BEAT_GAP + holdAfter(beat, episode);
       process.stdout.write(`  voiced beat ${bi + 1}/${episode.beats.length} (ElevenLabs ${r.model})\r`);
       continue;
     }
@@ -421,10 +422,11 @@ export async function voiceEpisode(dir) {
       cursor += dur;
     }
     beats.push({ index: bi, start: +beatStart.toFixed(3), voStart: words[0]?.start ?? cursor, voEnd: +cursor.toFixed(3), words });
-    cursor += BEAT_GAP;
+    // A styled reel's payoff holds on screen before the next beat (code/timing.mjs PAYOFF_HOLD); no other beat does.
+    cursor += BEAT_GAP + holdAfter(beat, episode);
     process.stdout.write(`  voiced beat ${bi + 1}/${episode.beats.length}\r`);
   }
-  const total = cursor - BEAT_GAP + TAIL;
+  const total = cursor - BEAT_GAP - holdAfter(episode.beats.at(-1), episode) + TAIL;
   beats.forEach((b, i) => { b.end = +(i < beats.length - 1 ? beats[i + 1].start : total).toFixed(3); });
 
   const out = new Float32Array(Math.ceil(total * SAMPLE_RATE));

@@ -3,8 +3,8 @@
 // awe close. Every scene is one hero object from the topic (a planet, a cell, an organ, a machine) floating big on a
 // deep plum night in flat vector: smooth shapes with no outlines, each shaded the same way (a darker crescent on the
 // side away from the light, one small highlight), a soft glow and drifting dust behind. Its people are its own beans;
-// the ladder tag at the top left carries the step in time or scale; numbers are the climax; the camera pushes in and
-// pulls back between ideas. It copies the format only: no birds or any other channel's creatures, logos, end cards or
+// the ladder tag at the top left carries the step in time or scale; the hero acts on its word, its number landing
+// beside it as the climax; the camera pushes in and pulls back between ideas. It copies the format only: no birds or any other channel's creatures, logos, end cards or
 // palette (ours is plum, sun yellow and mint). Its reference video ("How much of you is new today?", reference.mjs,
 // with the kit every scene spells out) is what the writer remakes; the opening and examples below
 // are kept as every style keeps them, unused while it has one. Its identity (IDENTITY: what every video keeps) is told
@@ -13,7 +13,7 @@
 
 import { FLAT_KIT, FLAT_REFERENCE, flatBig, flatHead, flatSky, tagWidth } from './reference.mjs';
 
-const FEEL = `Big-question science in flat vector on a deep plum night. Paint colors.wall edge to edge, a soft radial glow (colors.accent or colors.rose, brightest stop 0.24) and 40–60 drifting dust dots. Every scene is one hero object from the topic, floating big mid-stage with air around it: a planet, a cell, an organ, a machine. Build it from smooth geometric shapes with no outlines, shaded one way: its flat colour, colors.cardInk at 30% over it, then the same shape offset a tenth of its size toward the top left, all clipped to the shape, so a darker crescent stays on the far side; then one small chalk highlight. People are this style's own beans: capsules 60–500 px tall in palette tints, two chalk eyes with dark pupils, no limbs, alone or in crowds of 3 to 40. Every scene starts with the ladder tag at the top left, the step in time or scale ("EVERY SECOND", "× 1,000": uppercase sans 800, 36 px, colors.wall on a colors.accent tag, corners 12), and one dot per scene at the top right, lit up to this one. Numbers are the climax: heavy sans 150–230 px in colors.accent over a unit line. Labels sit on chalk tags with a leader line. The camera is the transition: pull back from inside the hero, or push in until it fills the frame (easeInOut). Things breathe (scale 1 ± 0.02), orbit, pulse and drift; never an outline, a hard cut or a bounce.`;
+const FEEL = `Big-question science in flat vector on a deep plum night. Paint colors.wall edge to edge, a soft radial glow (colors.accent or colors.rose, brightest stop 0.24) and 40–60 drifting dust dots. Every scene is one hero object from the topic, floating big mid-stage with air around it: a planet, a cell, an organ, a machine. Build it from smooth geometric shapes with no outlines, shaded one way: its flat colour, colors.cardInk at 30% over it, then the same shape offset a tenth of its size toward the top left, all clipped to the shape, so a darker crescent stays on the far side; then one small chalk highlight. People are this style's own beans: capsules 60–500 px tall in palette tints, two chalk eyes with dark pupils, no limbs, alone or in crowds of 3 to 40. Every scene starts with the ladder tag at the top left, the step in time or scale ("EVERY SECOND", "× 1,000": uppercase sans 800, 36 px, colors.wall on a colors.accent tag, corners 12), and one dot per scene at the top right, lit up to this one. The hero acts on its word (it splits, fills, empties, shrinks or swaps), and its number lands beside it as the climax: heavy sans 150–230 px in colors.accent over a unit line. Labels sit on chalk tags with a leader line. The camera is the transition: pull back from inside the hero, or push in until it fills the frame (easeInOut). Things breathe (scale 1 ± 0.02), orbit, pulse and drift; never an outline, a hard cut or a bounce.`;
 
 // What every Flat vector video keeps, what its topic brings, and what it never copies from the reference video.
 const IDENTITY = {
@@ -23,7 +23,7 @@ const IDENTITY = {
     'One hero object per scene, floating big in the middle of the stage with air around it',
     "This style's own beans for people: rounded capsules in tints of the palette, two chalk eyes with dark pupils, no limbs, alone or in crowds of 3 to 40",
     'The ladder tag at the top left of every scene (the step in time or scale, uppercase heavy sans on an accent tag) and a row of dots at the top right, one per scene, lit up to this one',
-    'Huge numbers in heavy sans in colors.accent over a short unit line, and chalk label tags with leader lines',
+    'The hero itself changes on its word (it splits, fills, empties, shrinks or swaps); huge numbers in heavy sans in colors.accent over a short unit line land beside it, with chalk label tags on leader lines',
     'Camera moves between ideas (a pull back from inside the hero, a push in until it fills the frame); inside a scene, things breathe, orbit, pulse and drift, never a bounce',
     'A curious voice: a question and a striking number, a cascade up a ladder of time or scale, a twist, and an awe close',
     'A centred karaoke caption line in heavy sans under a soft vignette (drawn for you)',
