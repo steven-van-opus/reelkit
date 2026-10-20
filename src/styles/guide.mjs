@@ -14,6 +14,33 @@ export const PLACE_MAX = 60;
 
 const S = CANVAS_STAGE;
 
+/**
+ * The code-scene guide's example: a drawn thing that acts out its line on the words that name it (a padlock drops in on
+ * "sixty" and snaps open on "free", its chain falling away), its price landing beside it, built on the small kit every
+ * scene of a reel shares (one entrance, one way to act, one material). test/styles.test.mjs keeps it passing every check.
+ */
+export const CODE_EXAMPLE = {
+  line: 'Most editors charge sixty a month, and this one is free.',
+  source: `export default function Scene({ time, colors, stage }) {
+  // The reel's kit, the same at the top of every scene: one entrance (an overshoot that settles), one way to act, one material.
+  const enter = t => easeOutBack(clamp((time - t) / 0.5));
+  const act = t => easeOut(clamp((time - t) / 0.45));
+  const Solid = ({ d, c }) => <g><path d={d} fill={colors.cardInk} opacity={0.2} transform="translate(0 18)"/><path d={d} fill={c}/></g>;
+  const cx = (stage.left + stage.right) / 2, drop = enter(at('sixty')), open = act(at('free'));
+  return <svg>
+    <rect x={0} y={0} width={1080} height={1920} fill={colors.wall}/>
+    {range(9).map(i => <ellipse cx={100 + i * 110} cy={470} rx={64} ry={34} fill="none" stroke={colors.ink} strokeWidth={18} opacity={1 - open} transform={\`translate(0 \${700 * open * open}) rotate(\${(i % 2 ? 30 : -30) * open} \${100 + i * 110} 470)\`}/>)}
+    <g transform={\`translate(\${cx} \${840 - 1100 * (1 - drop)}) rotate(\${-6 * open})\`}>
+      <path d="M -160 -230 V -350 A 160 160 0 0 1 160 -350 V -230" fill="none" stroke={colors.ink} strokeWidth={60} strokeLinecap="round" transform={\`translate(0 \${-70 * open}) rotate(\${40 * open} 160 -230)\`}/>
+      <Solid d="M -320 -240 H 320 V 160 Q 320 240 240 240 H -240 Q -320 240 -320 160 Z" c={colors.accent}/>
+      <circle cx={0} cy={-30} r={50} fill={colors.cardInk}/>
+      <rect x={-18} y={-10} width={36} height={110} rx={12} fill={colors.cardInk}/>
+    </g>
+    <text x={cx} y={1240} width={820} maxLines={1} textAnchor="middle" fontSize={88} fontWeight={900} fill={open > 0.5 ? colors.accent : colors.ink} opacity={drop}>{open > 0.5 ? 'free' : '$60 a month'}</text>
+  </svg>;
+}`,
+};
+
 /** How to write a code scene on a style's frame: the component's inputs, what it can use, and an example. */
 export const CODE_GUIDE = `## Code scenes
 A \`code\` beat's \`source\` is one React component, \`export default function Scene({ time, duration, colors, stage, words }) { … }\`, that returns an <svg> of the frame: 1080×1920 px, drawn every frame. Write it the way you'd hand-code a motion graphic.
@@ -27,21 +54,11 @@ A \`code\` beat's \`source\` is one React component, \`export default function S
 - Text: fontSize, fontWeight (400–900), fontFamily ("sans", "serif" or "mono"), fontStyle ("italic"), textAnchor, dominantBaseline ('middle' centres the lines on y). Give every headline a \`width\` and \`maxLines\` so it can never run off the frame.
 - Images: \`<image href={asset('m01')} x y width height/>\` shows it whole (meet). asset() takes a media id from the media list, written literally (asset('m01'), never asset(id) with a variable). Show images as themselves: never put a photo in a frame, a polaroid or a box; place it big, overlapping or tilted, with a \`shadow\` if it needs to lift off the background. Crop only when the design asks for it (preserveAspectRatio="xMidYMid slice" with a clipPath circle or blob, or \`rx\` for a screen grab). Only a video clip sits in a rounded frame.
 - No state, effects, events, timers, fetch, HTML elements, CSS animations or external URLs: everything is a function of \`time\`. Assignment (=, ++) and loops don't exist; build lists with map. Keep it under ${CODE_LIMITS.source} characters.
-- Design like a motion designer, not a slide maker. Fill the stage: the composition spans most of its width (700–900 px) and its height, its weight centred around y 760 (the middle of the stage) or deliberately off-centre, never bunched at the top or small in a corner. Use solid shapes, bold colour (the accent as a field, not just a dot), gradients, overlap, scale and rotation; avoid rows of identical cards or pills, outlined wireframe boxes and bullet lists. Draw real things with shapes and paths (a laptop, a price tag, a padlock, a folder, a cloud, a chart) instead of labelled rectangles.
-- Make each scene its own design for what its line says: a chart that grows, a counter that ticks up, a before/after that wipes across, logos that fly into a row, a diagram that draws itself, a list that checks off.
-Example (a stat that counts up, with its label wiping in on "free"):
-export default function Scene({ time, colors, stage }) {
-  const n = Math.round(interpolate(time, at('thirteen'), at('thirteen') + 0.8, 0, 13));
-  const p = easeOut(clamp((time - at('free')) / 0.5));
-  const cx = (stage.left + stage.right) / 2;
-  return <svg>
-    <rect x={0} y={0} width={1080} height={1920} fill={colors.wall}/>
-    <rect x={cx - 380} y={480} width={760} height={560} rx={48} fill={colors.chalk} shadow="0 18 40 rgba(0,0,0,0.12)" transform={\`translate(0 \${(1 - easeOutBack(clamp(time / 0.5))) * 60})\`}/>
-    <text x={cx} y={780} textAnchor="middle" fontSize={300} fontWeight={900} fill={colors.accent}>{n}</text>
-    <g clipPath="url(#wipe)"><text x={cx} y={920} width={640} maxLines={1} textAnchor="middle" fontSize={64} fontWeight={800} fill={colors.cardInk}>free apps</text></g>
-    <defs><clipPath id="wipe"><rect x={cx - 340} y={840} width={680 * p} height={120}/></clipPath></defs>
-  </svg>;
-}`;
+- Design like a motion designer, not a slide maker. Fill the stage: the composition spans most of its width (700–900 px) and its height, its weight centred around y 760 (the middle of the stage) or deliberately off-centre, never bunched at the top or small in a corner. Use solid shapes, bold colour (the accent as a field, not just a dot), gradients, overlap, scale and rotation; avoid rows of identical cards or pills, outlined wireframe boxes and bullet lists. Draw real things with shapes and paths (a laptop, a price tag, a padlock, a folder, a cloud, a scale) instead of labelled rectangles.
+- Build each scene around one drawn thing that acts out its line, and cue the act on the word that names it (see "Objects act out the words"): a scale that tips as the heavier thing lands, a calendar whose page is torn off, a jar that fills, a steak flung off its plate, a padlock that snaps open, logos that fly into a row, a diagram that draws itself. A number or a few words can land beside it, but never alone: a counter ticking, a line typing or a label fading in while nothing drawn changes makes a text-led scene, and the validator warns. The object then settles in its new state.
+- Start every scene from the reel's kit (see "One material, one motion"): the same shading on every object and the same entrance and action eases, written at the top of each scene's component, the same in every one.
+Example (its line: "${CODE_EXAMPLE.line}"; a padlock drops in on "sixty" and snaps open on "free", its chain falling away, the price beside it):
+${CODE_EXAMPLE.source}`;
 
 /** How a styled reel is designed: the opening and every beat in code, places from the topic, real media and logos. */
 const designGuide = ({ beats: [lo, hi] }) => `## Designing the reel
@@ -51,13 +68,16 @@ The style is a visual language (its look, colours, type, captions and motion), a
 - Every beat after it is a \`code\` scene you design (see "Code scenes"), drawn for what its line says. A styled reel has no other scene types, no "set" and no "mascot": a style's own characters, when it has some, are drawn in your code.
 - Give every beat, the opening too, a top-level "place" beside its "label": the set it is in, invented from your topic (at most ${PLACE_MAX} characters, never drawn as text), like "a night bakery, trays cooling on the counter". When a beat returns to an earlier set on purpose, repeat that place word for word.
 - Never repeat a design: no two scenes in a row with the same layout.
+- One material and one motion for the whole reel: before you write the first scene, decide how everything is made (the style's material) and how it moves (one entrance, one ease for acting on a word), and write them as the small kit every scene starts from (see "One material, one motion").
+- Every scene after the opening is led by a drawn thing that acts out its line on the word that names it; its words and numbers label it (see "Objects act out the words").
+- Find the payoff, the line the reel builds to, and give its scene a big ending that holds still for at least about a second (see "A held payoff").
 - Show the real thing: put the source media (product shots, screenshots, demo clips, photos) on screen with asset('m01') where they show what the line says, as themselves and big, the way the style would lift or tilt them. Read each item before you use it and show it only for what it really shows; say only what is visible in it or stated by the source, and never invent a media id. Draw in code what no source media shows.
-- Draw what is named: whenever a line names a company, app, product, person, place or thing, its scene shows it, in code in this style: a logo placed with <Mark id="m80" …/> and styled around the way the style does it (on a card, a tile or a sticker; tilted, with a shadow; in its own colours or one colour of the style), a person as a portrait (see "Best practices"), a place or landmark by its silhouette. Only draw what you know well enough to be recognised; otherwise show the name big instead. Declare each logo in the episode's top-level "logos" list, written before "beats", so reelkit can look up its exact shape: {"id": "m80", "name": "Adobe Photoshop", "domain": "adobe.com"} (ids ${LOGO_IDS[0]} to ${LOGO_IDS.at(-1)}; "name" exactly as Wikipedia titles the page; "domain" the maker's website).
+- Draw what is named: whenever a line names a company, app, product, person, place or thing, its scene shows it, in code in this style: a logo placed with <Mark id="m80" …/> and styled around the way the style does it (on a card, a tile or a sticker; tilted, with a shadow; in its own colours or one colour of the style), a person as a portrait (see "Best practices"), a place or landmark by its silhouette. Only draw what you know well enough to be recognised; otherwise set its name big on a drawn thing that can act (a sign, a crate, a sticker). Declare each logo in the episode's top-level "logos" list, written before "beats", so reelkit can look up its exact shape: {"id": "m80", "name": "Adobe Photoshop", "domain": "adobe.com"} (ids ${LOGO_IDS[0]} to ${LOGO_IDS.at(-1)}; "name" exactly as Wikipedia titles the page; "domain" the maker's website).
 
 ${CODE_GUIDE}
 
 ## The opening
-Beat 1's \`source\` is a code scene like the others (same inputs, stage and checks), and it's the frame people decide to keep watching on, so make it the boldest one: what this reel is about, in a form made for it, that reads in a second. Pick the form from the story, never the same title card every time: the subject drawn big with a few huge words beside it; a giant number or price that lands on its word; a before → after; a question with the answer hidden; two rivals facing off; the title built from the thing itself (its logo, its shape, its colours). Keep its words few (≤ 8) and large (72 px or more), in the style, and land them on the vo's words. Its main title is on screen within the first half second (it's the first frame people see, and the cover's): build the frame around it, then bring in the secondary pieces on their words.`;
+Beat 1's \`source\` is a code scene like the others (same inputs, stage and checks), and it's the frame people decide to keep watching on, so make it the boldest one: what this reel is about, in a form made for it, that reads in a second. Pick the form from the story, never the same title card every time: the subject drawn big with a few huge words beside it; a giant number or price that lands on its word; a before → after; a question with the answer hidden; two rivals facing off; the title built from the thing itself (its logo, its shape, its colours). Keep its words few (≤ 8) and large (72 px or more), in the style, and land them on the vo's words. Its main title is on screen within the first half second (it's the first frame people see, and the cover's): build the frame around it, then bring in the secondary pieces on their words. Then land the hook big on its key word as it's said, within about the first two seconds (write the line so that word comes in its first five words or so): the reel's biggest move happens on that word (the word itself slamming in as huge type, the subject dropping in or breaking open, or both), never faded up before it (see "The hook lands on its word"). It's the one scene a word may lead; draw its subject there too.`;
 
 /** What every reel in the style keeps, what each topic brings, and what is never copied from its reference video. */
 function identityGuide(style) {

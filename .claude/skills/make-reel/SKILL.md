@@ -91,8 +91,11 @@ Check each item and note what fails:
   styled reel (the run warns if not).
 - [ ] **A styled reel follows the best practices.** Nothing important under the
   captions or the platform's UI, words big and readable, one idea per scene,
-  motion that settles, original drawings, places built for this topic rather
-  than copied from the style's reference (`BEST_PRACTICE_CHECKS` in
+  each scene after the opening led by a drawn thing that acts out its line on
+  its word (fix any scene the validator warns is text-led), one material and
+  one motion throughout, a hook that lands big on its word, a payoff that
+  holds, motion that settles, original drawings, places built for this topic
+  rather than copied from the style's reference (`BEST_PRACTICE_CHECKS` in
   `src/styles/best-practices.mjs` lists the questions).
 
 Show the person `stills.png` and `cover.png` (SendUserFile when available) with

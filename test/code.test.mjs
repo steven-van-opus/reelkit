@@ -105,6 +105,37 @@ test('on a style\'s full-frame stage, no words sit under the spoken-word caption
   assert.match(errors(late)[0], /^beat 5 \(code\): the code fails at 1\.\d s: Unknown scene value: nope/);
 });
 
+test('a scene whose drawing never acts on its words is warned: text-led, or nothing landing on a word at all', () => {
+  const warn = source => code.codeSceneWarnings('beat 3 (code)', source, VO, code.CANVAS_STAGE);
+  // A card that sits still while its count runs up on "sixty" and its label fades in on "free", beside a blob that
+  // drifts on the clock: the drift runs the same whether or not the words are said, so it isn't the drawing acting.
+  const scene = (card, extra = '') => `export default function Scene({ time, colors }) {
+  const n = Math.round(interpolate(time, at('sixty'), at('sixty') + 0.8, 0, 60));
+  const p = easeOut(clamp((time - at('free')) / 0.5));
+  return <svg>
+    <rect x={0} y={0} width={1080} height={1920} fill={colors.wall}/>
+    <circle cx={200 + 40 * Math.sin(time * 3)} cy={380} r={90} fill={colors.blush}/>
+    <rect x={140} y={460} width={800} height={640} rx={40} fill={colors.chalk} ${card}/>
+    <text x={540} y={800} textAnchor="middle" fontSize={240} fontWeight={900} fill={colors.accent}>{n}</text>
+    <text x={540} y={960} textAnchor="middle" fontSize={64} fontWeight={800} fill={colors.cardInk} opacity={p}>free</text>
+    ${extra}
+  </svg>;
+}`;
+  assert.deepEqual(plain(code.codeSceneErrors('beat 3 (code)', scene(''), VO, new Set(), code.CANVAS_STAGE)), [], 'it passes every check');
+  assert.match(warn(scene(''))[0], /^beat 3 \(code\): only words and numbers change as its line is said \(on "sixty", "free"\); nothing drawn moves, turns, grows, fills or swaps on a word, so the scene is text-led/);
+  // The drawing acting on a word, however it acts: the card tips, a shape arrives, a stroke draws itself, a fill swaps.
+  assert.deepEqual(plain(warn(scene('transform={`rotate(${-8 * p} 940 1100)`}'))), []);
+  assert.deepEqual(plain(warn(scene('', '<circle cx={540} cy={1200} r={60} fill={colors.accent} opacity={p}/>'))), []);
+  assert.deepEqual(plain(warn(scene('', '<path d="M 200 1150 L 880 1150" fill="none" stroke={colors.accent} strokeWidth={12} strokeDasharray={680} strokeDashoffset={680 * (1 - p)}/>'))), []);
+  assert.deepEqual(plain(warn(scene('', '<circle cx={540} cy={1200} r={60} fill={p > 0.5 ? colors.accent : colors.rose}/>'))), []);
+  // A line typed out word by word over a still card is text-led too, cued or not.
+  assert.match(warn(`export default function Scene({ time, colors, words }) { return <svg><rect x={140} y={460} width={800} height={640} fill={colors.chalk}/><text x={540} y={760} width={700} maxLines={3} textAnchor="middle" fontSize={64} fill={colors.cardInk}>{words.filter(w => w.start <= time).map(w => w.text).join(' ')}</text></svg>; }`)[0], /only words and numbers change as its line is said; nothing drawn moves/);
+  // Nothing on a word at all: everything runs on the clock.
+  assert.match(warn('export default function Scene({ time, colors }) { return <svg><rect x={140} y={460 + 20 * Math.sin(time)} width={800} height={640} fill={colors.chalk}/></svg>; }')[0], /^beat 3 \(code\): nothing in it changes as its line is said; cue the thing the line names with at\('word'\)/);
+  // Code that doesn't run is codeSceneErrors' to report.
+  assert.deepEqual(plain(warn('export default function Scene() { return <svg>{nope}</svg>; }')), []);
+});
+
 test('at(word, n) is the nth time the line says the word, and a cue for a time it isn\'t said is caught', () => {
   const IT = 'It works because it is cheap, and it is fast.';
   const beat = estimateBeat(IT);
@@ -162,6 +193,7 @@ test('a gradient with no length paints nothing, as in a browser, instead of fail
 
 test('the checks time a scene the way render.mjs times a reel before it has a voice', async () => {
   // loadEpisode without voice.json is the layout preview the stills draw before voicing; timing.mjs mirrors it.
+  fs.mkdirSync(path.join(ROOT, '.tmp'), { recursive: true });
   const dir = fs.mkdtempSync(path.join(ROOT, '.tmp', 'test-timing-'));
   try {
     const beats = [{ scene: 'hook', vo: 'One two three four five six.' }, { scene: 'code', vo: 'Seven eight.' }, { scene: 'code', vo: 'Nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen.' }];

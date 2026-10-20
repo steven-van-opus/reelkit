@@ -10,8 +10,8 @@ import { createCanvas, Path2D } from '@napi-rs/canvas';
 import { registerFonts } from '../src/brand.mjs';
 import { STYLES, STYLE_IDS, styleOf } from '../src/styles/index.mjs';
 import { referenceSets, referenceEpisode } from '../src/styles/reference.mjs';
-import { lookGuide } from '../src/styles/guide.mjs';
-import { CANVAS_STAGE, codeSceneErrors, runCodeScene, sampleInputs } from '../src/code/scene.mjs';
+import { CODE_EXAMPLE, lookGuide } from '../src/styles/guide.mjs';
+import { CANVAS_STAGE, codeSceneErrors, codeSceneWarnings, runCodeScene, sampleInputs } from '../src/code/scene.mjs';
 import { paintCodeTree } from '../src/code/paint.mjs';
 import { canvasColors, canvasFont, createCanvasLook } from '../src/canvas.mjs';
 import { SOUNDS } from '../src/audio/sound.mjs';
@@ -71,6 +71,17 @@ test('every reference scene, opening and example passes the code checks on the c
   }
 });
 
+test('every scene after the opening of a style\'s reference video acts out its words, and so does the guide\'s example', () => {
+  // The opening may land its hook word as type (best-practices.mjs "The hook lands on its word"), so it isn't checked.
+  for (const [id, style] of Object.entries(STYLES)) {
+    for (const b of referenceSets(style.reference).slice(1)) {
+      assert.deepEqual(plain(codeSceneWarnings(`${id}: ${b.label}`, b.source, b.line, CANVAS_STAGE)), [], `${id}: ${b.label}`);
+    }
+  }
+  assert.deepEqual(plain(codeSceneErrors('the guide\'s example', CODE_EXAMPLE.source, CODE_EXAMPLE.line, new Set(), CANVAS_STAGE)), []);
+  assert.deepEqual(plain(codeSceneWarnings('the guide\'s example', CODE_EXAMPLE.source, CODE_EXAMPLE.line, CANVAS_STAGE)), []);
+});
+
 test('every reference scene paints in Node at its start, middle and end, without falling back', () => {
   for (const [id, style] of Object.entries(STYLES)) {
     const colors = canvasColors(style.palette);
@@ -89,8 +100,9 @@ test('every style\'s reference video is a valid styled episode, mixed with its o
   for (const [id, style] of Object.entries(STYLES)) {
     const episode = applyHouseCta(referenceEpisode(style));
     assert.equal(episode.style, id);
-    const { errors } = await checkEpisode(episode, { media: null });
+    const { errors, warnings } = await checkEpisode(episode, { media: null });
     assert.deepEqual(errors, [], id);
+    assert.deepEqual(warnings.filter(w => /changes as its line is said/.test(w)), [], id);
     // Its sound is its style's preset, its closing cue landing as the keyword is said (the canvas look's closing).
     const sound = episodeSound(episode);
     assert.equal(sound.sfx.set, SOUNDS[id].sfx, id);
@@ -102,6 +114,21 @@ test('every style\'s reference video is a valid styled episode, mixed with its o
   assert.match((await checkEpisode({ ...map, style: 'nope' }, { media: null })).errors.join('\n'), /style "nope" must be one of/);
   const fixed = { ...map, beats: map.beats.map((b, i) => (i === 2 ? { ...b, scene: 'stat', props: { value: '1' } } : b)) };
   assert.match((await checkEpisode(fixed, { media: null })).errors.join('\n'), /beat 3 \(stat\): unknown scene 'stat' \(known: cta, hook, code\)/);
+  // A scene that types its line out over a still card is warned as text-led, never refused; the opening isn't checked.
+  const typed = `export default function Scene({ time, colors, words }) {
+  return <svg>
+    <rect x={0} y={0} width={1080} height={1920} fill={colors.wall}/>
+    <rect x={140} y={400} width={800} height={700} rx={40} fill={colors.chalk}/>
+    <text x={540} y={700} width={700} maxLines={4} textAnchor="middle" fontSize={64} fontWeight={800} fill={colors.cardInk}>{words.filter(w => w.start <= time).map(w => w.text).join(' ')}</text>
+  </svg>;
+}`;
+  const typedAt = k => ({ ...map, beats: map.beats.map((b, i) => (i === k ? { ...b, props: { ...b.props, source: typed } } : b)) });
+  const third = await checkEpisode(typedAt(2), { media: null });
+  assert.deepEqual(third.errors, []);
+  assert.match(third.warnings.join('\n'), /beat 3 \(code\): only words and numbers change as its line is said; nothing drawn moves, turns, grows, fills or swaps on a word, so the scene is text-led/);
+  const opening = await checkEpisode(typedAt(0), { media: null });
+  assert.deepEqual(opening.errors, []);
+  assert.deepEqual(opening.warnings.filter(w => /changes as its line is said/.test(w)), []);
 });
 
 test('the writer gets the style: its feel, identity and reference scenes, and the code-scene contract', async () => {

@@ -4,8 +4,9 @@
 // style's treatment, film grain or a vignette, and the closing ask); each scene's code draws everything else on the
 // whole 1080 × 1920 frame. The writer gets the style's feel, its identity (what every reel keeps, what each topic
 // brings, what is never copied), its reference video and its frame, layered on the best practices every style follows
-// (best-practices.mjs: platform safe zones, nothing under the captions, readable sizes, facts from the sources, sets
-// from the topic), and the validator checks every scene on the canvas stage (src/code/scene.mjs codeSceneErrors).
+// (best-practices.mjs: platform safe zones, nothing under the captions, readable sizes, objects that act out the words,
+// one material and one motion, a hook on its word and a held payoff, facts from the sources, sets from the topic), and
+// the validator checks every scene on the canvas stage (src/code/scene.mjs codeSceneErrors, codeSceneWarnings).
 //
 // The scene contract for a style (what its reference scenes, and the writer's, may assume):
 //   - Coordinates are the frame's own (0–1080 × 0–1920). Backgrounds, textures, rooms and vignettes may run edge to edge.

@@ -2,7 +2,8 @@
 // interpreter (react-scene.mjs: parsed, never eval'd, no browser, network or timers, a budget per frame) and painted
 // onto the reel's canvas by paint.mjs. The component gets the scene's clock and the spoken words, so anything can move
 // on the word that names it. A styled reel (src/styles/) draws every scene this way on the canvas look
-// (src/canvas.mjs), and the validator checks each one here (codeSceneErrors).
+// (src/canvas.mjs), and the validator checks each one here (codeSceneErrors) and warns where its drawing doesn't act
+// on its words (codeSceneWarnings).
 import { renderReactScene, sceneSourceElements } from './react-scene.mjs';
 import { geoPoint, handTracedPoints, landPath } from './map/kit.mjs';
 import { placeMark } from './marks.mjs';
@@ -574,6 +575,8 @@ export function drawnElements(tree, ink) {
       key: `${base}#${copy}`, id: n.sourceId, tag: n.tag, box: shown,
       area: within && box.w * box.h > 0 ? area * (shown.w * shown.h) / (box.w * box.h) : area,
       alpha: paint ? a * ownOpacity * paint.alpha : 0, luminance: paint?.luminance ?? null,
+      // Its own and its groups' opacity, whatever it paints with (a stroke-only shape too), and its own attributes.
+      opacity: a, props: p,
       words: n.tag === 'text' ? codeContent(n).texts.join(' ') : '',
     });
   };
@@ -767,4 +770,54 @@ export function codeSceneErrors(at, source, vo, known, stage = CODE_STAGE, run) 
   }
   if (!errors.length) errors.push(...wholeBeatErrors(at, source, inputs, stage));
   return errors;
+}
+
+/** The same element in two runs of a scene shows the same: both hidden, or the same box, opacity, colour and attributes. */
+function sameState(x, y) {
+  const shown = (d) => !!d && d.opacity > 0.05;
+  if (!shown(x) || !shown(y)) return shown(x) === shown(y);
+  return Math.max(Math.abs(x.box.x - y.box.x), Math.abs(x.box.y - y.box.y), Math.abs(x.box.w - y.box.w), Math.abs(x.box.h - y.box.h)) <= 0.5
+    && Math.abs(x.opacity - y.opacity) <= 0.02 && Math.abs(x.alpha - y.alpha) <= 0.02 && x.luminance === y.luminance
+    && x.words === y.words && JSON.stringify(x.props) === JSON.stringify(y.props);
+}
+
+/**
+ * What a code scene's checks advise rather than require (src/styles/best-practices.mjs "Objects act out the words"):
+ * a scene whose drawing doesn't act on its words. The scene runs twice on the same clock, once as its line is said and
+ * once with none of its words said yet, so whatever runs on the clock alone (a drift, a pulse, a loop, a hand-drawn
+ * jitter) is the same in both and only what the words set off differs. A shape or image that differs (it moves, turns,
+ * grows, fills, swaps, draws itself, arrives or leaves on a word) is the drawing acting, and there's no warning; when
+ * only words and numbers differ, the scene is text-led; when nothing differs, nothing in it lands on a word. Compared just
+ * after each word is said and at the end. The opening isn't checked (its hook word may land as type), nor a scene that
+ * doesn't run (codeSceneErrors reports it). Same arguments as codeSceneErrors.
+ */
+export function codeSceneWarnings(at, source, vo, stage = CODE_STAGE, run) {
+  if (typeof source !== 'string' || !source.trim() || source.length > CODE_LIMITS.source) return [];
+  const inputs = run ? { duration: run.duration, words: run.words, voStart: run.voStart, voEnd: run.voEnd, colors: SAMPLE_COLORS, stage } : sampleInputs(vo, stage);
+  const { duration, words } = inputs;
+  if (!words.length) return [];
+  // None of the words said yet: every cue (at(), shot(), the words themselves) still to come.
+  const unsaid = { ...inputs, words: words.map(w => ({ ...w, start: duration + 60, end: duration + 61 })) };
+  const frame = (t) => Math.round(t * CHECK_FPS) / CHECK_FPS;
+  const times = [...new Set([...words.flatMap(w => [w.start + 0.1, w.start + 0.4]), duration].filter(t => t > 0 && t <= duration).map(frame))].sort((a, b) => a - b);
+  const ids = codeMediaIds(source), keyed = (tree) => new Map(drawnElements(tree, inputs.colors.ink).map(d => [d.key, d]));
+  let text = false;
+  for (const time of times) {
+    let said, not;
+    try {
+      said = keyed(runCodeScene(source, { ...inputs, time }, ids, true));
+      not = keyed(runCodeScene(source, { ...unsaid, time }, ids, true));
+    } catch { return []; }
+    for (const key of new Set([...said.keys(), ...not.keys()])) {
+      const x = said.get(key), y = not.get(key);
+      if (sameState(x, y)) continue;
+      if ((x ?? y).tag !== 'text') return [];
+      text = true;
+    }
+  }
+  const cues = [...new Set([...codeCues(source).map(c => c.word), ...shotCues(source).flat()])];
+  const on = cues.length ? ` (on ${cues.slice(0, 3).map(c => `"${c}"`).join(', ')}${cues.length > 3 ? '…' : ''})` : '';
+  return [text
+    ? `${at}: only words and numbers change as its line is said${on}; nothing drawn moves, turns, grows, fills or swaps on a word, so the scene is text-led. Have the thing the line names act it out on the word that names it (a scale tips, a page is torn off, a plate is flung), then settle, with the words beside it`
+    : `${at}: nothing in it changes as its line is said; cue the thing the line names with at('word') so it acts as that word is said (it moves, tips, flips, fills, swaps or breaks), then settles`];
 }

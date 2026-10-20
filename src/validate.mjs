@@ -25,7 +25,7 @@ import { STUDIO_SETS, SET_ALIASES } from './brand.mjs';
 import { resolveSound } from './audio/sound.mjs';
 import { STYLE_IDS, styleOf } from './styles/index.mjs';
 import { PLACE_MAX } from './styles/guide.mjs';
-import { CANVAS_STAGE, CODE_LIMITS, codeMediaIds, codeSceneErrors, codeSourceOf } from './code/scene.mjs';
+import { CANVAS_STAGE, CODE_LIMITS, codeMediaIds, codeSceneErrors, codeSceneWarnings, codeSourceOf } from './code/scene.mjs';
 import { declaredLogos } from './code/marks.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -652,10 +652,13 @@ export async function checkEpisode(episode, { specs, media, mediaDir = null } = 
       errors.push(`${at}: props.before and props.after are both "${props.before}"; a before/after needs two different media ids`);
     }
     for (const id of new Set(propMediaIds(b, spec))) shown.set(id, (shown.get(id) || 0) + 1);
-    // A scene in code: everything the code checks can tell (it runs, its cues, its media and logos, the best practices).
+    // A scene in code: everything the code checks can tell (it runs, its cues, its media and logos, the best practices),
+    // then what they advise: a scene whose drawing doesn't act on its words. The opening may land its hook word as type.
     const code = style ? codeSourceOf(b) : null;
     if (code !== null && code.length <= CODE_LIMITS.source) {
-      errors.push(...codeSceneErrors(at, code, String(b.vo || ''), known, CANVAS_STAGE));
+      const found = codeSceneErrors(at, code, String(b.vo || ''), known, CANVAS_STAGE);
+      errors.push(...found);
+      if (!found.length && b.scene === 'code') warnings.push(...codeSceneWarnings(at, code, String(b.vo || ''), CANVAS_STAGE));
       for (const id of codeMediaIds(code)) if (ctx.media?.has(id)) shown.set(id, (shown.get(id) || 0) + 1);
     }
   });
