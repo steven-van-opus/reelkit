@@ -9,7 +9,7 @@ import { createCanvas, Path2D } from '@napi-rs/canvas';
 import * as code from '../src/code/scene.mjs';
 import { paintCodeTree, contrastOf, rgbaOf } from '../src/code/paint.mjs';
 import { CAPTION_BAND } from '../src/code/safe-zone.mjs';
-import { estimateTiming, estimateBeat } from '../src/code/timing.mjs';
+import { estimateTiming, estimateBeat, PAYOFF_HOLD } from '../src/code/timing.mjs';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const plain = value => JSON.parse(JSON.stringify(value));
@@ -128,12 +128,45 @@ test('a scene whose drawing never acts on its words is warned: text-led, or noth
   assert.deepEqual(plain(warn(scene('', '<circle cx={540} cy={1200} r={60} fill={colors.accent} opacity={p}/>'))), []);
   assert.deepEqual(plain(warn(scene('', '<path d="M 200 1150 L 880 1150" fill="none" stroke={colors.accent} strokeWidth={12} strokeDasharray={680} strokeDashoffset={680 * (1 - p)}/>'))), []);
   assert.deepEqual(plain(warn(scene('', '<circle cx={540} cy={1200} r={60} fill={p > 0.5 ? colors.accent : colors.rose}/>'))), []);
+  // Paint a group passes down acts too: line art drawing itself through its group's dash offset, a border recoloured
+  // and thickened on its group, a fill whose gradient stop moves on the word.
+  assert.deepEqual(plain(warn(scene('', '<g fill="none" stroke={colors.ink} strokeWidth={14} strokeDasharray={1400} strokeDashoffset={1400 * (1 - p)}><path d="M 240 1150 C 300 1000 780 1000 840 1150"/><path d="M 300 1200 L 780 1200"/></g>'))), []);
+  assert.deepEqual(plain(warn(scene('', '<g stroke={p > 0.5 ? colors.accent : colors.ink} strokeWidth={p > 0.5 ? 14 : 3}><path d="M 240 1150 L 840 1150" fill="none"/></g>'))), []);
+  assert.deepEqual(plain(warn(scene('', '<defs><linearGradient id="glass" x1="0" y1="1" x2="0" y2="0"><stop offset={p} stopColor={colors.accent}/><stop offset={p} stopColor={colors.rose}/></linearGradient></defs><rect x={460} y={1110} width={160} height={120} fill="url(#glass)"/>'))), []);
+  // A count run from one word to the next (a span between two cues) is checked like any other: with none of the words
+  // said, the cues keep their spacing, so the code runs and the still card is warned.
+  const between = (count) => `export default function Scene({ time, colors }) {
+  const n = Math.round(${count});
+  return <svg>
+    <rect x={0} y={0} width={1080} height={1920} fill={colors.wall}/>
+    <rect x={140} y={460} width={800} height={640} rx={40} fill={colors.chalk}/>
+    <text x={540} y={800} textAnchor="middle" fontSize={240} fontWeight={900} fill={colors.accent}>{n}</text>
+  </svg>;
+}`;
+  for (const count of ["interpolate(time, at('sixty'), at('free'), 0, 60)", "60 * clamp((time - at('sixty')) / (at('free') - at('sixty')))"]) {
+    assert.deepEqual(plain(code.codeSceneErrors('beat 3 (code)', between(count), VO, new Set(), code.CANVAS_STAGE)), [], count);
+    assert.match(warn(between(count))[0] ?? '', /only words and numbers change as its line is said/, count);
+  }
   // A line typed out word by word over a still card is text-led too, cued or not.
   assert.match(warn(`export default function Scene({ time, colors, words }) { return <svg><rect x={140} y={460} width={800} height={640} fill={colors.chalk}/><text x={540} y={760} width={700} maxLines={3} textAnchor="middle" fontSize={64} fill={colors.cardInk}>{words.filter(w => w.start <= time).map(w => w.text).join(' ')}</text></svg>; }`)[0], /only words and numbers change as its line is said; nothing drawn moves/);
-  // Nothing on a word at all: everything runs on the clock.
+  // The check is a floor: any shape that changes on a word counts as the drawing acting, so a caret that follows the
+  // typing, an underline drawn under a word, a highlight bar, a leader line or a label's pill lets a text-led scene
+  // pass. The review (best-practices.mjs BEST_PRACTICE_CHECKS) asks whether the thing the line names acts.
+  // Nothing on a word at all: everything runs on the clock, or from the end of the line rather than a word.
   assert.match(warn('export default function Scene({ time, colors }) { return <svg><rect x={140} y={460 + 20 * Math.sin(time)} width={800} height={640} fill={colors.chalk}/></svg>; }')[0], /^beat 3 \(code\): nothing in it changes as its line is said; cue the thing the line names with at\('word'\)/);
-  // Code that doesn't run is codeSceneErrors' to report.
+  assert.match(warn('export default function Scene({ time, colors, voEnd }) { return <svg><rect x={140} y={460} width={800} height={640} fill={colors.chalk}/><circle cx={540} cy={780} r={80 + 200 * easeOut(clamp((time - voEnd + 1) / 0.5))} fill={colors.accent}/></svg>; }')[0], /nothing in it changes as its line is said;.*timed from the clock, voStart or voEnd alone/);
+  // A payoff is checked on its own clock (`run`, its hold included): what lands in the hold, after its line, counts.
+  const late = `export default function Scene({ time, colors }) { return <svg><rect x={140} y={460} width={800} height={640} fill={colors.chalk}/><circle cx={540} cy={780} r={80 + 200 * easeOut(clamp((time - at('free') - 0.9) / 0.3))} fill={colors.accent}/></svg>; }`;
+  assert.match(warn(late)[0], /nothing in it changes as its line is said/);
+  assert.deepEqual(plain(code.codeSceneWarnings('beat 3 (code)', late, VO, code.CANVAS_STAGE, estimateBeat(VO, PAYOFF_HOLD))), []);
+  // Every warning says it the same way, so a test or the review can find them all.
+  assert.ok(warn(scene('')).every(w => w.includes(code.ACTING_WARNING)));
+  // Code that doesn't run is codeSceneErrors' to report; code that only fails before its cues are said can't be checked,
+  // and says so rather than passing.
   assert.deepEqual(plain(warn('export default function Scene() { return <svg>{nope}</svg>; }')), []);
+  const early = `export default function Scene({ time, colors, duration }) { return <svg><rect x={140} y={460} width={800} height={640} fill={colors.chalk}/><circle cx={540} cy={780} r={60 + 10 * Math.sqrt(duration - at('free'))} fill={colors.accent}/></svg>; }`;
+  assert.deepEqual(plain(code.codeSceneErrors('beat 3 (code)', early, VO, new Set(), code.CANVAS_STAGE)), []);
+  assert.match(warn(early)[0], /^beat 3 \(code\): whether its drawing acts as its line is said couldn't be checked: run with none of its words said yet, the code fails at/);
 });
 
 test('at(word, n) is the nth time the line says the word, and a cue for a time it isn\'t said is caught', () => {
@@ -196,16 +229,23 @@ test('the checks time a scene the way render.mjs times a reel before it has a vo
   fs.mkdirSync(path.join(ROOT, '.tmp'), { recursive: true });
   const dir = fs.mkdtempSync(path.join(ROOT, '.tmp', 'test-timing-'));
   try {
-    const beats = [{ scene: 'hook', vo: 'One two three four five six.' }, { scene: 'code', vo: 'Seven eight.' }, { scene: 'code', vo: 'Nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen.' }];
-    fs.writeFileSync(path.join(dir, 'episode.json'), JSON.stringify({ id: 'timing', cta: { house: false }, beats }));
+    const beats = [{ scene: 'hook', vo: 'One two three four five six.' }, { scene: 'code', vo: 'Seven eight.', payoff: true }, { scene: 'code', vo: 'Nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen.' }];
     const { loadEpisode } = await import('../src/render.mjs');
-    const { timing } = loadEpisode(dir);
-    const estimate = estimateTiming(beats);
-    assert.equal(timing.duration, estimate.duration);
-    timing.beats.forEach((b, i) => {
-      assert.equal(b.start, estimate.beats[i].start);
-      assert.equal(b.end, estimate.beats[i].end);
-      assert.deepEqual(b.words.map(w => [w.start, w.end]), estimate.beats[i].words.map(w => [w.start, w.end]));
-    });
+    // A house reel as before (a payoff mark means nothing there); a styled reel's payoff holds PAYOFF_HOLD after its line.
+    for (const style of [undefined, 'map']) {
+      const episode = { id: 'timing', ...(style ? { style } : {}), cta: { house: false }, beats };
+      fs.writeFileSync(path.join(dir, 'episode.json'), JSON.stringify(episode));
+      const { timing } = loadEpisode(dir);
+      const estimate = estimateTiming(beats, episode);
+      assert.equal(timing.duration, estimate.duration);
+      timing.beats.forEach((b, i) => {
+        assert.equal(b.start, estimate.beats[i].start);
+        assert.equal(b.end, estimate.beats[i].end);
+        assert.deepEqual(b.words.map(w => [w.start, w.end]), estimate.beats[i].words.map(w => [w.start, w.end]));
+      });
+      const held = timing.beats[1];
+      assert.equal(+(held.end - held.start).toFixed(6), +(estimateBeat('Seven eight.').duration + (style ? PAYOFF_HOLD : 0)).toFixed(6), style ?? 'house');
+      assert.equal(estimateTiming(beats).duration, estimateTiming(beats, { id: 'timing', beats }).duration, 'no style, no hold');
+    }
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });

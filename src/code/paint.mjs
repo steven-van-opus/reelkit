@@ -10,7 +10,8 @@
 // ones blended in), and a word below WCAG contrast with it (4.5:1, or 3:1 from headline size up) is drawn lighter or
 // darker, in its own hue, just until it reads. Words over pictures or gradients, and outlined words, are left as written.
 
-const INHERITED = ['fontFamily', 'fontStyle', 'fill', 'stroke', 'strokeWidth', 'fillOpacity', 'strokeOpacity', 'fontSize', 'fontWeight', 'textAnchor', 'dominantBaseline', 'letterSpacing', 'strokeLinecap', 'strokeLinejoin', 'strokeDasharray', 'strokeDashoffset', 'lineHeight'];
+/** The attributes an element passes down to its children (scene.mjs drawnElements follows the same ones). */
+export const INHERITED = ['fontFamily', 'fontStyle', 'fill', 'stroke', 'strokeWidth', 'fillOpacity', 'strokeOpacity', 'fontSize', 'fontWeight', 'textAnchor', 'dominantBaseline', 'letterSpacing', 'strokeLinecap', 'strokeLinejoin', 'strokeDasharray', 'strokeDashoffset', 'lineHeight'];
 const camel = name => name.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
 
 /** An element's attributes with its style merged in, camelCased. */

@@ -6,18 +6,29 @@
 /** render.mjs: words every 0.32 s from 0.25 s in, a beat max(2.4, 0.32 × words + 0.6) s, and 1 s after the last beat. */
 export const ESTIMATE = { lead: 0.25, perWord: 0.32, pad: 0.6, minBeat: 2.4, tail: 1 };
 
+/**
+ * A styled reel's payoff (the beat marked `"payoff": true`, src/styles/best-practices.mjs "A held payoff") runs on this
+ * long after its line before the next beat cuts in, voiced or not, so its final state holds still on screen.
+ */
+export const PAYOFF_HOLD = 1;
+/** How long a beat holds after its line: the payoff's hold in a styled reel, none anywhere else (house reels as before). */
+export const holdAfter = (beat, episode) => (episode?.style != null && beat?.payoff === true && beat?.scene !== 'cta' ? PAYOFF_HOLD : 0);
+
 /** A spoken word, in seconds from the video's start; `raw` keeps it as written. */
 
 const wordsOf = (vo) => String(vo || '').split(/\s+/).filter(Boolean);
 /** How long a beat of `count` words lasts, before the video's tail. */
 const beatSeconds = (count) => Math.max(ESTIMATE.minBeat, count * ESTIMATE.perWord + ESTIMATE.pad);
 
-/** The whole video timed without a voice, as render.mjs times it: the last beat runs on through the 1 s tail. */
-export function estimateTiming(beats) {
+/**
+ * The whole video timed without a voice, as render.mjs times it: the last beat runs on through the 1 s tail, and a
+ * styled `episode`'s payoff holds (holdAfter).
+ */
+export function estimateTiming(beats, episode = null) {
   let t = 0;
   const spans = beats.map((beat, index) => {
     const words = wordsOf(beat.vo), start = t;
-    t += beatSeconds(words.length);
+    t += beatSeconds(words.length) + holdAfter(beat, episode);
     return { index, start, end: t, words: words.map((text, k) => ({ text, raw: text, start: start + ESTIMATE.lead + k * ESTIMATE.perWord, end: start + ESTIMATE.lead + (k + 1) * ESTIMATE.perWord })) };
   });
   const duration = t + ESTIMATE.tail;
@@ -32,10 +43,11 @@ export function relativeWords(words, from) {
 
 /**
  * One beat as the estimate times it inside a video (its own span, without the video's tail): a code scene's length,
- * words and voice span, the way the engine hands them to the scene (its voice from its first word to its last).
+ * words and voice span, the way the engine hands them to the scene (its voice from its first word to its last). `hold`:
+ * seconds it runs on after its line (a payoff's, holdAfter).
  */
-export function estimateBeat(vo) {
+export function estimateBeat(vo, hold = 0) {
   const span = estimateTiming([{ vo }]).beats[0];
-  const duration = beatSeconds(span.words.length), words = relativeWords(span.words, 0);
+  const duration = beatSeconds(span.words.length) + hold, words = relativeWords(span.words, 0);
   return { duration, words, voStart: words[0]?.start ?? 0, voEnd: words.at(-1)?.end ?? duration };
 }

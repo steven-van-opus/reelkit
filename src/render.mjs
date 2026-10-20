@@ -32,6 +32,7 @@ import { FX } from './fx.mjs';
 import { createCanvasLook } from './canvas.mjs';
 import { styleOf } from './styles/index.mjs';
 import { declaredLogos } from './code/marks.mjs';
+import { holdAfter } from './code/timing.mjs';
 
 // Kit is drawn this much larger than scenes ask for.
 const KIT_SCALE = 1.1;
@@ -119,11 +120,11 @@ export function loadEpisode(dir) {
       } catch { /* keep the estimates */ }
     }
   } else {
-    // No voice yet (layout preview): 3.2s per beat, evenly spaced words.
+    // No voice yet (layout preview): 3.2s per beat, evenly spaced words; a styled reel's payoff holds after its line.
     let t = 0;
     const beats = episode.beats.map((b, i) => {
       const words = String(b.vo || '').split(/\s+/).filter(Boolean);
-      const dur = Math.max(2.4, words.length * 0.32 + 0.6);
+      const dur = Math.max(2.4, words.length * 0.32 + 0.6) + holdAfter(b, episode);
       const out = { index: i, start: t, end: t + dur, words: words.map((w, k) => ({ text: w, raw: w, start: t + 0.25 + k * 0.32, end: t + 0.25 + (k + 1) * 0.32 })) };
       t += dur;
       return out;

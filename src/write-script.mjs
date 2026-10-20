@@ -410,7 +410,7 @@ function styledPrompt(cand, { primaryTool, item, others, hasMedia, media, contac
     `Write the take ("script") as one paragraph of ${takeLo}–${takeHi} words: hook, what you can do, the concrete detail, why it matters. Say it in your head and fix anything you wouldn't say to a friend: colons, "New:", fragments, same-shaped sentences, hype. Count the words.`,
     `Cut the take into ${L.takeBeats[0]}–${L.takeBeats[1]} beats at breath points without changing a word (each vo ≤ ${L.beatWords} words), then check that the beats' vo joined with single spaces is exactly "script".`,
     `Design each beat's scene in code in the ${style.name} style: remake its reference video for this story with your own judgement, the opening as a \`hook\` with \`title\` and \`source\`, every other beat a \`code\` scene${hasMedia ? ', showing the real media where it shows what the line says' : ''}.`,
-    'Write each beat\'s label, place and speak (only where needed), and declare every logo a scene places in "logos".',
+    'Write each beat\'s label, place and speak (only where needed), mark the payoff beat (the line the reel builds to) with "payoff": true, and declare every logo a scene places in "logos".',
     'Reply with the JSON object only. No CTA beat: the house CTA is appended for you.',
   ].filter(Boolean);
 
@@ -436,13 +436,14 @@ Return ONE JSON object and nothing else: no prose before or after, no code fence
   "logos": [{ "id": "m80", "name": "the logo's name, as Wikipedia titles it", "domain": "the maker's website" }],
   "beats": [
     { "label": "…", "vo": "the first piece of script, word for word", "speak": "optional", "place": "…", "scene": "hook", "props": { "title": "the reel's name, ≤ 28 chars", "source": "export default function Scene(…) { … }" } },
-    { "label": "…", "vo": "the next piece of script, word for word", "speak": "optional", "place": "…", "scene": "code", "props": { "source": "…" } }
+    { "label": "…", "vo": "the next piece of script, word for word", "speak": "optional", "place": "…", "scene": "code", "props": { "source": "…" } },
+    { "label": "…", "vo": "the line the reel builds to, word for word", "place": "…", "scene": "code", "payoff": true, "props": { "source": "…" } }
   ]
 }
 
 The validator rejects the script unless:
 - "script" is the take, and the beats' vo joined with single spaces reproduce it word for word, punctuation included;
-- there are ${L.takeBeats[0]}–${L.takeBeats[1]} beats (with the house CTA appended, ${L.beats[0]}–${L.beats[1]}), the first scene is "hook" with a title and a source, every other is "code" with a source, and there is no CTA beat of yours;
+- there are ${L.takeBeats[0]}–${L.takeBeats[1]} beats (with the house CTA appended, ${L.beats[0]}–${L.beats[1]}), the first scene is "hook" with a title and a source, every other is "code" with a source, at most one beat after the first is marked "payoff": true, and there is no CTA beat of yours;
 - every label is ≤ ${L.label} characters and every vo ≤ ${L.beatWords} words;
 - all vo together, plus the house CTA's ${CTA_WORDS} words, are ${L.totalWords[0]}–${L.totalWords[1]} words;
 - every scene's code runs, is SVG only and at most ${CODE_SOURCE} characters, cues only words its own line says, uses only media ids from the media list above and only declared logos, keeps its words inside the stage and clear of the captions, at least the smallest readable size and readable against what's behind them, and never flashes;
@@ -450,6 +451,8 @@ The validator rejects the script unless:
 - sources lists every factual claim with a URL; no emoji in labels, props or vo; no hype words.
 
 It also flags caption-speak, which you should fix before you reply: a colon or a "New:" opener in a vo, a vo with no verb, three or more beats in a row that are each one short sentence, and a script outside ${takeLo}–${takeHi} words.
+
+And it warns, for you to fix, when a scene after the opening is text-led (only its words and numbers change as its line is said) or nothing in it changes on a word, and when no beat is marked "payoff": true.
 
 The style's reference video in your instructions shows the shape and rhythm. Don't reuse its content: its places, words, numbers and media are its own.
 

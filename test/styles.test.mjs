@@ -11,7 +11,7 @@ import { registerFonts } from '../src/brand.mjs';
 import { STYLES, STYLE_IDS, styleOf } from '../src/styles/index.mjs';
 import { referenceSets, referenceEpisode } from '../src/styles/reference.mjs';
 import { CODE_EXAMPLE, lookGuide } from '../src/styles/guide.mjs';
-import { CANVAS_STAGE, codeSceneErrors, codeSceneWarnings, runCodeScene, sampleInputs } from '../src/code/scene.mjs';
+import { ACTING_WARNING, CANVAS_STAGE, codeSceneErrors, codeSceneWarnings, runCodeScene, sampleInputs } from '../src/code/scene.mjs';
 import { paintCodeTree } from '../src/code/paint.mjs';
 import { canvasColors, canvasFont, createCanvasLook } from '../src/canvas.mjs';
 import { SOUNDS } from '../src/audio/sound.mjs';
@@ -71,8 +71,11 @@ test('every reference scene, opening and example passes the code checks on the c
   }
 });
 
-test('every scene after the opening of a style\'s reference video acts out its words, and so does the guide\'s example', () => {
+test('every scene after the opening of a style\'s reference video raises no text-led warning, and neither does the guide\'s example', () => {
   // The opening may land its hook word as type (best-practices.mjs "The hook lands on its word"), so it isn't checked.
+  // No warning at all: each scene also runs with none of its words said yet (a scene that couldn't be checked that way
+  // would say so). Passing is a floor, not a model: some reference scenes act only through a small shape beside their
+  // number, and the writer is told to redesign those moments (guide.mjs REMAKE_RULES).
   for (const [id, style] of Object.entries(STYLES)) {
     for (const b of referenceSets(style.reference).slice(1)) {
       assert.deepEqual(plain(codeSceneWarnings(`${id}: ${b.label}`, b.source, b.line, CANVAS_STAGE)), [], `${id}: ${b.label}`);
@@ -102,7 +105,9 @@ test('every style\'s reference video is a valid styled episode, mixed with its o
     assert.equal(episode.style, id);
     const { errors, warnings } = await checkEpisode(episode, { media: null });
     assert.deepEqual(errors, [], id);
-    assert.deepEqual(warnings.filter(w => /changes as its line is said/.test(w)), [], id);
+    assert.deepEqual(warnings.filter(w => w.includes(ACTING_WARNING) || /payoff/.test(w)), [], id);
+    // Its last scene is the payoff it builds to, held a second longer.
+    assert.deepEqual(episode.beats.map((b, i) => (b.payoff ? i : -1)).filter(i => i >= 0), [episode.beats.length - 2], id);
     // Its sound is its style's preset, its closing cue landing as the keyword is said (the canvas look's closing).
     const sound = episodeSound(episode);
     assert.equal(sound.sfx.set, SOUNDS[id].sfx, id);
@@ -128,7 +133,23 @@ test('every style\'s reference video is a valid styled episode, mixed with its o
   assert.match(third.warnings.join('\n'), /beat 3 \(code\): only words and numbers change as its line is said; nothing drawn moves, turns, grows, fills or swaps on a word, so the scene is text-led/);
   const opening = await checkEpisode(typedAt(0), { media: null });
   assert.deepEqual(opening.errors, []);
-  assert.deepEqual(opening.warnings.filter(w => /changes as its line is said/.test(w)), []);
+  assert.deepEqual(opening.warnings.filter(w => w.includes(ACTING_WARNING)), []);
+  // The opening is beat 1, whatever its scene: a 'hook' later on is refused, never let off the check.
+  const lateHook = { ...map, beats: map.beats.map((b, i) => (i === 2 ? { ...b, scene: 'hook', props: { title: 'Mid hook', source: typed } } : b)) };
+  const late = await checkEpisode(lateHook, { media: null });
+  assert.match(late.errors.join('\n'), /beat 3 \(hook\): only beat 1 is the 'hook'; every beat after it is a 'code' scene/);
+  assert.match(late.warnings.join('\n'), /beat 3 \(hook\): only words and numbers change as its line is said/);
+  // A scene with errors gets them, not the warning on top.
+  const zebra = typed.replace('fill={colors.chalk}/>', "fill={colors.chalk} opacity={easeOut(clamp(time - at('zebra')))}/>");
+  const broken = await checkEpisode({ ...map, beats: map.beats.map((b, i) => (i === 2 ? { ...b, props: { source: zebra } } : b)) }, { media: null });
+  assert.match(broken.errors.join('\n'), /beat 3 \(code\): at\('zebra'\) isn't a word of this beat's vo/);
+  assert.deepEqual(broken.warnings.filter(w => w.startsWith('beat 3') && w.includes(ACTING_WARNING)), []);
+  // The payoff: one beat after the opening, marked true; none is a warning, two or a misplaced one an error.
+  const marked = (marks) => ({ ...map, beats: map.beats.map((b, i) => { const { payoff, ...rest } = b; return i in marks ? { ...rest, payoff: marks[i] } : rest; }) });
+  assert.match((await checkEpisode(marked({}), { media: null })).warnings.join('\n'), /no beat is marked "payoff": true/);
+  assert.match((await checkEpisode(marked({ 3: true, 5: true }), { media: null })).errors.join('\n'), /2 beats are marked "payoff": true; mark only the one line the reel builds to/);
+  assert.match((await checkEpisode(marked({ 0: true }), { media: null })).errors.join('\n'), /beat 1 \(hook\): only a beat after the opening and before the closing ask can be the payoff/);
+  assert.match((await checkEpisode(marked({ 3: 'yes' }), { media: null })).errors.join('\n'), /beat 4 \(code\): payoff must be true/);
 });
 
 test('the writer gets the style: its feel, identity and reference scenes, and the code-scene contract', async () => {
@@ -146,6 +167,10 @@ test('the writer gets the style: its feel, identity and reference scenes, and th
     const prompt = buildPrompt(cand, { specs: scenes, catalog: [], today: '2026-10-19', style });
     assert.match(prompt, new RegExp(`news reel in the ${style.name} style`));
     assert.match(prompt, /"scene": "code", "props": \{ "source": "…" \}/);
+    assert.match(prompt, /"scene": "code", "payoff": true, "props"/);
+    // Its reference's last scene is shown as the payoff, held.
+    const sets = referenceSets(style.reference);
+    assert.ok(system.includes(`### Scene ${sets.length}, the payoff (its beat marked "payoff": true, held): ${sets.at(-1).label}`), style.id);
     assert.doesNotMatch(prompt, /## Scene catalog/);
   }
   // Without a style, the writer's instructions are the scene catalog's, as before.

@@ -68,6 +68,10 @@ Read these with the Read tool, all of them:
 3. `episodes/<id>/episode.json`: `script`, `beats`, `sources`, `post`.
 4. `episodes/<id>/media/contact.jpg`: every collected media item with its id.
 5. `episodes/<id>/caption.txt`.
+6. For a styled reel, `episodes/<id>/voice.json`: when each word is said
+   (`beats[].words`) and where each beat starts and ends. A still shows one
+   moment of a scene, so what happens on a word is read from the scene's code
+   and these times.
 
 Check each item and note what fails:
 
@@ -91,12 +95,19 @@ Check each item and note what fails:
   styled reel (the run warns if not).
 - [ ] **A styled reel follows the best practices.** Nothing important under the
   captions or the platform's UI, words big and readable, one idea per scene,
-  each scene after the opening led by a drawn thing that acts out its line on
-  its word (fix any scene the validator warns is text-led), one material and
-  one motion throughout, a hook that lands big on its word, a payoff that
-  holds, motion that settles, original drawings, places built for this topic
-  rather than copied from the style's reference (`BEST_PRACTICE_CHECKS` in
-  `src/styles/best-practices.mjs` lists the questions).
+  each scene after the opening led by the thing its line names acting it out
+  on its word (fix any scene the validator warns is text-led, and look past
+  the warning: a caret or an underline moving beside a number still leaves the
+  scene text-led), every scene starting from the style's own kit, a hook that
+  lands big on its word, a payoff that holds, motion that settles, original
+  drawings, places built for this topic rather than copied from the style's
+  reference (`BEST_PRACTICE_CHECKS` in `src/styles/best-practices.mjs` lists
+  the questions). For what happens on a word, find the scene's `at('…')` cue
+  in its code and that word's time in `voice.json`, then
+  `npm run render -- episodes/<id> --frame <seconds>` just before and just
+  after it: the acting thing should change between the two. The hook's key
+  word should land within about 2 s of the start; the beat marked
+  `"payoff": true` holds from its last word's end to the next beat's start.
 
 Show the person `stills.png` and `cover.png` (SendUserFile when available) with
 a short verdict: what works, what you'd change.
